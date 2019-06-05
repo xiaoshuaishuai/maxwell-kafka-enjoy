@@ -1,0 +1,68 @@
+server:
+  port: 8082
+spring:
+  application:
+    name: maxwell-kafka-enjoy
+  profiles:
+    active: dev
+  kafka:
+    consumer:
+      enable-auto-commit: false
+      session-timeout-ms: 15000
+      max-poll-records: 10
+      bootstrap-servers: 192.168.225.1:9092
+    producer:
+      acks: -1
+      batch-size: 5
+      linger-ms: 100
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://192.168.225.1:3306/maxwell?useUnicode=true&characterEncoding=UTF8&useSSL=false&allowMultiQueries=true&autoReconnect=true&failOverReadOnly=false&maxReconnects=10
+    username: root
+    password: root
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 15
+      auto-commit: true
+      idle-timeout: 30000
+      pool-name: DatebookHikariCP
+      max-lifetime: 1800000
+      connection-timeout: 30000
+      connection-test-query: SELECT 1
+  redis:
+    host: dev-redis-1.runxdata.com
+    port: 6379
+    password: 3O3Z0I20xTgY
+    timeout: 30S
+    jedis:
+      pool:
+        max-idle: 10
+        min-idle: 1
+        max-active: 1000
+        max-wait: 1000ms
+mybatis-plus:
+  mapper-locations: classpath:com/ssx/maxwell/kafka/enjoy/mapper/impl/*.xml
+  typeAliasesPackage: com.ssx.maxwell.kafka.enjoy.common
+
+maxwell:
+  enjoy:
+#    binlog消费队列
+    kafka-binlog-topic: maxwell
+    redis:
+#      对redis_mapping表的缓存
+      jvmCache: true
+#      开启redis缓存binlog消费
+      kafka-consumer: true
+#      默认消费组
+      kafka-group: group_redis_default
+#      开启redis过期key队列消费
+      expire-kafka-consumer: true
+#     过期key队列
+      expire-topic: redis_expire_topic
+#     过期key队列消费组
+      expire-topic-kafka-group: redis_expire_topic_group
+    elasticsearch:
+      jvmCache: false
+      kafka-consumer: false
+      kafka-group: group_elasticsearch_default

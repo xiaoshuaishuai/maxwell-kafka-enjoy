@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssx.maxwell.kafka.enjoy.mapper.RedisMappingMapper">
+    <resultMap id="baseMap" type="com.ssx.maxwell.kafka.enjoy.common.redis.RedisMapping">
+        <id column="id" property="id"/>
+        <result column="remark" property="remark"></result>
+        <result column="create_by" property="createBy"></result>
+        <result column="db_database" property="dbDatabase"></result>
+        <result column="db_table" property="dbTable"></result>
+        <result column="expire" property="expire"></result>
+        <result column="gmt_create" property="gmtCreate"></result>
+        <result column="gmt_modify" property="gmtModify"></result>
+        <result column="is_del" property="isDel"></result>
+        <result column="is_enable" property="isEnable"></result>
+        <result column="rule" property="rule"></result>
+        <result column="template" property="template"></result>
+    </resultMap>
+   <sql id="allColumns">
+        id,
+        db_database,
+        db_table,
+        expire,
+        rule,
+        template,
+        remark,
+        is_enable,
+        is_del,
+        gmt_create,
+        gmt_modify,
+        create_by,
+        modify_by
+   </sql>
+
+    <select id="queryList" resultMap="baseMap">
+        select <include refid="allColumns"/> from redis_mapping where is_del =0 and is_enable =0
+    </select>
+</mapper>
