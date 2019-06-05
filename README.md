@@ -1,20 +1,16 @@
-##maxwell-kafka-enjoy
+## maxwell-kafka-enjoy
 
 ![Image text](./docs/img/logo.jpg)
 
+> **maxwell客户端**，提供redis缓存失效，elasticsearch，mongodb数据同步功能。
 ---
-
-**maxwell客户端**，提供redis缓存失效，elasticsearch，mongodb数据同步功能。
-
-
----
-####简介
+#### 简介
 
 ![Image text](./docs/img/maxwell_enjoy.png)
 
 ---
 
-####依赖
+#### 依赖
 * jdk1.8
 * maxwell-1.22.1
 * mysql5.7.26
