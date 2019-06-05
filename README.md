@@ -6,7 +6,7 @@
 ---
 #### 简介
 
-![Image text](./docs/img/maxwell_enjoy.png)
+![Image text](./docs/img/maxwell_enjoy.jpg)
 
 ---
 
