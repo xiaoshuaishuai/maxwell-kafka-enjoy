@@ -32,17 +32,17 @@
 >  **maxwell-kafka-enjoy**只提供缓存失效功能
 * 单表主键引导缓存
 >举例：
-环境=dev, database=abcd, table=table_test, id=1,对应的单条缓存为=**dev:abcd:table_test:item:1**
-环境=test, database=abcd, table=person, id=2,对应的单条缓存为=**test:abcd:person:item:2**
+环境=dev, database=xx, table=table_test, id=1,对应的单条缓存为=**dev:xx:table_test:item:1**
+环境=test, database=xx, table=person, id=2,对应的单条缓存为=**test:xx:person:item:2**
 
 * 全表缓存
 >举例：
-环境=dev, database=abcd, table=table_test, 对应的全表缓存为=**dev:abcd:table_test:list**
-环境=test, database=abcd, table=person, 对应的全表缓存为=**test:abcd:person:list**
+环境=dev, database=xx, table=table_test, 对应的全表缓存为=**dev:xx:table_test:list**
+环境=test, database=xx, table=person, 对应的全表缓存为=**test:xx:person:list**
 
 * 自定义缓存
 >举例：
-环境=dev, database=abcd, table=table_test, id=1, code=10, name=john, 要求按照code&name构建缓存, 
-对应的单条缓存为=**dev:abcd:table_test:item:10:name**
+环境=dev, database=xx, table=table_test, id=1, code=10, name=john, 要求按照code&name构建缓存, 
+对应的单条缓存为=**dev:xx:table_test:item:10:name**
 
 ---
