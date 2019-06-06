@@ -1,0 +1,29 @@
+# For a quick start check out our HTTP Requests collection (Tools|HTTP Client|Open HTTP Requests Collection).
+#
+# Following HTTP Request Live Templates are available:
+# * 'gtrp' and 'gtr' create a GET request with or without query parameters;
+# * 'ptr' and 'ptrp' create a POST request with a simple or parameter-like body;
+# * 'mptr' and 'fptr' create a POST request to submit a form with a text or file field (multipart/form-data);
+
+# 查询redis_mapping映射列表
+GET http://localhost:8082/redisMapping/list
+#
+###
+
+POST http://localhost:8082/redisMapping/insertOrUpdateBatch
+Content-Type: application/json
+
+[
+  {
+    "createBy": "后台测试",
+    "dbDatabase": "test",
+    "dbTable": "title1",
+    "expire": 3600,
+    "isDel": 0,
+    "isEnable": 0,
+    "modifyBy": "后台测试",
+    "rule": "1"
+  }
+]
+
+###

@@ -33,7 +33,7 @@ spring:
   redis:
     host: 192.168.225.1
     port: 6379
-#    password: 3O3Z0I20xTgY
+    password: foobared
     timeout: 30S
     jedis:
       pool:

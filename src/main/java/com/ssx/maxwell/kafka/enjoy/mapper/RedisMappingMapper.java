@@ -15,4 +15,6 @@ import java.util.List;
 public interface RedisMappingMapper extends BaseMapper<RedisMapping> {
 
     List<RedisMapping> queryList();
+
+    Integer insertOrUpdateBatch(List<RedisMapping> list);
 }
