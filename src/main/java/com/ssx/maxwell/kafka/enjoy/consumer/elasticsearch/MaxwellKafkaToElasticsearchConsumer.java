@@ -1,11 +1,11 @@
 package com.ssx.maxwell.kafka.enjoy.consumer.elasticsearch;
 
 import com.google.common.base.Strings;
-import com.ssx.maxwell.kafka.enjoy.common.model.query.elasticsearch.ElasticSearchMapping;
+import com.ssx.maxwell.kafka.enjoy.common.model.query.elasticsearch.ElasticsearchMapping;
 import com.ssx.maxwell.kafka.enjoy.common.tools.JsonUtils;
 import com.ssx.maxwell.kafka.enjoy.configuration.JvmCache;
 import com.ssx.maxwell.kafka.enjoy.enumerate.MaxwellBinlogConstants;
-import com.ssx.maxwell.kafka.enjoy.search.ElasticSearchMappingRepository;
+import com.ssx.maxwell.kafka.enjoy.search.ElasticsearchMappingRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,12 +27,12 @@ import java.util.Map;
 @Component
 @Slf4j
 @ConditionalOnProperty(prefix = "maxwell.enjoy.elasticsearch", name = "kafka-consumer", havingValue = "true")
-public class MaxwellKafkaToElasticSearchConsumer {
+public class MaxwellKafkaToElasticsearchConsumer {
     private static final String logPrefix = "maxwell--<elasticsearch>----消费消息-->";
     @Value("${spring.profiles.active:dev}")
     private String profile;
     @Autowired
-    private ElasticSearchMappingRepository elasticSearchMappingRepository;
+    private ElasticsearchMappingRepository elasticSearchMappingRepository;
 
     @KafkaListener(topics = "${maxwell.enjoy.kafka-binlog-topic}", groupId = "${maxwell.enjoy.elasticsearch.kafka-group}", containerFactory = "manualListenerContainerFactory")
     public void receive(List<ConsumerRecord<String, String>> integerStringConsumerRecords, Acknowledgment acknowledgment) {
@@ -83,8 +83,8 @@ public class MaxwellKafkaToElasticSearchConsumer {
         return JvmCache.redisJvmCacheKey(profile, database, table) + JvmCache.BROKEN_WELL + id;
     }
 
-    private void buildElasticSearchMapping(String id, String dbDatabase, String dbTable, String mkeData) {
-        ElasticSearchMapping elasticSearchMapping = new ElasticSearchMapping();
+    private void buildElasticsearchMapping(String id, String dbDatabase, String dbTable, String mkeData) {
+        ElasticsearchMapping elasticSearchMapping = new ElasticsearchMapping();
         elasticSearchMapping.setId(id);
         elasticSearchMapping.setDbDatabase(dbDatabase);
         elasticSearchMapping.setDbTable(dbTable);

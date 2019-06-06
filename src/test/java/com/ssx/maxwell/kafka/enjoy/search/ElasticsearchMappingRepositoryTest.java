@@ -1,6 +1,6 @@
 package com.ssx.maxwell.kafka.enjoy.search;
 
-import com.ssx.maxwell.kafka.enjoy.common.model.query.elasticsearch.ElasticSearchMapping;
+import com.ssx.maxwell.kafka.enjoy.common.model.query.elasticsearch.ElasticsearchMapping;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,14 +14,14 @@ import org.springframework.test.context.junit4.SpringRunner;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class ElasticSearchMappingRepositoryTest {
+public class ElasticsearchMappingRepositoryTest {
 
     @Autowired
-    private ElasticSearchMappingRepository elasticSearchMappingRepository;
+    private ElasticsearchMappingRepository elasticSearchMappingRepository;
 
     @Test
     public void testEsSave(){
-        ElasticSearchMapping elasticSearchMapping = new ElasticSearchMapping();
+        ElasticsearchMapping elasticSearchMapping = new ElasticsearchMapping();
         elasticSearchMapping.setId("1");
         elasticSearchMapping.setDbDatabase("test1");
         elasticSearchMapping.setDbTable("sys_order1");

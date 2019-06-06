@@ -1,7 +1,7 @@
 package com.ssx.maxwell.kafka.enjoy.controller;
 
-import com.ssx.maxwell.kafka.enjoy.common.model.entity.redis.RedisMappingEntity;
-import com.ssx.maxwell.kafka.enjoy.service.RedisMappingService;
+import com.ssx.maxwell.kafka.enjoy.common.model.entity.elasticsearch.ElasticsearchMappingEntity;
+import com.ssx.maxwell.kafka.enjoy.service.ElasticsearchMappingService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,28 +16,28 @@ import java.util.List;
  * @description:
  */
 @RestController
-@RequestMapping("/redisMapping")
-@Api(value = "redis映射配置Controller")
-public class RedisMappingController {
+@RequestMapping("/elasticsearchMapping")
+@Api(value = "elasticSearch映射配置Controller")
+public class ElasticsearchMappingController {
 
     @Autowired
-    private RedisMappingService redisMappingService;
+    private ElasticsearchMappingService elasticSearchMappingService;
 
     @ApiOperation(value = "查询列表", notes = "查询列表", httpMethod = "GET", tags = "1.0.0")
     @RequestMapping("/list")
     @ResponseBody
-    public List<RedisMappingEntity> queryList() {
-        return redisMappingService.queryList();
+    public List<ElasticsearchMappingEntity> queryList() {
+        return elasticSearchMappingService.queryList();
     }
 
     @ApiOperation(value = "批量插入或修改", notes = "批量插入或修改", httpMethod = "POST", tags = "1.0.0")
     @PostMapping(value = "/insertOrUpdateBatch")
-    public Integer insertOrUpdateBatch(@RequestBody List<RedisMappingEntity> list) {
+    public Integer insertOrUpdateBatch(@RequestBody List<ElasticsearchMappingEntity> list) {
         list.forEach(t -> {
             t.setGmtCreate(new Date());
             t.setGmtModify(new Date());
         });
-        return redisMappingService.insertOrUpdateBatch(list);
+        return elasticSearchMappingService.insertOrUpdateBatch(list);
     }
 
 }

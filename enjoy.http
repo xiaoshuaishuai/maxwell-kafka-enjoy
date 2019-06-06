@@ -17,7 +17,7 @@ Content-Type: application/json
   {
     "createBy": "后台测试",
     "dbDatabase": "test",
-    "dbTable": "title1",
+    "dbTable": "title3",
     "expire": 3600,
     "isDel": 0,
     "isEnable": 0,

@@ -12,7 +12,7 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
  */
 @Data
 @Document(indexName = "maxwell_es_mapping", type = "_doc")
-public class ElasticSearchMapping {
+public class ElasticsearchMapping {
     /**
      * ID
      * database_table_id
