@@ -1,8 +1,4 @@
-## maxwell-kafka-enjoy
-
-![Image text](./docs/img/logo.jpg)
-
-> **maxwell客户端**，提供全量及增量redis，elasticsearch，mongodb数据同步功能。
+> **maxwell消费者**，提供全量及增量redis，elasticsearch，mongodb数据同步功能。
 ---
 #### 简介
 
