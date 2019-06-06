@@ -31,9 +31,9 @@ spring:
       connection-timeout: 30000
       connection-test-query: SELECT 1
   redis:
-    host: dev-redis-1.runxdata.com
+    host: 192.168.225.1
     port: 6379
-    password: 3O3Z0I20xTgY
+#    password: 3O3Z0I20xTgY
     timeout: 30S
     jedis:
       pool:
