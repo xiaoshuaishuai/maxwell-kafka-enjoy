@@ -2,7 +2,7 @@ package com.ssx.maxwell.kafka.enjoy.configuration;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import com.ssx.maxwell.kafka.enjoy.common.redis.RedisMapping;
+import com.ssx.maxwell.kafka.enjoy.common.model.entity.redis.RedisMappingEntity;
 import com.ssx.maxwell.kafka.enjoy.mapper.RedisMappingMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,19 +31,19 @@ public class JvmCache {
     @Value("${spring.profiles.active:dev}")
     private String profile;
 
-    private static final String BROKEN_WELL = "#";
+    public static final String BROKEN_WELL = "#";
 
 
     @Bean
     @ConditionalOnProperty(prefix = "maxwell.enjoy.redis", name = "jvmCache", havingValue = "true")
-    public Cache<String, RedisMapping> redisMappingCache() {
-        Cache<String, RedisMapping> cache = CacheBuilder.newBuilder().initialCapacity(10)
+    public Cache<String, RedisMappingEntity> redisMappingCache() {
+        Cache<String, RedisMappingEntity> cache = CacheBuilder.newBuilder().initialCapacity(10)
                 .maximumSize(1000)
                 .build();
         try {
-            List<RedisMapping> redisMappingList = redisMappingMapper.queryList();
+            List<RedisMappingEntity> redisMappingList = redisMappingMapper.queryList();
             if (!CollectionUtils.isEmpty(redisMappingList)) {
-                Map<String, RedisMapping> mappingMap = redisMappingList.stream()
+                Map<String, RedisMappingEntity> mappingMap = redisMappingList.stream()
                         .collect(Collectors.toMap(redisMapping -> redisJvmCacheKey(profile, redisMapping.getDbDatabase(), redisMapping.getDbTable()),
                                 r -> r, (k1, k2) -> k1));
                 log.info("redis缓存信息配置,key规则=env#database#table mappingMap={}", mappingMap.toString());

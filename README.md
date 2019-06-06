@@ -2,11 +2,11 @@
 
 ![Image text](./docs/img/logo.jpg)
 
-> **maxwell客户端**，提供redis缓存失效，elasticsearch，mongodb数据同步功能。
+> **maxwell客户端**，提供全量及增量redis，elasticsearch，mongodb数据同步功能。
 ---
 #### 简介
 
-![Image text](./docs/img/maxwell_enjoy.jpg)
+![Image text](./docs/img/maxwell_enjoy.png)
 
 ---
 

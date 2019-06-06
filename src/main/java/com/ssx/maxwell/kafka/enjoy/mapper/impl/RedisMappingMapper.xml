@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ssx.maxwell.kafka.enjoy.mapper.RedisMappingMapper">
-    <resultMap id="baseMap" type="com.ssx.maxwell.kafka.enjoy.common.redis.RedisMapping">
+    <resultMap id="baseMap" type="com.ssx.maxwell.kafka.enjoy.common.model.entity.redis.RedisMappingEntity">
         <id column="id" property="id"/>
         <result column="remark" property="remark"></result>
         <result column="create_by" property="createBy"></result>
@@ -38,24 +38,27 @@
     <select id="queryList" resultMap="baseMap">
         select
         <include refid="allColumns"/>
-        from <include refid="tableName"/> order by  db_database asc, db_table asc
+        from
+        <include refid="tableName"/>
+        order by db_database asc, db_table asc
     </select>
 
     <insert id="insertOrUpdateBatch">
-        insert into <include refid="tableName"/>
-           (
-            db_database,
-            db_table,
-            expire,
-            rule,
-            template,
-            remark,
-            is_enable,
-            is_del,
-            gmt_create,
-            gmt_modify,
-            create_by,
-            modify_by )
+        insert into
+        <include refid="tableName"/>
+        (
+        db_database,
+        db_table,
+        expire,
+        rule,
+        template,
+        remark,
+        is_enable,
+        is_del,
+        gmt_create,
+        gmt_modify,
+        create_by,
+        modify_by )
         values
         <foreach collection="list" item="item" index="index" separator=",">
             (

@@ -1,6 +1,6 @@
 package com.ssx.maxwell.kafka.enjoy.service;
 
-import com.ssx.maxwell.kafka.enjoy.common.redis.RedisMapping;
+import com.ssx.maxwell.kafka.enjoy.common.model.entity.redis.RedisMappingEntity;
 
 import java.util.List;
 
@@ -11,8 +11,8 @@ import java.util.List;
  */
 public interface RedisMappingService {
 
-    List<RedisMapping> queryList();
+    List<RedisMappingEntity> queryList();
 
-    Integer insertOrUpdateBatch(List<RedisMapping> list);
+    Integer insertOrUpdateBatch(List<RedisMappingEntity> list);
 
 }

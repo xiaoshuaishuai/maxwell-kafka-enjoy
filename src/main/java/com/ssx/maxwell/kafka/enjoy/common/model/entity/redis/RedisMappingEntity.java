@@ -1,6 +1,6 @@
-package com.ssx.maxwell.kafka.enjoy.common.redis;
+package com.ssx.maxwell.kafka.enjoy.common.model.entity.redis;
 
-import com.ssx.maxwell.kafka.enjoy.common.Mapping;
+import com.ssx.maxwell.kafka.enjoy.common.model.entity.MappingEntity;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -16,7 +16,7 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
 @ToString(callSuper = true)
-public class RedisMapping extends Mapping {
+public class RedisMappingEntity extends MappingEntity {
 
     /**
      * 缓存过期时间, 默认-1永不过期, 单位：秒

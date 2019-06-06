@@ -38,9 +38,9 @@ public class RedisExpireConsumer {
                 HashSet<String> hashSetKey = JsonUtils.JsonStringToHashSet(keys);
                 if (null != hashSetKey && hashSetKey.size() > 0) {
                     customerStringRedisTemplate.delete(hashSetKey);
-                    for (String s : hashSetKey) {
-                        log.info("===== {}", s);
-                    }
+//                    for (String s : hashSetKey) {
+//                        log.info("===== {}", s);
+//                    }
                 }
             }
             acknowledgment.acknowledge();

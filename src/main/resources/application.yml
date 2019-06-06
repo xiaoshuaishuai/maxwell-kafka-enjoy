@@ -41,9 +41,15 @@ spring:
         min-idle: 1
         max-active: 1000
         max-wait: 1000ms
+  data:
+    elasticsearch:
+      repositories:
+        enabled: true
+      cluster-name: dev-runx-elasticsearch
+      cluster-nodes: dev-es-1.runxsports.com:9300,dev-es-2.runxsports.com:9300
 mybatis-plus:
   mapper-locations: classpath:com/ssx/maxwell/kafka/enjoy/mapper/impl/*.xml
-  typeAliasesPackage: com.ssx.maxwell.kafka.enjoy.common
+  typeAliasesPackage: com.ssx.maxwell.kafka.enjoy.common.model.entity
 
 maxwell:
   enjoy:
@@ -64,5 +70,5 @@ maxwell:
       expire-topic-kafka-group: redis_expire_topic_group
     elasticsearch:
       jvmCache: false
-      kafka-consumer: false
+      kafka-consumer: true
       kafka-group: group_elasticsearch_default

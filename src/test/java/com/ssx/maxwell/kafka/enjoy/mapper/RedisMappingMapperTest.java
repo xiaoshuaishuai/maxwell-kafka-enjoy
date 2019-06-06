@@ -1,6 +1,6 @@
 package com.ssx.maxwell.kafka.enjoy.mapper;
 
-import com.ssx.maxwell.kafka.enjoy.common.redis.RedisMapping;
+import com.ssx.maxwell.kafka.enjoy.common.model.entity.redis.RedisMappingEntity;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +30,7 @@ public class RedisMappingMapperTest {
 
     @Test
     public void testInsert() {
-        RedisMapping redisMapping = new RedisMapping();
+        RedisMappingEntity redisMapping = new RedisMappingEntity();
         redisMapping.setExpire(200L);
         redisMapping.setRule("1|2|3");
         redisMapping.setTemplate("{order_code}:{is_del},{goods_name}:{is_del}");

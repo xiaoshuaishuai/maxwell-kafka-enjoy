@@ -1,7 +1,7 @@
 package com.ssx.maxwell.kafka.enjoy.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.ssx.maxwell.kafka.enjoy.common.redis.RedisMapping;
+import com.ssx.maxwell.kafka.enjoy.common.model.entity.redis.RedisMappingEntity;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -12,9 +12,9 @@ import java.util.List;
  * @description:
  */
 @Component
-public interface RedisMappingMapper extends BaseMapper<RedisMapping> {
+public interface RedisMappingMapper extends BaseMapper<RedisMappingEntity> {
 
-    List<RedisMapping> queryList();
+    List<RedisMappingEntity> queryList();
 
-    Integer insertOrUpdateBatch(List<RedisMapping> list);
+    Integer insertOrUpdateBatch(List<RedisMappingEntity> list);
 }

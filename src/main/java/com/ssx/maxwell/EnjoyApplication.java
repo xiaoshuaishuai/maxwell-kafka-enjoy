@@ -12,6 +12,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 @MapperScan("com.ssx.maxwell.kafka.enjoy.mapper")
 public class EnjoyApplication {
+    static {
+        System.setProperty("es.set.netty.runtime.available.processors", "false");
+    }
+
     public static void main(String[] args) {
         SpringApplication.run(EnjoyApplication.class, args);
     }

@@ -3,7 +3,7 @@ package com.ssx.maxwell.kafka.enjoy.consumer.redis;
 import com.google.common.base.Strings;
 import com.google.common.cache.Cache;
 import com.google.common.collect.Sets;
-import com.ssx.maxwell.kafka.enjoy.common.redis.RedisMapping;
+import com.ssx.maxwell.kafka.enjoy.common.model.entity.redis.RedisMappingEntity;
 import com.ssx.maxwell.kafka.enjoy.common.tools.JsonUtils;
 import com.ssx.maxwell.kafka.enjoy.common.tools.PatternUtils;
 import com.ssx.maxwell.kafka.enjoy.common.tools.UnicodeUtils;
@@ -46,7 +46,7 @@ public class MaxwellKafkaToRedisConsumer {
     @Value("${maxwell.enjoy.redis.jvmCache}")
     private boolean redisMappingCacheSwitch;
     @Autowired
-    private Cache<String, RedisMapping> redisMappingCache;
+    private Cache<String, RedisMappingEntity> redisMappingCache;
     @Autowired
     private KafkaTemplate kafkaTemplate;
     @Value("${maxwell.enjoy.redis.expire-topic}")
@@ -79,7 +79,7 @@ public class MaxwellKafkaToRedisConsumer {
                         String database = (String) map.get("database");
                         String table = (String) map.get("table");
                         String jvmCacheKey = JvmCache.redisJvmCacheKey(profile, database, table);
-                        RedisMapping redisMapping = redisMappingCache.getIfPresent(jvmCacheKey);
+                        RedisMappingEntity redisMapping = redisMappingCache.getIfPresent(jvmCacheKey);
                         if (null != redisMapping) {
                             String rule = redisMapping.getRule();
                             if (MaxwellBinlogConstants.REDIS_RULE_0.equals(redisMapping.getRule())) {

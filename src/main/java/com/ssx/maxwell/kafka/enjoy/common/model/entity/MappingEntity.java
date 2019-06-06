@@ -1,4 +1,4 @@
-package com.ssx.maxwell.kafka.enjoy.common;
+package com.ssx.maxwell.kafka.enjoy.common.model.entity;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -14,7 +14,7 @@ import java.util.Date;
  */
 @Data
 @Accessors(chain = true)
-public class Mapping implements Serializable {
+public class MappingEntity implements Serializable {
     /**
      * 主键
      */
