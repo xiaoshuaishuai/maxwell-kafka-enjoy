@@ -1,18 +1,11 @@
-> **maxwell消费者**，提供全量及增量redis，elasticsearch，mongodb数据同步功能。
----
-#### 简介
-
-![Image text](./docs/img/maxwell_enjoy.jpg)
-
----
-
+> **maxwell消费者**，提供全量及增量redis，elasticsearch数据过期和数据同步功能。
 #### 依赖
 * jdk1.8
 * maxwell-1.22.1
 * mysql5.7.26
 * kafka_2.11-2.0.0
 
-redis、elasticsearch、MongoDB等非必须，如果需要使用功能需搭建对应依赖
+redis、elasticsearch非必须，如果需要使用功能需搭建对应依赖
 
 
 #### maxwell消息格式
