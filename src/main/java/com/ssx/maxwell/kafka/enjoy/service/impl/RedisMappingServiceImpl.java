@@ -1,6 +1,6 @@
 package com.ssx.maxwell.kafka.enjoy.service.impl;
 
-import com.ssx.maxwell.kafka.enjoy.common.model.entity.RedisMappingEntity;
+import com.ssx.maxwell.kafka.enjoy.common.model.entity.RedisMapping;
 import com.ssx.maxwell.kafka.enjoy.mapper.RedisMappingMapper;
 import com.ssx.maxwell.kafka.enjoy.service.RedisMappingService;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +16,7 @@ import javax.annotation.PostConstruct;
  */
 @Service
 @Slf4j
-public class RedisMappingServiceImpl extends EnjoyBaseServiceImpl<RedisMappingEntity, RedisMappingMapper> implements RedisMappingService {
+public class RedisMappingServiceImpl extends EnjoyBaseServiceImpl<RedisMapping, RedisMappingMapper> implements RedisMappingService {
     @Autowired
     private RedisMappingMapper redisMappingMapper;
 

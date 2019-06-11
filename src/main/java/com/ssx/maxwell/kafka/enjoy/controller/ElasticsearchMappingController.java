@@ -1,6 +1,6 @@
 package com.ssx.maxwell.kafka.enjoy.controller;
 
-import com.ssx.maxwell.kafka.enjoy.common.model.entity.ElasticsearchMappingEntity;
+import com.ssx.maxwell.kafka.enjoy.common.model.entity.ElasticsearchMapping;
 import com.ssx.maxwell.kafka.enjoy.service.ElasticsearchMappingService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -26,13 +26,13 @@ public class ElasticsearchMappingController {
     @ApiOperation(value = "查询列表", notes = "查询列表", httpMethod = "GET", tags = "1.0.0")
     @RequestMapping("/list")
     @ResponseBody
-    public List<ElasticsearchMappingEntity> queryList() {
+    public List<ElasticsearchMapping> queryList() {
         return elasticSearchMappingService.queryList();
     }
 
     @ApiOperation(value = "批量插入或修改", notes = "批量插入或修改", httpMethod = "POST", tags = "1.0.0")
     @PostMapping(value = "/insertOrUpdateBatch")
-    public Integer insertOrUpdateBatch(@RequestBody List<ElasticsearchMappingEntity> list) {
+    public Integer insertOrUpdateBatch(@RequestBody List<ElasticsearchMapping> list) {
         list.forEach(t -> {
             t.setGmtCreate(new Date());
             t.setGmtModify(new Date());

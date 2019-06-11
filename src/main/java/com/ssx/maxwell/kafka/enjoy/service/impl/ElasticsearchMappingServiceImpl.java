@@ -1,6 +1,6 @@
 package com.ssx.maxwell.kafka.enjoy.service.impl;
 
-import com.ssx.maxwell.kafka.enjoy.common.model.entity.ElasticsearchMappingEntity;
+import com.ssx.maxwell.kafka.enjoy.common.model.entity.ElasticsearchMapping;
 import com.ssx.maxwell.kafka.enjoy.mapper.ElasticsearchMappingMapper;
 import com.ssx.maxwell.kafka.enjoy.service.ElasticsearchMappingService;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +16,7 @@ import javax.annotation.PostConstruct;
  */
 @Service
 @Slf4j
-public class ElasticsearchMappingServiceImpl extends EnjoyBaseServiceImpl<ElasticsearchMappingEntity, ElasticsearchMappingMapper> implements ElasticsearchMappingService {
+public class ElasticsearchMappingServiceImpl extends EnjoyBaseServiceImpl<ElasticsearchMapping, ElasticsearchMappingMapper> implements ElasticsearchMappingService {
     @Autowired
     private ElasticsearchMappingMapper elasticSearchMappingMapper;
 

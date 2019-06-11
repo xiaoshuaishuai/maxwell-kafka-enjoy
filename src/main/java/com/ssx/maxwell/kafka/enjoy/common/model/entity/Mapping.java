@@ -14,7 +14,7 @@ import java.util.Date;
  */
 @Data
 @Accessors(chain = true)
-public class MappingEntity implements Serializable {
+public class Mapping implements Serializable {
     /**
      * 主键
      */
