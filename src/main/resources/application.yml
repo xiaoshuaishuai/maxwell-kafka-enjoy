@@ -11,6 +11,7 @@ spring:
       session-timeout-ms: 15000
       max-poll-records: 10
       bootstrap-servers: 192.168.225.1:9092
+      auto-offset-reset: earliest
     producer:
       acks: -1
       batch-size: 5
@@ -54,8 +55,11 @@ spring:
     elasticsearch:
       repositories:
         enabled: true
-      cluster-name: elasticsearch
-      cluster-nodes: 192.168.225.1:9300
+#      cluster-name: elasticsearch
+#      cluster-nodes: 192.168.225.1:9300
+      cluster-name: dev-runx-elasticsearch
+      cluster-nodes: dev-es-1.runxdata.com:9300,dev-es-2.runxdata.com:9300
+
 mybatis-plus:
   mapper-locations: classpath:com/ssx/maxwell/kafka/enjoy/mapper/impl/*.xml
   typeAliasesPackage: com.ssx.maxwell.kafka.enjoy.common.model.entity
@@ -75,9 +79,13 @@ maxwell:
       expire-kafka-consumer: true
 #     过期key队列
       expire-topic: redis_expire_topic
+#     缓存重载队列
+      reload-topic: redis_reload_topic
 #     过期key队列消费组
       expire-topic-kafka-group: redis_expire_topic_group
+#     缓存重载队列消费组
+      reload-topic-kafka-group: redis_reload_topic_group
     elasticsearch:
       jvmCache: false
-      kafka-consumer: true
+      kafka-consumer: false
       kafka-group: group_elasticsearch_default

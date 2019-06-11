@@ -52,4 +52,10 @@ public class RedisMapping extends Mapping {
             "字段必须是table里对应的数据库字段,否则无法映射成功")
     private String template;
 
+    /**
+     * 自定义模板对应sql,分割
+     */
+    @ApiModelProperty(value = "自定义模板对应sql,分割")
+    private String templateSql;
+
 }

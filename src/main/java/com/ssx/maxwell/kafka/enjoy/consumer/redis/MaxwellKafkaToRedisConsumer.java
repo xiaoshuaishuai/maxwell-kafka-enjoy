@@ -3,25 +3,23 @@ package com.ssx.maxwell.kafka.enjoy.consumer.redis;
 import com.google.common.base.Strings;
 import com.google.common.cache.Cache;
 import com.google.common.collect.Sets;
+import com.ssx.maxwell.kafka.enjoy.common.model.dto.RedisExpireAndLoadDTO;
 import com.ssx.maxwell.kafka.enjoy.common.model.entity.RedisMapping;
 import com.ssx.maxwell.kafka.enjoy.common.tools.JsonUtils;
 import com.ssx.maxwell.kafka.enjoy.common.tools.PatternUtils;
 import com.ssx.maxwell.kafka.enjoy.common.tools.UnicodeUtils;
 import com.ssx.maxwell.kafka.enjoy.configuration.JvmCache;
+import com.ssx.maxwell.kafka.enjoy.consumer.KafkaHelper;
 import com.ssx.maxwell.kafka.enjoy.enumerate.MaxwellBinlogConstants;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.Acknowledgment;
-import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Component;
-import org.springframework.util.concurrent.ListenableFuture;
 
 import java.io.IOException;
 import java.text.MessageFormat;
@@ -47,10 +45,12 @@ public class MaxwellKafkaToRedisConsumer {
     private boolean redisMappingCacheSwitch;
     @Autowired
     private Cache<String, RedisMapping> redisMappingCache;
-    @Autowired
-    private KafkaTemplate kafkaTemplate;
+
     @Value("${maxwell.enjoy.redis.expire-topic}")
     private String expireRedisTopic;
+
+    @Autowired
+    private KafkaHelper kafkaHelper;
 
     @KafkaListener(topics = "${maxwell.enjoy.kafka-binlog-topic}", groupId = "${maxwell.enjoy.redis.kafka-group}", containerFactory = "manualListenerContainerFactory")
     public void receive(List<ConsumerRecord<String, String>> integerStringConsumerRecords, Acknowledgment acknowledgment) {
@@ -85,7 +85,7 @@ public class MaxwellKafkaToRedisConsumer {
                             if (MaxwellBinlogConstants.REDIS_RULE_0.equals(redisMapping.getRule())) {
                                 return;
                             }
-                            HashSet<String> expireKeySet = Sets.newHashSet();
+                            HashSet<RedisExpireAndLoadDTO> expireKeyList = Sets.newHashSet();
                             String type = (String) map.get("type");
                             if (!Strings.isNullOrEmpty(type)) {
                                 MaxwellBinlogConstants.MaxwellBinlogEnum maxwellBinlogEnum = MaxwellBinlogConstants.MaxwellBinlogEnum.getMaxwellBinlogEnum(type);
@@ -107,14 +107,14 @@ public class MaxwellKafkaToRedisConsumer {
                                                 Integer id = (Integer) dataJson.get("id");
                                                 //处理单表主键缓存
                                                 String redisKey = MessageFormat.format(MaxwellBinlogConstants.RedisCacheKeyTemplateEnum.REDIS_CACHE_KEY_TEMPLATE_ITEM_PKID.getTemplate(), profile, database, table, id);
-                                                expireKeySet.add(redisKey);
+                                                expireKeyList.add(buildRedisExpireDTO(database, table, redisKey));
                                                 log.info(logPrefix + "处理单表主键缓存redisKey={}", redisKey);
 
                                             }
                                             if (ArrayUtils.contains(ruleArr, MaxwellBinlogConstants.REDIS_RULE_2)) {
                                                 //处理全表缓存
                                                 String redisKey = MessageFormat.format(MaxwellBinlogConstants.RedisCacheKeyTemplateEnum.REDIS_CACHE_KEY_TEMPLATE_PREFIX_LIST.getTemplate(), profile, database, table);
-                                                expireKeySet.add(redisKey);
+                                                expireKeyList.add(buildRedisExpireDTO(database, table, redisKey));
                                                 log.info(logPrefix + "处理全表缓存redisKey={}", redisKey);
 
                                             }
@@ -151,7 +151,7 @@ public class MaxwellKafkaToRedisConsumer {
 //                                                        :goods_name:is_del
                                                             String conversionKey = columnStringBuilder.insert(0, redisKey).toString();
                                                             log.info(logPrefix + "处理自定义缓存redisKey={}", conversionKey);
-                                                            expireKeySet.add(conversionKey);
+                                                            expireKeyList.add(buildRedisExpireDTO(database, table, conversionKey));
                                                         }
                                                     }
                                                 }
@@ -160,14 +160,14 @@ public class MaxwellKafkaToRedisConsumer {
                                     }
                                 }
                             }
-                            if(null != expireKeySet && expireKeySet.size() > 0){
-                                ProducerRecord producerRecord = new ProducerRecord(expireRedisTopic, JsonUtils.ObjectToJsonString(expireKeySet));
-                                ListenableFuture<SendResult<String, String>>  sendResultListenableFuture = kafkaTemplate.send(producerRecord);
-                                sendResultListenableFuture.addCallback(result -> log.info(logPrefix + "redis清除缓存key发送MQ成功, result={}", result),
-                                        ex -> {
-                                    log.error(logPrefix + "redis清除缓存key发送MQ失败, 消息内容producerRecord={}, ex={}", producerRecord, ex);
-                                    //todo 2019-6-5 15:04:46 这里考虑降级比如存入DB表中、由定时任务扫表去触发清除动作
-                                });
+                            if (null != expireKeyList && expireKeyList.size() > 0) {
+                                kafkaHelper.sendMQ(expireRedisTopic, expireKeyList
+                                        , result -> log.info(logPrefix + "redis清除缓存key发送MQ成功, result={}", result)
+                                        , ex -> {
+                                            log.error(logPrefix + "redis清除缓存key发送MQ失败, 消息 info={}, ex={}", expireKeyList, ex);
+                                            //todo 2019-6-5 15:04:46 这里考虑降级比如存入DB表中、由定时任务扫表去触发清除动作
+                                        }
+                                );
                             }
                         }
 
@@ -181,5 +181,13 @@ public class MaxwellKafkaToRedisConsumer {
         } catch (Exception e) {
             log.error(logPrefix + "消费异常, e={}", e);
         }
+    }
+
+    private RedisExpireAndLoadDTO buildRedisExpireDTO(String database, String table, String key) {
+        RedisExpireAndLoadDTO redisExpireDTO = new RedisExpireAndLoadDTO();
+        redisExpireDTO.setKey(key);
+        redisExpireDTO.setDbDatabase(database);
+        redisExpireDTO.setDbTable(table);
+        return redisExpireDTO;
     }
 }

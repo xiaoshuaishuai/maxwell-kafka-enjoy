@@ -14,6 +14,7 @@
         <result column="is_enable" property="isEnable"></result>
         <result column="rule" property="rule"></result>
         <result column="template" property="template"></result>
+        <result column="template_sql" property="templateSql"></result>
     </resultMap>
     <sql id="allColumns">
         id,
@@ -22,6 +23,7 @@
         expire,
         rule,
         template,
+        template_sql,
         remark,
         is_enable,
         is_del,
@@ -52,6 +54,7 @@
         expire,
         rule,
         template,
+        template_sql,
         remark,
         is_enable,
         is_del,
@@ -67,6 +70,7 @@
             #{item.expire},
             #{item.rule},
             #{item.template},
+            #{item.templateSql},
             #{item.remark},
             #{item.isEnable},
             #{item.isDel},

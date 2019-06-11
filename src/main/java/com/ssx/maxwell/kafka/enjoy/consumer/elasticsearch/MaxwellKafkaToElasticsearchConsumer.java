@@ -37,6 +37,7 @@ public class MaxwellKafkaToElasticsearchConsumer {
     @KafkaListener(topics = "${maxwell.enjoy.kafka-binlog-topic}", groupId = "${maxwell.enjoy.elasticsearch.kafka-group}", containerFactory = "manualListenerContainerFactory")
     public void receive(List<ConsumerRecord<String, String>> integerStringConsumerRecords, Acknowledgment acknowledgment) {
         log.info(logPrefix + ", integerStringConsumerRecords={}", integerStringConsumerRecords);
+        //todo 加载esmapping配置表 2019-6-11 16:58:47
         try {
             for (ConsumerRecord consumerRecord : integerStringConsumerRecords) {
                 log.info(logPrefix + ", consumerRecord={}", consumerRecord);
