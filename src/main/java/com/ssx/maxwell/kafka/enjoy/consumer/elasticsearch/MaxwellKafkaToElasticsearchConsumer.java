@@ -66,6 +66,12 @@ public class MaxwellKafkaToElasticsearchConsumer {
                             Map dataJson = (Map) map.get("data");
                             Integer id = (Integer) dataJson.get("id");
                             String esId = buildEsId(database, table, id);
+                            try {
+                                elasticSearchMappingRepository.deleteById(esId);
+                            }catch (Exception e){
+                                log.error(logPrefix + "elasticsearch删除数据失败, esId={}, 消息内容consumerRecord={}, ex={}", esId, consumerRecord, e);
+                                //todo 2019-6-11 10:42:35 这里考虑降级比如存入DB表中、由定时任务扫表去触发清除动作
+                            }
                             //todo 2019-6-6 17:11:01 MQ通知重构ES
                             log.info("MQ通知重构ES, id={}", esId);
                         }
