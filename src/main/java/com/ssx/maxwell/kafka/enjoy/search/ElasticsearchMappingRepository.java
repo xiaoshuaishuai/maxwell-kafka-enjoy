@@ -1,6 +1,6 @@
 package com.ssx.maxwell.kafka.enjoy.search;
 
-import com.ssx.maxwell.kafka.enjoy.common.model.query.elasticsearch.ElasticsearchMapping;
+import com.ssx.maxwell.kafka.enjoy.common.model.query.ElasticsearchMapping;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 import org.springframework.stereotype.Component;
 

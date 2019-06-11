@@ -1,6 +1,6 @@
 package com.ssx.maxwell.kafka.enjoy.controller;
 
-import com.ssx.maxwell.kafka.enjoy.common.model.entity.elasticsearch.ElasticsearchMappingEntity;
+import com.ssx.maxwell.kafka.enjoy.common.model.entity.ElasticsearchMappingEntity;
 import com.ssx.maxwell.kafka.enjoy.service.ElasticsearchMappingService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

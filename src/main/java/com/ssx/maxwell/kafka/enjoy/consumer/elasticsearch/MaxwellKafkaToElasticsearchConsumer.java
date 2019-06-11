@@ -1,7 +1,7 @@
 package com.ssx.maxwell.kafka.enjoy.consumer.elasticsearch;
 
 import com.google.common.base.Strings;
-import com.ssx.maxwell.kafka.enjoy.common.model.query.elasticsearch.ElasticsearchMapping;
+import com.ssx.maxwell.kafka.enjoy.common.model.query.ElasticsearchMapping;
 import com.ssx.maxwell.kafka.enjoy.common.tools.JsonUtils;
 import com.ssx.maxwell.kafka.enjoy.configuration.JvmCache;
 import com.ssx.maxwell.kafka.enjoy.enumerate.MaxwellBinlogConstants;

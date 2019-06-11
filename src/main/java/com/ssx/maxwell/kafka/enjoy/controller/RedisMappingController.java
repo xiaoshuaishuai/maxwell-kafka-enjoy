@@ -1,6 +1,6 @@
 package com.ssx.maxwell.kafka.enjoy.controller;
 
-import com.ssx.maxwell.kafka.enjoy.common.model.entity.redis.RedisMappingEntity;
+import com.ssx.maxwell.kafka.enjoy.common.model.entity.RedisMappingEntity;
 import com.ssx.maxwell.kafka.enjoy.service.RedisMappingService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

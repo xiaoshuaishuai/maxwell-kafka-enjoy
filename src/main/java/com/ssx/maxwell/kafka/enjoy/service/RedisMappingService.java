@@ -1,6 +1,6 @@
 package com.ssx.maxwell.kafka.enjoy.service;
 
-import com.ssx.maxwell.kafka.enjoy.common.model.entity.redis.RedisMappingEntity;
+import com.ssx.maxwell.kafka.enjoy.common.model.entity.RedisMappingEntity;
 
 /**
  * @author: shuaishuai.xiao

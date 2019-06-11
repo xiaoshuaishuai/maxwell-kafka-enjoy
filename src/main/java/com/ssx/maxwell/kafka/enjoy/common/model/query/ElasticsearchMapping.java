@@ -1,4 +1,4 @@
-package com.ssx.maxwell.kafka.enjoy.common.model.query.elasticsearch;
+package com.ssx.maxwell.kafka.enjoy.common.model.query;
 
 import lombok.Data;
 import org.springframework.data.elasticsearch.annotations.Document;

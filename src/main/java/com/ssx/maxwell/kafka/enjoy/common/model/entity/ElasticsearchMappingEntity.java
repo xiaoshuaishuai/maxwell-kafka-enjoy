@@ -1,4 +1,4 @@
-package com.ssx.maxwell.kafka.enjoy.common.model.entity.elasticsearch;
+package com.ssx.maxwell.kafka.enjoy.common.model.entity;
 
 import com.ssx.maxwell.kafka.enjoy.common.model.entity.MappingEntity;
 import io.swagger.annotations.ApiModelProperty;

@@ -3,7 +3,7 @@ package com.ssx.maxwell.kafka.enjoy.consumer.redis;
 import com.google.common.base.Strings;
 import com.google.common.cache.Cache;
 import com.google.common.collect.Sets;
-import com.ssx.maxwell.kafka.enjoy.common.model.entity.redis.RedisMappingEntity;
+import com.ssx.maxwell.kafka.enjoy.common.model.entity.RedisMappingEntity;
 import com.ssx.maxwell.kafka.enjoy.common.tools.JsonUtils;
 import com.ssx.maxwell.kafka.enjoy.common.tools.PatternUtils;
 import com.ssx.maxwell.kafka.enjoy.common.tools.UnicodeUtils;

@@ -2,7 +2,7 @@ package com.ssx.maxwell.kafka.enjoy.configuration;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import com.ssx.maxwell.kafka.enjoy.common.model.entity.redis.RedisMappingEntity;
+import com.ssx.maxwell.kafka.enjoy.common.model.entity.RedisMappingEntity;
 import com.ssx.maxwell.kafka.enjoy.mapper.RedisMappingMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

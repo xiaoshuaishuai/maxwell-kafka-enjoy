@@ -1,6 +1,6 @@
 package com.ssx.maxwell.kafka.enjoy.mapper;
 
-import com.ssx.maxwell.kafka.enjoy.common.model.entity.redis.RedisMappingEntity;
+import com.ssx.maxwell.kafka.enjoy.common.model.entity.RedisMappingEntity;
 import org.springframework.stereotype.Component;
 
 /**

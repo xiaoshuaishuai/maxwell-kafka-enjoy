@@ -1,6 +1,6 @@
 package com.ssx.maxwell.kafka.enjoy.mapper;
 
-import com.ssx.maxwell.kafka.enjoy.common.model.entity.elasticsearch.ElasticsearchMappingEntity;
+import com.ssx.maxwell.kafka.enjoy.common.model.entity.ElasticsearchMappingEntity;
 import org.springframework.stereotype.Component;
 
 /**

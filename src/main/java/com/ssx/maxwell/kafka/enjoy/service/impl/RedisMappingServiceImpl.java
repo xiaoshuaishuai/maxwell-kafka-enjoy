@@ -1,6 +1,6 @@
 package com.ssx.maxwell.kafka.enjoy.service.impl;
 
-import com.ssx.maxwell.kafka.enjoy.common.model.entity.redis.RedisMappingEntity;
+import com.ssx.maxwell.kafka.enjoy.common.model.entity.RedisMappingEntity;
 import com.ssx.maxwell.kafka.enjoy.mapper.RedisMappingMapper;
 import com.ssx.maxwell.kafka.enjoy.service.RedisMappingService;
 import lombok.extern.slf4j.Slf4j;
