@@ -1,5 +1,6 @@
 package com.ssx.maxwell.kafka.enjoy.mapper;
 
+import com.ssx.maxwell.kafka.enjoy.common.model.bo.test.SysOrderBO;
 import com.ssx.maxwell.kafka.enjoy.common.model.entity.test.SysOrder;
 import org.springframework.stereotype.Component;
 

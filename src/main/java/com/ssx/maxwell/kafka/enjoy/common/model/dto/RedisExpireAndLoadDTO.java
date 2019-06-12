@@ -1,9 +1,10 @@
 package com.ssx.maxwell.kafka.enjoy.common.model.dto;
 
+import com.google.common.collect.Lists;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import java.util.Date;
+import java.util.List;
 
 /**
  * @author: shuaishuai.xiao
@@ -16,23 +17,20 @@ public class RedisExpireAndLoadDTO {
     /**
      * 过期key
      */
-    private String key;
+    private List<String> keyList = Lists.newArrayList();
 
     /**
      * 数据库
      */
-    @EqualsAndHashCode.Include
     private String dbDatabase;
     /**
      * 表
      */
-    @EqualsAndHashCode.Include
     private String dbTable;
-
     /**
-     * 创建时间
+     * 目标表的主键id
      */
-    private Date gmtCreate;
+    private Long dbPid;
 
 
 }

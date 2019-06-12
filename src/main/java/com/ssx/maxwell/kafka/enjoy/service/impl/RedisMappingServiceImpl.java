@@ -1,5 +1,6 @@
 package com.ssx.maxwell.kafka.enjoy.service.impl;
 
+import com.ssx.maxwell.kafka.enjoy.common.model.bo.RedisMappingBO;
 import com.ssx.maxwell.kafka.enjoy.common.model.entity.RedisMapping;
 import com.ssx.maxwell.kafka.enjoy.mapper.RedisMappingMapper;
 import com.ssx.maxwell.kafka.enjoy.service.RedisMappingService;
@@ -23,5 +24,10 @@ public class RedisMappingServiceImpl extends EnjoyBaseServiceImpl<RedisMapping, 
     @PostConstruct
     public void init() {
         super.mapper = redisMappingMapper;
+    }
+
+    @Override
+    public RedisMapping queryOneByDatabaseAndTable(RedisMappingBO redisMappingBO) {
+        return redisMappingMapper.queryOneByDatabaseAndTable(redisMappingBO);
     }
 }

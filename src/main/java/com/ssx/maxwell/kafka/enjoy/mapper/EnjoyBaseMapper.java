@@ -11,5 +11,6 @@ import java.util.List;
  */
 public interface EnjoyBaseMapper<T> extends BaseMapper<T> {
     List<T> queryList();
+
     Integer insertOrUpdateBatch(List<T> list);
 }

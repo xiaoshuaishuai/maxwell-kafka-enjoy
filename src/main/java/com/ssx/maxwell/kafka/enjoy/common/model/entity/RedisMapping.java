@@ -54,6 +54,7 @@ public class RedisMapping extends Mapping {
 
     /**
      * 自定义模板对应sql,分割
+     * 与template一一对应
      */
     @ApiModelProperty(value = "自定义模板对应sql,分割")
     private String templateSql;

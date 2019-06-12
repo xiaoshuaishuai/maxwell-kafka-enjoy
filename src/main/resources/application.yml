@@ -55,11 +55,8 @@ spring:
     elasticsearch:
       repositories:
         enabled: true
-#      cluster-name: elasticsearch
-#      cluster-nodes: 192.168.225.1:9300
-      cluster-name: dev-runx-elasticsearch
-      cluster-nodes: dev-es-1.runxdata.com:9300,dev-es-2.runxdata.com:9300
-
+      cluster-name: elasticsearch
+      cluster-nodes: 192.168.225.1:9300
 mybatis-plus:
   mapper-locations: classpath:com/ssx/maxwell/kafka/enjoy/mapper/impl/*.xml
   typeAliasesPackage: com.ssx.maxwell.kafka.enjoy.common.model.entity
@@ -89,3 +86,6 @@ maxwell:
       jvmCache: false
       kafka-consumer: false
       kafka-group: group_elasticsearch_default
+logging:
+  level:
+    root: info

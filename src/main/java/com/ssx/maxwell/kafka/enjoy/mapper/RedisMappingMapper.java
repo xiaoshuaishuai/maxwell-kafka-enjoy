@@ -1,5 +1,6 @@
 package com.ssx.maxwell.kafka.enjoy.mapper;
 
+import com.ssx.maxwell.kafka.enjoy.common.model.bo.RedisMappingBO;
 import com.ssx.maxwell.kafka.enjoy.common.model.entity.RedisMapping;
 import org.springframework.stereotype.Component;
 
@@ -10,5 +11,5 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public interface RedisMappingMapper extends EnjoyBaseMapper<RedisMapping> {
-
+    RedisMapping queryOneByDatabaseAndTable(RedisMappingBO redisMappingBO);
 }

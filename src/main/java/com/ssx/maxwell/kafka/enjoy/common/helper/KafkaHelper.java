@@ -1,4 +1,4 @@
-package com.ssx.maxwell.kafka.enjoy.consumer;
+package com.ssx.maxwell.kafka.enjoy.common.helper;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.ssx.maxwell.kafka.enjoy.common.tools.JsonUtils;
@@ -25,6 +25,13 @@ public class KafkaHelper {
 
     public ListenableFuture<SendResult<String, String>> sendMQ(String topic, Object object, SuccessCallback successCallback, FailureCallback failureCallback) throws JsonProcessingException {
         ProducerRecord producerRecord = new ProducerRecord(topic, JsonUtils.ObjectToJsonString(object));
+        log.info("kafka helper send mq , mq ={}", producerRecord);
+        ListenableFuture<SendResult<String, String>> sendResultListenableFuture = kafkaTemplate.send(producerRecord);
+        sendResultListenableFuture.addCallback(successCallback, failureCallback);
+        return sendResultListenableFuture;
+    }
+    public ListenableFuture<SendResult<String, String>> sendMQ(String topic, String value, SuccessCallback successCallback, FailureCallback failureCallback) throws JsonProcessingException {
+        ProducerRecord producerRecord = new ProducerRecord(topic, value);
         log.info("kafka helper send mq , mq ={}", producerRecord);
         ListenableFuture<SendResult<String, String>> sendResultListenableFuture = kafkaTemplate.send(producerRecord);
         sendResultListenableFuture.addCallback(successCallback, failureCallback);

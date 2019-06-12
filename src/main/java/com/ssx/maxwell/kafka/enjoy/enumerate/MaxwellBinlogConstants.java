@@ -33,10 +33,10 @@ public final class MaxwellBinlogConstants {
         UPDATE("update", MaxwellBinlogConstants.REDIS_CLEAR_TABLE_ALL_AND_ROW_CACHE),
         DELETE("delete", MaxwellBinlogConstants.REDIS_CLEAR_TABLE_ALL_AND_ROW_CACHE),
         BOOTSTRAP_START("bootstrap-start", MaxwellBinlogConstants.REDIS_CLEAR_WAITING_CACHE),
-        BOOTSTRAP_INSERT("bootstrap-insert", MaxwellBinlogConstants.REDIS_CLEAR_WAITING_CACHE),
-        BOOTSTRAP_UPDATE("bootstrap-update", MaxwellBinlogConstants.REDIS_CLEAR_WAITING_CACHE),
-        BOOTSTRAP_DELETE("bootstrap-delete", MaxwellBinlogConstants.REDIS_CLEAR_WAITING_CACHE),
-        BOOTSTRAP_COMPLETE("bootstrap-complete", MaxwellBinlogConstants.REDIS_CLEAR_TABLE_ALL_AND_ROW_CACHE),
+        BOOTSTRAP_INSERT("bootstrap-insert", MaxwellBinlogConstants.REDIS_CLEAR_TABLE_ALL_AND_ROW_CACHE),
+        BOOTSTRAP_UPDATE("bootstrap-update", MaxwellBinlogConstants.REDIS_CLEAR_TABLE_ALL_AND_ROW_CACHE),
+        BOOTSTRAP_DELETE("bootstrap-delete", MaxwellBinlogConstants.REDIS_CLEAR_TABLE_ALL_AND_ROW_CACHE),
+        BOOTSTRAP_COMPLETE("bootstrap-complete", MaxwellBinlogConstants.REDIS_CLEAR_WAITING_CACHE),
         ;
         @Setter
         @Getter
@@ -102,6 +102,42 @@ public final class MaxwellBinlogConstants {
         private String desc;
 
         private RedisCacheKeyTemplateEnum(String template, String desc) {
+            this.template = template;
+            this.desc = desc;
+        }
+
+    }
+
+    /**
+     * 按照主键id查询
+     */
+    public static final String SQL_PRIMARY_ID = "SELECT * FROM {0} WHERE ID = {1};";
+    /**
+     * //fixme 全表查询缓存- 大表慎用
+     * 全表查询- 大表慎用
+     */
+    public static final String SQL_ALL = "SELECT * FROM {0} LIMIT 100000 ORDER BY GMT_CREATE ASC;";
+
+    public enum RedisRunSqlTemplateEnum {
+        /**
+         * {0} dbTable
+         * {1} id
+         */
+        SQL_PRIMARY_ID(MaxwellBinlogConstants.SQL_PRIMARY_ID, "主键ID查询SQL"),
+        /**
+         * {0} dbTable
+         */
+        SQL_ALL(MaxwellBinlogConstants.SQL_ALL, "全表查询"),
+        ;
+        @Setter
+        @Getter
+        private String template;
+
+        @Setter
+        @Getter
+        private String desc;
+
+        private RedisRunSqlTemplateEnum(String template, String desc) {
             this.template = template;
             this.desc = desc;
         }

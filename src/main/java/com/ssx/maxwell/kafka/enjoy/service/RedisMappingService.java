@@ -1,5 +1,6 @@
 package com.ssx.maxwell.kafka.enjoy.service;
 
+import com.ssx.maxwell.kafka.enjoy.common.model.bo.RedisMappingBO;
 import com.ssx.maxwell.kafka.enjoy.common.model.entity.RedisMapping;
 
 /**
@@ -9,5 +10,5 @@ import com.ssx.maxwell.kafka.enjoy.common.model.entity.RedisMapping;
  */
 public interface RedisMappingService extends EnjoyBaseService<RedisMapping>{
 
-
+    RedisMapping queryOneByDatabaseAndTable(RedisMappingBO redisMappingBO);
 }

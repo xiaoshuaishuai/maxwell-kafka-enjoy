@@ -1,6 +1,7 @@
 package com.ssx.maxwell.kafka.enjoy.consumer.redis;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.ssx.maxwell.kafka.enjoy.biz.RedisReloadBiz;
 import com.ssx.maxwell.kafka.enjoy.common.model.dto.RedisExpireAndLoadDTO;
 import com.ssx.maxwell.kafka.enjoy.common.tools.JsonUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -26,20 +28,24 @@ public class RedisReloadConsumer {
     private static final String logPrefix = "maxwell--<redis重载缓存>--消费消息-->";
     @Autowired
     private StringRedisTemplate customerStringRedisTemplate;
+    @Autowired
+    private RedisReloadBiz redisReloadBiz;
 
-    @KafkaListener(topics = "${maxwell.enjoy.redis.reload-topic}", groupId = "${maxwell.enjoy.redis.reload-topic-kafka-group}", containerFactory = "autoListenerContainerFactory")
-    public void receive(List<ConsumerRecord<String, String>> integerStringConsumerRecords) {
+
+    //    @KafkaListener(topics = "${maxwell.enjoy.redis.reload-topic}", groupId = "${maxwell.enjoy.redis.reload-topic-kafka-group}", containerFactory = "autoListenerContainerFactory")
+    @KafkaListener(topics = "${maxwell.enjoy.redis.reload-topic}", groupId = "${maxwell.enjoy.redis.reload-topic-kafka-group}", containerFactory = "manualListenerContainerFactory")
+    public void receive(List<ConsumerRecord<String, String>> integerStringConsumerRecords, Acknowledgment acknowledgment) {
         log.info(logPrefix + ", integerStringConsumerRecords={}", integerStringConsumerRecords);
         try {
             for (ConsumerRecord<String, String> consumerRecord : integerStringConsumerRecords) {
-                String keys = consumerRecord.value();
-                List<RedisExpireAndLoadDTO> redisExpireDTOS = JsonUtils.getMapper().readValue(keys, new TypeReference<List<RedisExpireAndLoadDTO>>() {
-                });
-                if (null != redisExpireDTOS && redisExpireDTOS.size() > 0) {
-                    log.info(logPrefix + "重载缓存list={}", redisExpireDTOS);
-                    //todo 加载缓存至redis
-                }
+                String value = consumerRecord.value();
+                RedisExpireAndLoadDTO redisExpireDTO =
+                        JsonUtils.getMapper().readValue(value, new TypeReference<RedisExpireAndLoadDTO>() {
+                        });
+                log.info(logPrefix + "redisExpireDTO={}", redisExpireDTO);
+                redisReloadBiz.reloadCache(redisExpireDTO.getDbDatabase(), redisExpireDTO.getDbTable(), redisExpireDTO.getDbPid());
             }
+            acknowledgment.acknowledge();
         } catch (Exception e) {
             log.error(logPrefix + "消费异常, e={}", e);
         }
