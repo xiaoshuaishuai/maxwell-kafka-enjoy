@@ -1,0 +1,2 @@
+./maxwell --config=../config.properties --producer=kafka --kafka.bootstrap.servers=192.168.225.1:9092 --kafka_topic=maxwell
+./redis-server ../redis.conf
