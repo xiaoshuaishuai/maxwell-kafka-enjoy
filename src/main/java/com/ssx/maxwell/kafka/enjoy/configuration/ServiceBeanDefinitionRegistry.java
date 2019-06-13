@@ -1,18 +1,13 @@
 package com.ssx.maxwell.kafka.enjoy.configuration;
 
-import com.google.common.collect.Lists;
+import com.ssx.maxwell.kafka.enjoy.common.tools.ApplicationYamlUtils;
 import com.ssx.maxwell.kafka.enjoy.common.tools.DynGenerateClassUtils;
-import com.ssx.maxwell.kafka.enjoy.common.tools.JsonUtils;
-import lombok.Getter;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.BeanDefinitionRegistryPostProcessor;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -26,12 +21,16 @@ import static org.springframework.beans.factory.support.AbstractBeanDefinition.A
  */
 @Component
 @Slf4j
-//@ConditionalOnBean(value = {DynamicDataSourceAutoConfiguration.class, DynamicDataSourceProperties.class})
-public class ServiceBeanDefinitionRegistry implements BeanDefinitionRegistryPostProcessor, ApplicationContextAware {
+public class ServiceBeanDefinitionRegistry implements BeanDefinitionRegistryPostProcessor {
 
-    private ApplicationContext applicationContext;
-
-    List<DynamicDsInfo> dynamicDsInfos = Lists.newArrayList();
+    /**
+     * 目标类路径
+     */
+    public static final String DIST_PKG = "com.ssx.maxwell.kafka.enjoy.biz";
+    /**
+     * class 后缀
+     */
+    public static final String CLASS_SUFFIX = "BizImpl";
 
 //    @Autowired
 //    private DynamicDataSourceProperties dynamicDataSourceProperties;
@@ -61,49 +60,35 @@ public class ServiceBeanDefinitionRegistry implements BeanDefinitionRegistryPost
 //        }
 
         try {
-            //todo dskey 2019-6-13 19:09:56动态读取DynamicDataSourceProperties
-            Class master = DynGenerateClassUtils.createBizClass("com.ssx.maxwell.kafka.enjoy.biz", "MaxwellDatabaseBizImpl", "master");
-            BeanDefinitionBuilder beanDefinitionBuilder = BeanDefinitionBuilder.rootBeanDefinition(master);
-            beanDefinitionBuilder.addPropertyReference("jdbcTemplate", "jdbcTemplate");
-            beanDefinitionBuilder.setAutowireMode(AUTOWIRE_BY_NAME);
-            beanDefinitionRegistry.registerBeanDefinition("MaxwellDatabaseBizImpl", beanDefinitionBuilder.getBeanDefinition());
+            List<DynamicDsInfo> dbKeyLists = ApplicationYamlUtils.readDynamicConfig();
+            if (null == dbKeyLists || dbKeyLists.isEmpty()) {
+                log.warn("动态数据源配置为空=========");
+                return;
+            }
+            for (DynamicDsInfo dynamicDsInfo : dbKeyLists) {
+                //todo dskey 2019-6-13 19:09:56动态读取DynamicDataSourceProperties
+                log.info("动态加载bean数据源配置信息, dynamicDsInfo={}", dynamicDsInfo);
+                Class bizClass = DynGenerateClassUtils.createBizClass(DIST_PKG, dynamicDsInfo.getBizBeanName(), dynamicDsInfo.getDbKey());
+                BeanDefinitionBuilder beanDefinitionBuilder = BeanDefinitionBuilder.rootBeanDefinition(bizClass);
+                beanDefinitionBuilder.addPropertyReference("jdbcTemplate", "jdbcTemplate");
+                beanDefinitionBuilder.setAutowireMode(AUTOWIRE_BY_NAME);
+                beanDefinitionRegistry.registerBeanDefinition(dynamicDsInfo.getBizBeanName(), beanDefinitionBuilder.getBeanDefinition());
+/*
+                Class businessTestDatabaseBizImpl = DynGenerateClassUtils.createBizClass("com.ssx.maxwell.kafka.enjoy.biz", "BusinessTestDatabaseBizImpl", "business_test");
+                BeanDefinitionBuilder beanDefinitionBuilder2 = BeanDefinitionBuilder.rootBeanDefinition(businessTestDatabaseBizImpl);
+                beanDefinitionBuilder2.addPropertyReference("jdbcTemplate", "jdbcTemplate");
+                beanDefinitionBuilder2.setAutowireMode(AUTOWIRE_BY_NAME);
+                beanDefinitionRegistry.registerBeanDefinition("BusinessTestDatabaseBizImpl", beanDefinitionBuilder2.getBeanDefinition());*/
+            }
 
-            Class businessTestDatabaseBizImpl = DynGenerateClassUtils.createBizClass("com.ssx.maxwell.kafka.enjoy.biz", "BusinessTestDatabaseBizImpl", "business_test");
-            BeanDefinitionBuilder beanDefinitionBuilder2 = BeanDefinitionBuilder.rootBeanDefinition(businessTestDatabaseBizImpl);
-            beanDefinitionBuilder2.addPropertyReference("jdbcTemplate", "jdbcTemplate");
-            beanDefinitionBuilder2.setAutowireMode(AUTOWIRE_BY_NAME);
-            beanDefinitionRegistry.registerBeanDefinition("BusinessTestDatabaseBizImpl", beanDefinitionBuilder2.getBeanDefinition());
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("动态字节码生成DB层查询bean异常, e={}", e);
         }
 
     }
 
     @Override
     public void postProcessBeanFactory(ConfigurableListableBeanFactory configurableListableBeanFactory) throws BeansException {
-
-    }
-
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.applicationContext = applicationContext;
-    }
-
-    @Setter
-    @Getter
-    static class DynamicDsInfo {
-
-        private String dsKey;
-        private String bizBeanName;
-
-        public DynamicDsInfo(String dsKey) {
-            this.dsKey = dsKey;
-            this.bizBeanName = getBizBeanName(dsKey);
-        }
-
-        public String getBizBeanName(String dsKey) {
-            return JsonUtils.lineToHump(dsKey) + "Biz";
-        }
 
     }
 }
