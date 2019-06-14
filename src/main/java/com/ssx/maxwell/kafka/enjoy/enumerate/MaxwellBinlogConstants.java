@@ -28,6 +28,12 @@ public final class MaxwellBinlogConstants {
     //自定义缓存
     public static final String REDIS_RULE_3 = "3";
 
+    /**
+     * 自定义缓存空值填充
+     */
+    public static final String REDIS_VAL_NULL_MAGIC = "N";
+
+
     public enum MaxwellBinlogEnum {
         INSERT("insert", MaxwellBinlogConstants.REDIS_CLEAR_TABLE_ALL_AND_ROW_CACHE),
         UPDATE("update", MaxwellBinlogConstants.REDIS_CLEAR_TABLE_ALL_AND_ROW_CACHE),
@@ -87,7 +93,7 @@ public final class MaxwellBinlogConstants {
          * {1} database
          * {2} table
          * {3} id
-         * 默认存储单对象格式
+         * 默认存储list<对象>格式
          */
         REDIS_CACHE_KEY_TEMPLATE_ITEM_PK_ID(MaxwellBinlogConstants.REDIS_CACHE_KEY_TEMPLATE_ITEM_PK_ID, "REDIS单条主键缓存"),
         /**

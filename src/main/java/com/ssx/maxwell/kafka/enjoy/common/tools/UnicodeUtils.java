@@ -8,7 +8,7 @@ package com.ssx.maxwell.kafka.enjoy.common.tools;
 public class UnicodeUtils {
 
     public static void main(String[] args) {
-        String name = "你好哈哈哈哈哈哈哈哈哈哈 哈哈哈哈哈";
+        String name = "马甲";
         System.out.println(cnToUnicode(name));
         System.out.println(unicodeToCn(cnToUnicode(name)));
     }

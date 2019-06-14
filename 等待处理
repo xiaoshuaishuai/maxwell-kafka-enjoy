@@ -1,0 +1,16 @@
+
+
+待处理： 2019-6-14 17:59:59
+
+1.如果开启了自定义缓存，自定义缓存字段对应值进行了修改,需要清掉老的缓存。
+
+eg：
+key = dev:test:sys_order:3:custom:order_code:is_del
+
+当前redis缓存： key=dev:test:sys_order:3:custom:code1:0
+
+如果进行数据修改、将code1修改为code2， 那么会生成 key=dev:test:sys_order:3:custom:code2:0 缓存，
+
+而老的key=dev:test:sys_order:3:custom:code1:0还存在redis中
+
+2.redis缓存过期时间配置、 现在默认 1,2,3 规则缓存默认使用了同一个过期时间、可能具体使用业务中过期时间的需求不一样、

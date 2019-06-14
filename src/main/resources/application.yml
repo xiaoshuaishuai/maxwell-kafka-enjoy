@@ -21,13 +21,13 @@ spring:
       datasource:
         maxwell:
           driver-class-name: com.mysql.jdbc.Driver
-          url: jdbc:mysql://192.168.225.1:3306/maxwell?useUnicode=true&characterEncoding=UTF8&useSSL=false&allowMultiQueries=true&autoReconnect=true&failOverReadOnly=false&maxReconnects=10
+          url: jdbc:mysql://192.168.225.1:3306/maxwell?useUnicode=true&characterEncoding=UTF8&useSSL=false&allowMultiQueries=true&autoReconnect=true&failOverReadOnly=false&maxReconnects=10&tinyInt1isBit=false
           username: root
           password: root
           type: com.zaxxer.hikari.HikariDataSource
         business_test:
           driver-class-name: com.mysql.jdbc.Driver
-          url: jdbc:mysql://192.168.225.1:3306/test?useUnicode=true&characterEncoding=UTF8&useSSL=false&allowMultiQueries=true&autoReconnect=true&failOverReadOnly=false&maxReconnects=10
+          url: jdbc:mysql://192.168.225.1:3306/test?useUnicode=true&characterEncoding=UTF8&useSSL=false&allowMultiQueries=true&autoReconnect=true&failOverReadOnly=false&maxReconnects=10&tinyInt1isBit=false
           username: root
           password: root
           type: com.zaxxer.hikari.HikariDataSource
