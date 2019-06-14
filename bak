@@ -75,6 +75,12 @@ metrics_slf4j_interval=60
 http_port=8222
 http_path_prefix=/maxwell
 
+maxwell 全量数据引导
+ ./maxwell-bootstrap --config=../config.properties --host 192.168.225.1 --port 3306  --user root --password root --database test --table sys_order --log_level debug --client_id maxwell
+ or
+./maxwell-bootstrap --config=../config.properties --database test --table sys_order --where "gmt_create >= '2017-01-07 00:00:00'" --log_level info
+
+
 5.启动redis
 ./redis-server ../redis.conf
 
