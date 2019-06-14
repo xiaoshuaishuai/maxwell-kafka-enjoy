@@ -97,6 +97,9 @@ public class MaxwellKafkaToRedisConsumer {
                                     log.info(logPrefix + "监听到bootstrap操作, message={}", message);
                                     return;
                                 }
+
+                                //todo 监听 type=update  old{}字段如果包含在自定义缓存模板里面, 触发该old缓存清除 2019-6-14 18:13:47
+
                                 if (MaxwellBinlogConstants.REDIS_CLEAR_TABLE_ALL_AND_ROW_CACHE.equals(maxwellBinlogEnum.getOperate())) {
                                     log.info(logPrefix + "监听到清除REDIS全表缓存&单条缓存&自定义缓存(如果有)");
                                     if (!Strings.isNullOrEmpty(rule) && !MaxwellBinlogConstants.REDIS_RULE_0.equals(rule)) {
