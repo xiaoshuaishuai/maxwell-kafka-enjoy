@@ -64,10 +64,22 @@ public final class MaxwellBinlogConstants {
 
     }
 
+    /**
+     * 环境+database+table
+     */
     public static final String REDIS_CACHE_KEY_TEMPLATE_PREFIX = "{0}:{1}:{2}:";
-    public static final String REDIS_CACHE_KEY_TEMPLATE_ITEM_PKID = REDIS_CACHE_KEY_TEMPLATE_PREFIX + "item:{3}";
-    public static final String REDIS_CACHE_KEY_TEMPLATE_PREFIX_LIST = REDIS_CACHE_KEY_TEMPLATE_PREFIX + "list";
-    public static final String REDIS_CACHE_KEY_TEMPLATE_PREFIX_CUSTOM = REDIS_CACHE_KEY_TEMPLATE_PREFIX + "custom";
+    /**
+     * 环境+database+table+1+item+主键
+     */
+    public static final String REDIS_CACHE_KEY_TEMPLATE_ITEM_PK_ID = REDIS_CACHE_KEY_TEMPLATE_PREFIX + REDIS_RULE_1 + ":item:{3}";
+    /**
+     * 环境+database+table+2+list
+     */
+    public static final String REDIS_CACHE_KEY_TEMPLATE_PREFIX_LIST = REDIS_CACHE_KEY_TEMPLATE_PREFIX + REDIS_RULE_2 + ":list";
+    /**
+     * 环境+database+table+3+自定义+custom
+     */
+    public static final String REDIS_CACHE_KEY_TEMPLATE_PREFIX_CUSTOM = REDIS_CACHE_KEY_TEMPLATE_PREFIX + REDIS_RULE_3 + ":custom";
 
     public enum RedisCacheKeyTemplateEnum {
         /**
@@ -77,7 +89,7 @@ public final class MaxwellBinlogConstants {
          * {3} id
          * 默认存储单对象格式
          */
-        REDIS_CACHE_KEY_TEMPLATE_ITEM_PKID(MaxwellBinlogConstants.REDIS_CACHE_KEY_TEMPLATE_ITEM_PKID, "REDIS单条主键缓存"),
+        REDIS_CACHE_KEY_TEMPLATE_ITEM_PK_ID(MaxwellBinlogConstants.REDIS_CACHE_KEY_TEMPLATE_ITEM_PK_ID, "REDIS单条主键缓存"),
         /**
          * {0} 环境
          * {1} database
@@ -113,7 +125,7 @@ public final class MaxwellBinlogConstants {
      */
     public static final String SQL_PRIMARY_ID = "SELECT * FROM {0} WHERE ID = {1}";
     /**
-     * //fixme 全表查询缓存- 大表慎用
+     * //fixme 全表查询缓存- 大表慎用  --大表不建议开启全表缓存-- 没意义  后面考虑支持分页缓存
      * 全表查询- 大表慎用
      */
     public static final String SQL_ALL = "SELECT * FROM {0} ORDER BY GMT_CREATE ASC LIMIT 100000";

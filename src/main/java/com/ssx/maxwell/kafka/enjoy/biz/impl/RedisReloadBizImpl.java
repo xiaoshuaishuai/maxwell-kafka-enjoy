@@ -65,7 +65,7 @@ public class RedisReloadBizImpl implements RedisReloadBiz {
                         if (ArrayUtils.contains(ruleArr, MaxwellBinlogConstants.REDIS_RULE_1)) {
                             //单表主键缓存
                             String jdbcSql = MessageFormat.format(MaxwellBinlogConstants.RedisRunSqlTemplateEnum.SQL_PRIMARY_ID.getTemplate(), dbTable, dbPid);
-                            String redisKey = MessageFormat.format(MaxwellBinlogConstants.RedisCacheKeyTemplateEnum.REDIS_CACHE_KEY_TEMPLATE_ITEM_PKID.getTemplate(), profile, dbDatabase, dbTable, dbPid);
+                            String redisKey = MessageFormat.format(MaxwellBinlogConstants.RedisCacheKeyTemplateEnum.REDIS_CACHE_KEY_TEMPLATE_ITEM_PK_ID.getTemplate(), profile, dbDatabase, dbTable, dbPid);
                             log.info("sql= {} , key= {}", jdbcSql, redisKey);
                             //todo 2019-6-12 17:47:49 动态执行sql语句并将结果集放入缓存
                             executeSql(loopGetDynamicDsInfo(dbDatabase), jdbcSql, redisKey, redisMapping);

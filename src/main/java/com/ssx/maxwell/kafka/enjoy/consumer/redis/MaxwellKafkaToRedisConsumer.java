@@ -107,7 +107,7 @@ public class MaxwellKafkaToRedisConsumer {
                                             redisExpireDTO.setDbPid(Long.valueOf(id));
                                             if (ArrayUtils.contains(ruleArr, MaxwellBinlogConstants.REDIS_RULE_1)) {
                                                 //处理单表主键缓存
-                                                String redisKey = MessageFormat.format(MaxwellBinlogConstants.RedisCacheKeyTemplateEnum.REDIS_CACHE_KEY_TEMPLATE_ITEM_PKID.getTemplate(), profile, database, table, id);
+                                                String redisKey = MessageFormat.format(MaxwellBinlogConstants.RedisCacheKeyTemplateEnum.REDIS_CACHE_KEY_TEMPLATE_ITEM_PK_ID.getTemplate(), profile, database, table, id);
                                                 redisExpireDTO.getKeyList().add(redisKey);
                                                 log.info(logPrefix + "处理单表主键缓存redisKey={}", redisKey);
 
