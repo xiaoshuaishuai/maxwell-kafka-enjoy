@@ -18,7 +18,7 @@ import java.util.Set;
  */
 @Slf4j
 public class ApplicationYamlUtils {
-    private static final String[] DB_KEY_ARRAY = {"master", "business_"};
+    private static final String[] DB_KEY_ARRAY = {"maxwell", "business_"};
 
     /**
      * 查询动态数据源db_key
@@ -33,7 +33,7 @@ public class ApplicationYamlUtils {
             URL url = ApplicationYamlUtils.class.getClassLoader().getResource("application.yml");
             if (url != null) {
                 Map map = yaml.load(new FileInputStream(url.getFile()));
-                System.out.println(map);
+                log.info("读取application.yml=={}", map);
                 Map map_spring = (Map) map.get("spring");
                 Map map_datasource = (Map) map_spring.get("datasource");
                 Map map_dynamic = (Map) map_datasource.get("dynamic");

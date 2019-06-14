@@ -3,6 +3,7 @@ package com.ssx.maxwell.kafka.enjoy.configuration;
 import com.ssx.maxwell.kafka.enjoy.common.tools.JsonUtils;
 import lombok.Data;
 import lombok.experimental.Accessors;
+
 /**
  * @author: shuaishuai.xiao
  * @date: 2019-6-13 22:18:09
@@ -32,7 +33,11 @@ public class DynamicDsInfo {
     public DynamicDsInfo(String dbKey) {
         this.dbKey = dbKey;
         this.bizBeanName = getBizBeanName(dbKey);
-        this.database = dbKey.substring(9);
+        if (!"maxwell".equals(dbKey) && dbKey.startsWith("business_")) {
+            this.database = dbKey.substring(9);
+        } else {
+            this.database = dbKey;
+        }
         this.cls = ServiceBeanDefinitionRegistry.DIST_PKG + "." + bizBeanName;
     }
 

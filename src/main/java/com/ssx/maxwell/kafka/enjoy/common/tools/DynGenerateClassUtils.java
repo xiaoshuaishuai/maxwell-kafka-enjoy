@@ -4,17 +4,20 @@ import javassist.*;
 import javassist.bytecode.AnnotationsAttribute;
 import javassist.bytecode.ClassFile;
 import javassist.bytecode.ConstPool;
-import javassist.bytecode.FieldInfo;
 import javassist.bytecode.annotation.Annotation;
 import javassist.bytecode.annotation.StringMemberValue;
-import org.springframework.jdbc.core.JdbcTemplate;
 
 /**
  * @author: shuaishuai.xiao
  * @date: 2019/6/13 16:18
- * @description: no
+ * @description: 动态生成BIZ类
  */
 public class DynGenerateClassUtils {
+
+    /**
+     * BIZ 执行sql的方法名
+     */
+    public static final String BIZ_DEFAULT_METHOD_NAME = "queryForList";
 
     public static Class createBizClass(String packageName, String clsName, String dsKey) throws Exception {
         ClassPool classPool = ClassPool.getDefault();
@@ -36,7 +39,7 @@ public class DynGenerateClassUtils {
         CtField field = new CtField(jdbcTemplateClass, fieldName, ctClass);
         field.setModifiers(Modifier.PUBLIC);
         ctClass.addField(field);
-        FieldInfo fieldInfo = field.getFieldInfo();
+//        FieldInfo fieldInfo = field.getFieldInfo();
         // set field annotation
 //        AnnotationsAttribute fieldAttr = new AnnotationsAttribute(constpool, AnnotationsAttribute.visibleTag);
 //        Annotation setter = new Annotation("lombok.Setter", constpool);
@@ -46,9 +49,9 @@ public class DynGenerateClassUtils {
 //        fieldInfo.addAttribute(fieldAttr);
 
         // add method queryForList(String sql)
-        CtMethod ctMethod = new CtMethod(listClass, "queryForList", new CtClass[]{ctClassString}, ctClass);
+        CtMethod ctMethod = new CtMethod(listClass, BIZ_DEFAULT_METHOD_NAME, new CtClass[]{ctClassString}, ctClass);
         ctMethod.setModifiers(java.lang.reflect.Modifier.PUBLIC);
-        ctMethod.setBody("{return   " + fieldName + ".queryForList($1);}");
+        ctMethod.setBody("{return   " + fieldName + "." + BIZ_DEFAULT_METHOD_NAME + "($1);}");
         ctClass.addMethod(ctMethod);
 
         CtMethod setJdbcTemplateMethod = new CtMethod(CtClass.voidType, "setJdbcTemplate", new CtClass[]{jdbcTemplateClass}, ctClass);
@@ -72,7 +75,8 @@ public class DynGenerateClassUtils {
 //
 //        System.out.println(method1.invoke(constructor.newInstance(), "hhhhhhhhhhhhhhhh"));
 //        ctClass.debugWriteFile("./src/main/java");
-        ctClass.writeFile("./src/main/java");
+//        调试打开
+//        ctClass.writeFile("./src/main/java");
         return ctClass.toClass();
     }
 

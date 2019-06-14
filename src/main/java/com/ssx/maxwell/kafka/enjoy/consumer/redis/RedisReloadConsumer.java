@@ -8,7 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.stereotype.Component;
@@ -26,8 +25,6 @@ import java.util.List;
 public class RedisReloadConsumer {
 
     private static final String logPrefix = "maxwell--<redis重载缓存>--消费消息-->";
-    @Autowired
-    private StringRedisTemplate customerStringRedisTemplate;
     @Autowired
     private RedisReloadBiz redisReloadBiz;
 

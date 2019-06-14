@@ -10,6 +10,7 @@ import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.BeanDefinitionRegistryPostProcessor;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.springframework.beans.factory.support.AbstractBeanDefinition.AUTOWIRE_BY_NAME;
@@ -32,8 +33,7 @@ public class ServiceBeanDefinitionRegistry implements BeanDefinitionRegistryPost
      */
     public static final String CLASS_SUFFIX = "BizImpl";
 
-//    @Autowired
-//    private DynamicDataSourceProperties dynamicDataSourceProperties;
+    public static List<DynamicDsInfo> DYNAMICDSINFO_LIST;
 
     @Override
     public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry beanDefinitionRegistry) throws BeansException {
@@ -65,6 +65,9 @@ public class ServiceBeanDefinitionRegistry implements BeanDefinitionRegistryPost
                 log.warn("动态数据源配置为空=========");
                 return;
             }
+            DYNAMICDSINFO_LIST = new ArrayList<>(dbKeyLists);
+//            [2019-06-14 11:13:10:801][maxwell-kafka-enjoy][INFO ] 10616 [com.ssx.maxwell.kafka.enjoy.configuration.ServiceBeanDefinitionRegistry.postProcessBeanDefinitionRegistry](70) : -- 动态加载bean数据源配置信息, dynamicDsInfo=DynamicDsInfo(dbKey=maxwell, database=maxwell, bizBeanName=maxwellBizImpl, cls=com.ssx.maxwell.kafka.enjoy.biz.maxwellBizImpl)
+//[2019-06-14 11:13:16:969][maxwell-kafka-enjoy][INFO ] 10616 [com.ssx.maxwell.kafka.enjoy.configuration.ServiceBeanDefinitionRegistry.postProcessBeanDefinitionRegistry](70) : -- 动态加载bean数据源配置信息, dynamicDsInfo=DynamicDsInfo(dbKey=business_test, database=test, bizBeanName=businessTestBizImpl, cls=com.ssx.maxwell.kafka.enjoy.biz.businessTestBizImpl)
             for (DynamicDsInfo dynamicDsInfo : dbKeyLists) {
                 //todo dskey 2019-6-13 19:09:56动态读取DynamicDataSourceProperties
                 log.info("动态加载bean数据源配置信息, dynamicDsInfo={}", dynamicDsInfo);

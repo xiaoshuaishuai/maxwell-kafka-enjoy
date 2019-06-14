@@ -111,12 +111,12 @@ public final class MaxwellBinlogConstants {
     /**
      * 按照主键id查询
      */
-    public static final String SQL_PRIMARY_ID = "SELECT * FROM {0} WHERE ID = {1};";
+    public static final String SQL_PRIMARY_ID = "SELECT * FROM {0} WHERE ID = {1}";
     /**
      * //fixme 全表查询缓存- 大表慎用
      * 全表查询- 大表慎用
      */
-    public static final String SQL_ALL = "SELECT * FROM {0} LIMIT 100000 ORDER BY GMT_CREATE ASC;";
+    public static final String SQL_ALL = "SELECT * FROM {0} ORDER BY GMT_CREATE ASC LIMIT 100000";
 
     public enum RedisRunSqlTemplateEnum {
         /**

@@ -56,7 +56,7 @@ public class RedissonHelper implements DistributedLock {
         } catch (InterruptedException e) {
             log.error("lock error, e={}", e);
         } finally {
-            if (isLock && null != rLock) {
+            if (isLock && null != rLock && rLock.isHeldByCurrentThread()) {
                 rLock.unlock();
             }
         }

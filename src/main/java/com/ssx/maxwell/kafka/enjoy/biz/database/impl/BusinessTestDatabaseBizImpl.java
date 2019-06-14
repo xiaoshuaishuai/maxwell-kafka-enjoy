@@ -1,8 +1,9 @@
 package com.ssx.maxwell.kafka.enjoy.biz.database.impl;
 
 import com.baomidou.dynamic.datasource.annotation.DS;
-import lombok.Getter;
-import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
@@ -11,13 +12,13 @@ import java.util.List;
  * @date: 2019/6/13 13:41
  * @description: no
  */
-public class BusinessTestDatabaseBizImpl{
-    @Setter
-    @Getter
-    org.springframework.jdbc.core.JdbcTemplate JdbcTemplate;
+@Component("businessTestDatabaseBizImpl")
+public class BusinessTestDatabaseBizImpl {
+    @Autowired
+    public JdbcTemplate jdbcTemplate;
 
     @DS("business_test")
     public List queryForList(String sql) {
-        return JdbcTemplate.queryForList(sql);
+        return jdbcTemplate.queryForList(sql);
     }
 }
