@@ -7,7 +7,8 @@
         <result column="create_by" property="createBy"></result>
         <result column="db_database" property="dbDatabase"></result>
         <result column="db_table" property="dbTable"></result>
-        <result column="expire" property="expire"></result>
+        <result column="primary_expire" property="primaryExpire"></result>
+        <result column="table_expire" property="tableExpire"></result>
         <result column="gmt_create" property="gmtCreate"></result>
         <result column="gmt_modify" property="gmtModify"></result>
         <result column="is_del" property="isDel"></result>
@@ -20,7 +21,8 @@
         id,
         db_database,
         db_table,
-        expire,
+        primary_expire,
+        table_expire,
         rule,
         template,
         template_sql,
@@ -52,7 +54,8 @@
         (
         db_database,
         db_table,
-        expire,
+        primary_expire,
+        table_expire,
         rule,
         template,
         template_sql,
@@ -68,7 +71,8 @@
             (
             #{item.dbDatabase},
             #{item.dbTable},
-            #{item.expire},
+            #{item.primaryExpire},
+            #{item.tableExpire},
             #{item.rule},
             #{item.template},
             #{item.templateSql},
