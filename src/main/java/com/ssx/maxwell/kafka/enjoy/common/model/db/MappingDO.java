@@ -1,4 +1,4 @@
-package com.ssx.maxwell.kafka.enjoy.common.model.entity;
+package com.ssx.maxwell.kafka.enjoy.common.model.db;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -14,7 +14,7 @@ import java.util.Date;
  */
 @Data
 @Accessors(chain = true)
-public class Mapping implements Serializable {
+public class MappingDO implements Serializable {
     /**
      * 主键
      */
@@ -35,13 +35,13 @@ public class Mapping implements Serializable {
      * 1:禁用
      */
     @ApiModelProperty(value = "0:启用/1:禁用")
-    private Integer isEnable;
+    private Integer enable;
     /**
      * 0:保留
      * 1:删除
      */
     @ApiModelProperty(value = "0:保留/1:删除")
-    private Integer isDel;
+    private Integer del;
     /**
      * 创建时间
      */

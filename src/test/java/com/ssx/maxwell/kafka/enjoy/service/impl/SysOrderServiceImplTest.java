@@ -25,7 +25,7 @@ public class SysOrderServiceImplTest {
 
     @Test
     public void testQuery() {
-        System.out.println("测试多数据源: =" + sysOrderService.queryList().toString());
-        System.out.println("测试多数据源: =" + redisMappingService.queryList().toString());
+        System.out.println("测试多数据源: =" + sysOrderService.list().toString());
+        System.out.println("测试多数据源: =" + redisMappingService.list().toString());
     }
 }

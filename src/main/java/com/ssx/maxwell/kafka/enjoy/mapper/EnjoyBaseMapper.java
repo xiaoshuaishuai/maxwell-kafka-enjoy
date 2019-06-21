@@ -9,8 +9,8 @@ import java.util.List;
  * @date: 2019/6/6 18:22
  * @description: no
  */
-public interface EnjoyBaseMapper<T> extends BaseMapper<T> {
-    List<T> queryList();
+public interface EnjoyBaseMapper<D, B> extends BaseMapper<D> {
+    List<D> list();
 
-    Integer insertOrUpdateBatch(List<T> list);
+    Integer insertOrUpdateBatch(List<B> list);
 }

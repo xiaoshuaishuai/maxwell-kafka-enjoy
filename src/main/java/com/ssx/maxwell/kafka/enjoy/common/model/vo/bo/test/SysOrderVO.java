@@ -1,4 +1,4 @@
-package com.ssx.maxwell.kafka.enjoy.common.model.bo.test;
+package com.ssx.maxwell.kafka.enjoy.common.model.vo.bo.test;
 
 import com.ssx.maxwell.kafka.enjoy.common.model.db.test.SysOrderDO;
 import lombok.Data;
@@ -9,5 +9,5 @@ import lombok.Data;
  * @description: no
  */
 @Data
-public class SysOrderBO extends SysOrderDO {
+public class SysOrderVO extends SysOrderDO {
 }

@@ -1,4 +1,4 @@
-package com.ssx.maxwell.kafka.enjoy.common.model.bo;
+package com.ssx.maxwell.kafka.enjoy.common.model.vo.bo;
 
 import com.ssx.maxwell.kafka.enjoy.common.model.db.ElasticsearchMappingDO;
 import lombok.Data;
@@ -9,6 +9,6 @@ import lombok.Data;
  * @description: no
  */
 @Data
-public class ElasticsearchMappingBO extends ElasticsearchMappingDO {
+public class ElasticsearchMappingVO extends ElasticsearchMappingDO {
 
 }

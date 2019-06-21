@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ssx.maxwell.kafka.enjoy.mapper.RedisMappingMapper">
-    <resultMap id="baseMap" type="com.ssx.maxwell.kafka.enjoy.common.model.entity.RedisMapping">
+    <resultMap id="baseMap" type="com.ssx.maxwell.kafka.enjoy.common.model.db.RedisMappingDO">
         <id column="id" property="id"/>
         <result column="remark" property="remark"></result>
         <result column="create_by" property="createBy"></result>
@@ -11,8 +11,8 @@
         <result column="table_expire" property="tableExpire"></result>
         <result column="gmt_create" property="gmtCreate"></result>
         <result column="gmt_modify" property="gmtModify"></result>
-        <result column="is_del" property="isDel"></result>
-        <result column="is_enable" property="isEnable"></result>
+        <result column="del" property="del"></result>
+        <result column="enable" property="enable"></result>
         <result column="rule" property="rule"></result>
         <result column="template" property="template"></result>
         <result column="template_sql" property="templateSql"></result>
@@ -27,8 +27,8 @@
         template,
         template_sql,
         remark,
-        is_enable,
-        is_del,
+        enable,
+        del,
         gmt_create,
         gmt_modify,
         create_by,
@@ -40,7 +40,7 @@
    </sql>
 
 
-    <select id="queryList" resultMap="baseMap">
+    <select id="list" resultMap="baseMap">
         select
         <include refid="allColumns"/>
         from
@@ -60,8 +60,8 @@
         template,
         template_sql,
         remark,
-        is_enable,
-        is_del,
+        enable,
+        del,
         gmt_create,
         gmt_modify,
         create_by,
@@ -77,8 +77,8 @@
             #{item.template},
             #{item.templateSql},
             #{item.remark},
-            #{item.isEnable},
-            #{item.isDel},
+            #{item.enable},
+            #{item.del},
             #{item.gmtCreate},
             #{item.gmtModify},
             #{item.createBy},
@@ -89,11 +89,11 @@
         gmt_modify = VALUES(gmt_modify)
     </insert>
 
-    <select id="queryOneByDatabaseAndTable" resultMap="baseMap">
+    <select id="getByDatabaseAndTable" resultMap="baseMap">
         select
         <include refid="allColumns"/>
         from
         <include refid="tableName"/>
-        where is_del=0 and is_enable=0 and db_database= #{dbDatabase} and db_table=#{dbTable}
+        where del=0 and enable=0 and db_database= #{dbDatabase} and db_table=#{dbTable}
     </select>
 </mapper>

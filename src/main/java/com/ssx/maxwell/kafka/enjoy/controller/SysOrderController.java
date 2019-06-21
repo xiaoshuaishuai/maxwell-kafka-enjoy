@@ -1,9 +1,12 @@
 package com.ssx.maxwell.kafka.enjoy.controller;
 
+import com.ssx.maxwell.kafka.enjoy.common.model.bo.test.SysOrderBO;
+import com.ssx.maxwell.kafka.enjoy.common.model.db.test.SysOrderDO;
+import com.ssx.maxwell.kafka.enjoy.common.model.vo.bo.test.SysOrderVO;
 import org.springframework.web.bind.annotation.RequestMapping;
-
 import org.springframework.web.bind.annotation.RestController;
-import com.ssx.maxwell.kafka.enjoy.controller.BaseController;
+
+import java.util.List;
 
 /**
  * 控制器
@@ -12,6 +15,15 @@ import com.ssx.maxwell.kafka.enjoy.controller.BaseController;
  */
 @RestController
 @RequestMapping("/sysOrder")
-public class SysOrderController extends BaseController {
+public class SysOrderController extends BaseController<SysOrderDO, SysOrderVO, SysOrderBO> {
 
+    @Override
+    public List<SysOrderVO> list() {
+        return null;
+    }
+
+    @Override
+    public Integer insertOrUpdateBatch(List<SysOrderBO> list) {
+        return null;
+    }
 }

@@ -1,14 +1,13 @@
-package com.ssx.maxwell.kafka.enjoy.common.model.entity.test;
+package com.ssx.maxwell.kafka.enjoy.common.model.db.test;
 
+import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.enums.IdType;
-import com.baomidou.mybatisplus.annotations.TableId;
-import java.util.Date;
-import com.baomidou.mybatisplus.annotations.TableId;
-import java.io.Serializable;
-
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+
+import java.io.Serializable;
+import java.util.Date;
 
 /**
  * 
@@ -18,7 +17,7 @@ import lombok.experimental.Accessors;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-public class SysOrder implements Serializable {
+public class SysOrderDO implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -36,10 +35,10 @@ public class SysOrder implements Serializable {
     private String goodsName;
 
     /** 是否发货0/未 ,1/已发货 */
-    private Integer isSendExpress;
+    private Integer sendExpress;
 
     /** 0/保留,1/删除 */
-    private Integer isDel;
+    private Integer del;
 
     /** 创建时间 */
     private Date gmtCreate;

@@ -1,6 +1,7 @@
 package com.ssx.maxwell.kafka.enjoy.mapper;
 
-import com.ssx.maxwell.kafka.enjoy.common.model.entity.RedisMapping;
+import com.ssx.maxwell.kafka.enjoy.common.model.bo.RedisMappingBO;
+import com.ssx.maxwell.kafka.enjoy.common.model.db.RedisMappingDO;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,20 +25,21 @@ public class RedisMappingMapperTest {
 
     @Test
     public void testQuery(){
-        System.out.println(redisMappingMapper.queryList().toString());
+        System.out.println(redisMappingMapper.list().toString());
     }
 
 
     @Test
     public void testInsert() {
-        RedisMapping redisMapping = new RedisMapping();
-        redisMapping.setExpire(200L);
+        RedisMappingBO redisMapping = new RedisMappingBO();
+        redisMapping.setPrimaryExpire(200L);
+        redisMapping.setTableExpire(200L);
         redisMapping.setRule("1|2|3");
-        redisMapping.setTemplate("{order_code}:{is_del},{goods_name}:{is_del}");
+        redisMapping.setTemplate("{order_code}:{is_del}(2000),{goods_name}:{is_del}(2000)");
         redisMapping.setDbDatabase("test");
         redisMapping.setDbTable("sys_order");
-        redisMapping.setIsEnable(0);
-        redisMapping.setIsDel(0);
+        redisMapping.setEnable(0);
+        redisMapping.setDel(0);
         redisMapping.setRemark("1.单表主键引导缓存\n" +
                 "2.全表缓存\n" +
                 "3.自定义缓存 {order_code}:{is_del}=订单号缓存" +

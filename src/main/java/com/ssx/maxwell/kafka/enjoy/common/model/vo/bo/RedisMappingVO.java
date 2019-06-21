@@ -1,4 +1,4 @@
-package com.ssx.maxwell.kafka.enjoy.common.model.bo;
+package com.ssx.maxwell.kafka.enjoy.common.model.vo.bo;
 
 import com.ssx.maxwell.kafka.enjoy.common.model.db.RedisMappingDO;
 import lombok.Data;
@@ -11,5 +11,5 @@ import lombok.experimental.Accessors;
  */
 @Data
 @Accessors(chain = true)
-public class RedisMappingBO extends RedisMappingDO {
+public class RedisMappingVO extends RedisMappingDO {
 }

@@ -1,6 +1,8 @@
 package com.ssx.maxwell.kafka.enjoy.service.impl;
 
-import com.ssx.maxwell.kafka.enjoy.common.model.entity.ElasticsearchMapping;
+import com.ssx.maxwell.kafka.enjoy.common.model.bo.ElasticsearchMappingBO;
+import com.ssx.maxwell.kafka.enjoy.common.model.db.ElasticsearchMappingDO;
+import com.ssx.maxwell.kafka.enjoy.common.model.vo.bo.ElasticsearchMappingVO;
 import com.ssx.maxwell.kafka.enjoy.mapper.ElasticsearchMappingMapper;
 import com.ssx.maxwell.kafka.enjoy.service.ElasticsearchMappingService;
 import lombok.extern.slf4j.Slf4j;
@@ -16,12 +18,22 @@ import javax.annotation.PostConstruct;
  */
 @Service
 @Slf4j
-public class ElasticsearchMappingServiceImpl extends EnjoyBaseServiceImpl<ElasticsearchMapping, ElasticsearchMappingMapper> implements ElasticsearchMappingService {
+public class ElasticsearchMappingServiceImpl extends EnjoyBaseServiceImpl<ElasticsearchMappingDO, ElasticsearchMappingVO, ElasticsearchMappingBO, ElasticsearchMappingMapper> implements ElasticsearchMappingService {
     @Autowired
     private ElasticsearchMappingMapper elasticSearchMappingMapper;
 
     @PostConstruct
     public void init() {
         super.mapper = elasticSearchMappingMapper;
+    }
+
+    @Override
+    public ElasticsearchMappingVO newVO() {
+        return new ElasticsearchMappingVO();
+    }
+
+    @Override
+    public ElasticsearchMappingDO newDO() {
+        return new ElasticsearchMappingDO();
     }
 }

@@ -1,7 +1,5 @@
-package com.ssx.maxwell.kafka.enjoy.common.model.entity;
+package com.ssx.maxwell.kafka.enjoy.common.model.db;
 
-import com.ssx.maxwell.kafka.enjoy.common.model.entity.Mapping;
-import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -16,6 +14,6 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
 @ToString(callSuper = true)
-public class ElasticsearchMapping extends Mapping {
+public class ElasticsearchMappingDO extends MappingDO {
 
 }

@@ -7,8 +7,8 @@ import com.ssx.maxwell.kafka.enjoy.biz.RedisReloadBiz;
 import com.ssx.maxwell.kafka.enjoy.common.helper.RedissonHelper;
 import com.ssx.maxwell.kafka.enjoy.common.helper.StringRedisTemplateHelper;
 import com.ssx.maxwell.kafka.enjoy.common.model.bo.RedisMappingBO;
+import com.ssx.maxwell.kafka.enjoy.common.model.db.RedisMappingDO;
 import com.ssx.maxwell.kafka.enjoy.common.model.dto.CacheListDTO;
-import com.ssx.maxwell.kafka.enjoy.common.model.entity.RedisMapping;
 import com.ssx.maxwell.kafka.enjoy.common.tools.*;
 import com.ssx.maxwell.kafka.enjoy.configuration.DynamicDsInfo;
 import com.ssx.maxwell.kafka.enjoy.configuration.ServiceBeanDefinitionRegistry;
@@ -54,7 +54,7 @@ public class RedisReloadBizImpl implements RedisReloadBiz {
         redissonHelper.lock(stringBuilder.toString(), 10, 5, TimeUnit.SECONDS, () -> {
             RedisMappingBO redisMappingBO = new RedisMappingBO();
             redisMappingBO.setDbDatabase(dbDatabase).setDbTable(dbTable);
-            RedisMapping redisMapping = redisMappingService.queryOneByDatabaseAndTable(redisMappingBO);
+            RedisMappingDO redisMapping = redisMappingService.getByDatabaseAndTable(redisMappingBO);
             if (null != redisMapping) {
                 String rule = redisMapping.getRule();
                 if (!Strings.isNullOrEmpty(rule) && !MaxwellBinlogConstants.REDIS_RULE_0.equals(rule)) {
@@ -118,7 +118,7 @@ public class RedisReloadBizImpl implements RedisReloadBiz {
      * @author: shuaishuai.xiao
      * @date: 2019/6/14 17:31
      */
-    private void executeToRedis(DynamicDsInfo dynamicDsInfo, String sql, String redisKey, RedisMapping redisMapping, boolean isCustom, Long expire) {
+    private void executeToRedis(DynamicDsInfo dynamicDsInfo, String sql, String redisKey, RedisMappingDO redisMapping, boolean isCustom, Long expire) {
 
         if (isCustom) {
             //自定义缓存
@@ -170,7 +170,7 @@ public class RedisReloadBizImpl implements RedisReloadBiz {
                             expire = Long.valueOf(part.substring(part.indexOf("(")+1,part.indexOf(")")));
                             String finalKey = keyBuilder.insert(0, redisKey).toString();
                             log.info("自定义缓存, key={}, expire={}", finalKey, expire);
-                            setValueToRedis(redisMapping, finalKey, buildCacheListDTO(dbDataList), expire);
+                            setValueToRedis(finalKey, buildCacheListDTO(dbDataList), expire);
                         }
                     }
                 }
@@ -182,9 +182,9 @@ public class RedisReloadBizImpl implements RedisReloadBiz {
                 //处理DB查询无数据情况
                 CacheListDTO cacheListDTO = new CacheListDTO().setNone(true);
                 cacheListDTO.setObj(Lists.newArrayList());
-                setValueToRedis(redisMapping, redisKey, cacheListDTO, expire);
+                setValueToRedis(redisKey, cacheListDTO, expire);
             } else {
-                setValueToRedis(redisMapping, redisKey, buildCacheListDTO(dbDataList), expire);
+                setValueToRedis(redisKey, buildCacheListDTO(dbDataList), expire);
             }
         }
 
@@ -220,7 +220,7 @@ public class RedisReloadBizImpl implements RedisReloadBiz {
      * @author: shuaishuai.xiao
      * @date: 2019/6/14 17:29
      */
-    private void setValueToRedis(RedisMapping redisMapping, String redisKey, CacheListDTO cacheListDTO, Long expire) {
+    private void setValueToRedis(String redisKey, CacheListDTO cacheListDTO, Long expire) {
         try {
             if (expire.equals(-1)) {
                 stringRedisTemplateHelper.set(redisKey, cacheListDTO);

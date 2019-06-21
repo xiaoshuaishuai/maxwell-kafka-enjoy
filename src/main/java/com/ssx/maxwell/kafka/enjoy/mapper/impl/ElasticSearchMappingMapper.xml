@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ssx.maxwell.kafka.enjoy.mapper.ElasticsearchMappingMapper">
-    <resultMap id="baseMap" type="com.ssx.maxwell.kafka.enjoy.common.model.entity.ElasticsearchMapping">
+    <resultMap id="baseMap" type="com.ssx.maxwell.kafka.enjoy.common.model.db.ElasticsearchMappingDO">
         <id column="id" property="id"/>
         <result column="remark" property="remark"></result>
         <result column="create_by" property="createBy"></result>
@@ -9,16 +9,16 @@
         <result column="db_table" property="dbTable"></result>
         <result column="gmt_create" property="gmtCreate"></result>
         <result column="gmt_modify" property="gmtModify"></result>
-        <result column="is_del" property="isDel"></result>
-        <result column="is_enable" property="isEnable"></result>
+        <result column="del" property="del"></result>
+        <result column="enable" property="enable"></result>
     </resultMap>
     <sql id="allColumns">
         id,
         db_database,
         db_table,
         remark,
-        is_enable,
-        is_del,
+        enable,
+        del,
         gmt_create,
         gmt_modify,
         create_by,
@@ -29,7 +29,7 @@
         elasticsearch_mapping
    </sql>
 
-    <select id="queryList" resultMap="baseMap">
+    <select id="list" resultMap="baseMap">
         select
         <include refid="allColumns"/>
         from
@@ -44,8 +44,8 @@
         db_database,
         db_table,
         remark,
-        is_enable,
-        is_del,
+        enable,
+        del,
         gmt_create,
         gmt_modify,
         create_by,
@@ -56,8 +56,8 @@
             #{item.dbDatabase},
             #{item.dbTable},
             #{item.remark},
-            #{item.isEnable},
-            #{item.isDel},
+            #{item.enable},
+            #{item.del},
             #{item.gmtCreate},
             #{item.gmtModify},
             #{item.createBy},

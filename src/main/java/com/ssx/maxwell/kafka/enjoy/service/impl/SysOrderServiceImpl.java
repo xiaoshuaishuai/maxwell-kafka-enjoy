@@ -1,7 +1,9 @@
 package com.ssx.maxwell.kafka.enjoy.service.impl;
 
 import com.baomidou.dynamic.datasource.annotation.DS;
-import com.ssx.maxwell.kafka.enjoy.common.model.entity.test.SysOrder;
+import com.ssx.maxwell.kafka.enjoy.common.model.bo.test.SysOrderBO;
+import com.ssx.maxwell.kafka.enjoy.common.model.db.test.SysOrderDO;
+import com.ssx.maxwell.kafka.enjoy.common.model.vo.bo.test.SysOrderVO;
 import com.ssx.maxwell.kafka.enjoy.mapper.SysOrderMapper;
 import com.ssx.maxwell.kafka.enjoy.service.SysOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,12 +19,22 @@ import javax.annotation.PostConstruct;
  */
 @Service
 @DS("business_test")
-public class SysOrderServiceImpl extends EnjoyBaseServiceImpl<SysOrder, SysOrderMapper> implements SysOrderService {
+public class SysOrderServiceImpl extends EnjoyBaseServiceImpl<SysOrderDO, SysOrderVO, SysOrderBO, SysOrderMapper> implements SysOrderService {
     @Autowired
     private SysOrderMapper sysOrderMapper;
 
     @PostConstruct
     public void init() {
         super.mapper = sysOrderMapper;
+    }
+
+    @Override
+    public SysOrderVO newVO() {
+        return new SysOrderVO();
+    }
+
+    @Override
+    public SysOrderDO newDO() {
+        return new SysOrderDO();
     }
 }

@@ -1,6 +1,7 @@
 package com.ssx.maxwell.kafka.enjoy.mapper;
 
-import com.ssx.maxwell.kafka.enjoy.common.model.entity.ElasticsearchMapping;
+import com.ssx.maxwell.kafka.enjoy.common.model.bo.ElasticsearchMappingBO;
+import com.ssx.maxwell.kafka.enjoy.common.model.db.ElasticsearchMappingDO;
 import org.springframework.stereotype.Component;
 
 /**
@@ -9,6 +10,6 @@ import org.springframework.stereotype.Component;
  * @description:
  */
 @Component
-public interface ElasticsearchMappingMapper extends EnjoyBaseMapper<ElasticsearchMapping> {
+public interface ElasticsearchMappingMapper extends EnjoyBaseMapper<ElasticsearchMappingDO, ElasticsearchMappingBO> {
 
 }

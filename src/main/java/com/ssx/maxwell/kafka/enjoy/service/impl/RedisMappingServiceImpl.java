@@ -1,7 +1,8 @@
 package com.ssx.maxwell.kafka.enjoy.service.impl;
 
 import com.ssx.maxwell.kafka.enjoy.common.model.bo.RedisMappingBO;
-import com.ssx.maxwell.kafka.enjoy.common.model.entity.RedisMapping;
+import com.ssx.maxwell.kafka.enjoy.common.model.db.RedisMappingDO;
+import com.ssx.maxwell.kafka.enjoy.common.model.vo.bo.RedisMappingVO;
 import com.ssx.maxwell.kafka.enjoy.mapper.RedisMappingMapper;
 import com.ssx.maxwell.kafka.enjoy.service.RedisMappingService;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +18,7 @@ import javax.annotation.PostConstruct;
  */
 @Service
 @Slf4j
-public class RedisMappingServiceImpl extends EnjoyBaseServiceImpl<RedisMapping, RedisMappingMapper> implements RedisMappingService {
+public class RedisMappingServiceImpl extends EnjoyBaseServiceImpl<RedisMappingDO, RedisMappingVO, RedisMappingBO, RedisMappingMapper> implements RedisMappingService {
     @Autowired
     private RedisMappingMapper redisMappingMapper;
 
@@ -27,7 +28,17 @@ public class RedisMappingServiceImpl extends EnjoyBaseServiceImpl<RedisMapping, 
     }
 
     @Override
-    public RedisMapping queryOneByDatabaseAndTable(RedisMappingBO redisMappingBO) {
-        return redisMappingMapper.queryOneByDatabaseAndTable(redisMappingBO);
+    public RedisMappingDO getByDatabaseAndTable(RedisMappingBO redisMappingBO) {
+        return redisMappingMapper.getByDatabaseAndTable(redisMappingBO);
+    }
+
+    @Override
+    public RedisMappingVO newVO() {
+        return new RedisMappingVO();
+    }
+
+    @Override
+    public RedisMappingDO newDO() {
+        return new RedisMappingDO();
     }
 }
