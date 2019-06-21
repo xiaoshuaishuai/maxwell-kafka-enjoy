@@ -29,26 +29,26 @@ public class DynGenerateClassUtils {
         CtClass listClass = classPool.get("java.util.List");
         String fieldName = "jdbcTemplate";
 
-        // set class annotation
+        //  set class annotation
         AnnotationsAttribute classAttr = new AnnotationsAttribute(constpool, AnnotationsAttribute.visibleTag);
         Annotation ds = new Annotation("com.baomidou.dynamic.datasource.annotation.DS", constpool);
         ds.addMemberValue("value", new StringMemberValue(dsKey, constpool));
         classAttr.addAnnotation(ds);
         ccFile.addAttribute(classAttr);
-        // set field
+        //  set field
         CtField field = new CtField(jdbcTemplateClass, fieldName, ctClass);
         field.setModifiers(Modifier.PUBLIC);
         ctClass.addField(field);
-//        FieldInfo fieldInfo = field.getFieldInfo();
-        // set field annotation
-//        AnnotationsAttribute fieldAttr = new AnnotationsAttribute(constpool, AnnotationsAttribute.visibleTag);
-//        Annotation setter = new Annotation("lombok.Setter", constpool);
-//        Annotation getter = new Annotation("lombok.Getter", constpool);
-//        fieldAttr.addAnnotation(setter);
-//        fieldAttr.addAnnotation(getter);
-//        fieldInfo.addAttribute(fieldAttr);
+//         FieldInfo fieldInfo = field.getFieldInfo();
+        //  set field annotation
+//         AnnotationsAttribute fieldAttr = new AnnotationsAttribute(constpool, AnnotationsAttribute.visibleTag);
+//         Annotation setter = new Annotation("lombok.Setter", constpool);
+//         Annotation getter = new Annotation("lombok.Getter", constpool);
+//         fieldAttr.addAnnotation(setter);
+//         fieldAttr.addAnnotation(getter);
+//         fieldInfo.addAttribute(fieldAttr);
 
-        // add method queryForList(String sql)
+        //  add method queryForList(String sql)
         CtMethod ctMethod = new CtMethod(listClass, BIZ_DEFAULT_METHOD_NAME, new CtClass[]{ctClassString}, ctClass);
         ctMethod.setModifiers(java.lang.reflect.Modifier.PUBLIC);
         ctMethod.setBody("{return   " + fieldName + "." + BIZ_DEFAULT_METHOD_NAME + "($1);}");
@@ -64,19 +64,19 @@ public class DynGenerateClassUtils {
         getJdbcTemplateMethod.setBody("{return " + fieldName + ";}");
         ctClass.addMethod(getJdbcTemplateMethod);
 
-        // add constructor
+        //  add constructor
         CtConstructor constructor0 = CtNewConstructor.make("public " + clsName + "(){}", ctClass);
         ctClass.addConstructor(constructor0);
 
-//        Class cls = ctClass.toClass();
-//        Method method1 = cls.getMethod("hello", new Class[]{String.class});
+//         Class cls = ctClass.toClass();
+//         Method method1 = cls.getMethod("hello", new Class[]{String.class});
 //
-//        Constructor constructor = cls.getConstructor();
+//         Constructor constructor = cls.getConstructor();
 //
-//        System.out.println(method1.invoke(constructor.newInstance(), "hhhhhhhhhhhhhhhh"));
-//        ctClass.debugWriteFile("./src/main/java");
-//        调试打开
-//        ctClass.writeFile("./src/main/java");
+//         System.out.println(method1.invoke(constructor.newInstance(), "hhhhhhhhhhhhhhhh"));
+//         ctClass.debugWriteFile("./src/main/java");
+//         调试打开
+//         ctClass.writeFile("./src/main/java");
         return ctClass.toClass();
     }
 

@@ -20,10 +20,10 @@ public class DynGenerateClass {
 
         ClassPool classPool = ClassPool.getDefault();
         CtClass ctClass = classPool.makeClass("com.ssx.maxwell.kafka.enjoy.service.TestService");
-        // add method
+        //  add method
         CtMethod method = CtNewMethod.make("public String hello(String msg){return \"动态字节码hello输出->\"+msg;}", ctClass);
         ctClass.addMethod(method);
-        // add constructor
+        //  add constructor
         CtConstructor constructor0 = CtNewConstructor.make("public TestService(){}", ctClass);
         ctClass.addConstructor(constructor0);
 
@@ -39,14 +39,14 @@ public class DynGenerateClass {
 
 //package com.ssx.maxwell.kafka.enjoy.service;
 //
-//        public class TestService {
-//            public String hello(String var1) {
-//                return "动态字节码hello输出->" + var1;
-//            }
+//         public class TestService {
+//             public String hello(String var1) {
+//                 return "动态字节码hello输出->" + var1;
+//             }
 //
-//            public TestService() {
-//            }
-//        }
+//             public TestService() {
+//             }
+//         }
 
     }
 
@@ -61,7 +61,7 @@ public class DynGenerateClass {
         ctClass.setInterfaces(new CtClass[]{classPool.makeInterface("java.io.Serializable"), classPool.makeInterface("java.lang.Cloneable")});
 
 
-        // 类附上注解
+        //  类附上注解
         AnnotationsAttribute classAttr = new AnnotationsAttribute(constpool, AnnotationsAttribute.visibleTag);
         Annotation data = new Annotation("lombok.Data", constpool);
         Annotation Accessors = new Annotation("lombok.experimental.Accessors", constpool);
@@ -71,12 +71,12 @@ public class DynGenerateClass {
         ccFile.addAttribute(classAttr);
 
 
-        // add field
+        //  add field
         CtField field = new CtField(CtClass.intType, "age", ctClass);
         field.setModifiers(AccessFlag.PUBLIC);
         ctClass.addField(field);
         FieldInfo fieldInfo = field.getFieldInfo();
-        // 属性附上注解
+        //  属性附上注解
         AnnotationsAttribute fieldAttr = new AnnotationsAttribute(constpool, AnnotationsAttribute.visibleTag);
         Annotation autowired = new Annotation("org.springframework.beans.factory.annotation.Autowired", constpool);
         fieldAttr.addAnnotation(autowired);
@@ -87,16 +87,16 @@ public class DynGenerateClass {
 
 
 
-//        MethodInfo methodInfo = method.getMethodInfo();
+//         MethodInfo methodInfo = method.getMethodInfo();
 
         //方法附上注解
-//        AnnotationsAttribute methodAttr = new AnnotationsAttribute(constpool, AnnotationsAttribute.visibleTag);
-//        Annotation annotation3 = new Annotation("org.springframework.web.bind.annotation.RequestMapping.RequestMapping", constpool);
-//        annotation3.addMemberValue("value", new StringMemberValue("/register", constpool));
-//        methodAttr.addAnnotation(annotation3);
-//        methodInfo.addAttribute(methodAttr);
+//         AnnotationsAttribute methodAttr = new AnnotationsAttribute(constpool, AnnotationsAttribute.visibleTag);
+//         Annotation annotation3 = new Annotation("org.springframework.web.bind.annotation.RequestMapping.RequestMapping", constpool);
+//         annotation3.addMemberValue("value", new StringMemberValue("/register", constpool));
+//         methodAttr.addAnnotation(annotation3);
+//         methodInfo.addAttribute(methodAttr);
    /*
-        // add constructor
+        //  add constructor
         CtConstructor constructor0 = CtNewConstructor.make("public MyClassDemo(){}", ctClass);
         CtConstructor constructor = CtNewConstructor.make("public MyClassDemo(int age){ this.age = age;}", ctClass);
         ctClass.addConstructor(constructor0);

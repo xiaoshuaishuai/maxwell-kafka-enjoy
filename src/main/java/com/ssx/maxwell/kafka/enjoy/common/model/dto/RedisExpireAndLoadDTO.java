@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author: shuaishuai.xiao
@@ -32,5 +33,11 @@ public class RedisExpireAndLoadDTO {
      */
     private Long dbPid;
 
+    /**
+     * update情况下
+     * 修改的原始字段和值
+     * 用于清理自定义缓存相关字段修改之前旧的缓存
+     */
+    private Map oldDataJson;
 
 }

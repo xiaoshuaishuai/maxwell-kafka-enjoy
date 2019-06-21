@@ -55,27 +55,27 @@ public class MaxwellKafkaToRedisConsumer {
         //maxwell--消费消息:{"database":"test","table":"title","type":"update","ts":1559542729,"xid":2470,"commit":true,"data":{"id":2,"name":"2","content":"88"},"old":{"content":"2"}}
         //maxwell--消费消息:{"database":"test","table":"title","type":"update","ts":1559542747,"xid":2498,"commit":true,"data":{"id":2,"name":"2","content":"99"},"old":{"content":"88"}}
         //maxwell--消费消息:{"database":"test","table":"title","type":"insert","ts":1559542757,"xid":2515,"commit":true,"data":{"id":3,"name":"3","content":"199"}}
-//        maxwell--消费消息:{"database":"test","table":"title","type":"bootstrap-start","ts":1559548626,"data":{}}
-//        maxwell--消费消息:{"database":"test","table":"title","type":"bootstrap-insert","ts":1559548626,"data":{"id":1,"name":"1","content":"3"}}
-//        maxwell--消费消息:{"database":"test","table":"title","type":"bootstrap-insert","ts":1559548626,"data":{"id":2,"name":"2","content":"3"}}
-//        maxwell--消费消息:{"database":"test","table":"title","type":"bootstrap-insert","ts":1559548626,"data":{"id":3,"name":"3","content":"3"}}
-//        maxwell--消费消息:{"database":"test","table":"title","type":"bootstrap-complete","ts":1559548626,"data":{}}
+//         maxwell--消费消息:{"database":"test","table":"title","type":"bootstrap-start","ts":1559548626,"data":{}}
+//         maxwell--消费消息:{"database":"test","table":"title","type":"bootstrap-insert","ts":1559548626,"data":{"id":1,"name":"1","content":"3"}}
+//         maxwell--消费消息:{"database":"test","table":"title","type":"bootstrap-insert","ts":1559548626,"data":{"id":2,"name":"2","content":"3"}}
+//         maxwell--消费消息:{"database":"test","table":"title","type":"bootstrap-insert","ts":1559548626,"data":{"id":3,"name":"3","content":"3"}}
+//         maxwell--消费消息:{"database":"test","table":"title","type":"bootstrap-complete","ts":1559548626,"data":{}}
 //{"database":"test","table":"sys_order","type":"update","ts":1559640375,"xid":2012,"commit":true,"data":{"id":1,"order_code":"1","category":0,"goods_name":"牙膏","is_send_express":1,"is_deleted":0,"gmt_create":"2019-06-04 17:21:45","gmt_modify":"2019-06-04 17:26:15"},"old":{"is_send_express":0,"gmt_modify":"2019-06-04 17:25:25"}}
         log.info(logPrefix + ", integerStringConsumerRecords={}", integerStringConsumerRecords);
         try {
             for (ConsumerRecord consumerRecord : integerStringConsumerRecords) {
                 log.info(logPrefix + ", consumerRecord={}", consumerRecord);
                 String message = (String) consumerRecord.value();
-                Map<String, Object> map;
+                Map<String, Object> jsonMessageMap;
                 try {
-                    map = JsonUtils.JsonStringToMap(message);
+                    jsonMessageMap = JsonUtils.JsonStringToMap(message);
                 } catch (IOException e) {
                     throw e;
                 }
-                if (null != map && !map.isEmpty() && map.containsKey("database") && map.containsKey("table")) {
+                if (null != jsonMessageMap && !jsonMessageMap.isEmpty() && jsonMessageMap.containsKey("database") && jsonMessageMap.containsKey("table")) {
                     if (redisMappingCacheSwitch) {
-                        String database = (String) map.get("database");
-                        String table = (String) map.get("table");
+                        String database = (String) jsonMessageMap.get("database");
+                        String table = (String) jsonMessageMap.get("table");
                         String jvmCacheKey = JvmCache.redisJvmCacheKey(profile, database, table);
                         RedisMappingDO redisMapping = redisMappingCache.getIfPresent(jvmCacheKey);
                         if (null != redisMapping) {
@@ -86,7 +86,7 @@ public class MaxwellKafkaToRedisConsumer {
                             RedisExpireAndLoadDTO redisExpireDTO = new RedisExpireAndLoadDTO();
                             redisExpireDTO.setDbDatabase(database);
                             redisExpireDTO.setDbTable(table);
-                            String type = (String) map.get("type");
+                            String type = (String) jsonMessageMap.get("type");
                             if (!Strings.isNullOrEmpty(type)) {
                                 MaxwellBinlogConstants.MaxwellBinlogEnum maxwellBinlogEnum = MaxwellBinlogConstants.MaxwellBinlogEnum.getMaxwellBinlogEnum(type);
                                 if (null == maxwellBinlogEnum) {
@@ -105,7 +105,8 @@ public class MaxwellKafkaToRedisConsumer {
                                     if (!Strings.isNullOrEmpty(rule) && !MaxwellBinlogConstants.REDIS_RULE_0.equals(rule)) {
                                         String[] ruleArr = rule.split(",");
                                         if (ArrayUtils.isNotEmpty(ruleArr)) {
-                                            Map dataJson = (Map) map.get("data");
+                                            Map dataJson = (Map) jsonMessageMap.get("data");
+                                            Map oldDataJson = (Map) jsonMessageMap.get("old");
                                             Integer id = (Integer) dataJson.get("id");
                                             redisExpireDTO.setDbPid(Long.valueOf(id));
                                             if (ArrayUtils.contains(ruleArr, MaxwellBinlogConstants.REDIS_RULE_1)) {
@@ -123,6 +124,7 @@ public class MaxwellKafkaToRedisConsumer {
 
                                             }
                                             if (ArrayUtils.contains(ruleArr, MaxwellBinlogConstants.REDIS_RULE_3)) {
+                                                redisExpireDTO.setOldDataJson(oldDataJson);
                                                 String template = redisMapping.getTemplate();
                                                 if (!Strings.isNullOrEmpty(template)) {
                                                     String[] templateArr = template.split(",");
@@ -151,8 +153,8 @@ public class MaxwellKafkaToRedisConsumer {
                                                                     }
                                                                 }
                                                             }
-//                                                        :order_code:is_deleted
-//                                                        :goods_name:is_deleted
+//                                                         :order_code:is_deleted
+//                                                         :goods_name:is_deleted
                                                             String conversionKey = columnStringBuilder.insert(0, redisKey).toString();
                                                             log.info(logPrefix + "处理自定义缓存redisKey={}", conversionKey);
                                                             redisExpireDTO.getKeyList().add(conversionKey);

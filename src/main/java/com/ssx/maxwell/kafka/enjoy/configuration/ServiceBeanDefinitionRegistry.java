@@ -46,18 +46,18 @@ public class ServiceBeanDefinitionRegistry implements BeanDefinitionRegistryPost
         beanDefinitionBuilder2.addPropertyReference("jdbcTemplate", "jdbcTemplate");
         beanDefinitionBuilder2.setAutowireMode(AUTOWIRE_BY_NAME);
         beanDefinitionRegistry.registerBeanDefinition("businessTestDatabaseBizImpl", beanDefinitionBuilder2.getBeanDefinition());*/
-//        DynamicDataSourceProperties dynamicDataSourceProperties = applicationContext.getBean(DynamicDataSourceProperties.class);
-//        for(String s : applicationContext.getBeanDefinitionNames()){
-//            System.out.println(s);
-//        }
-//        Map<String, DataSourceProperty> dataSourcePropertyMap = dynamicDataSourceProperties.getDatasource();
-//        if (null != dataSourcePropertyMap && dataSourcePropertyMap.size() > 0) {
-//            Set<String> keySet = dataSourcePropertyMap.keySet();
-//            log.info("多数据源@DS keySet={}", keySet);
-//            for (String key : keySet) {
-//                dynamicDsInfos.add(new DynamicDsInfo(key));
-//            }
-//        }
+//         DynamicDataSourceProperties dynamicDataSourceProperties = applicationContext.getBean(DynamicDataSourceProperties.class);
+//         for(String s : applicationContext.getBeanDefinitionNames()){
+//             System.out.println(s);
+//         }
+//         Map<String, DataSourceProperty> dataSourcePropertyMap = dynamicDataSourceProperties.getDatasource();
+//         if (null != dataSourcePropertyMap && dataSourcePropertyMap.size() > 0) {
+//             Set<String> keySet = dataSourcePropertyMap.keySet();
+//             log.info("多数据源@DS keySet={}", keySet);
+//             for (String key : keySet) {
+//                 dynamicDsInfos.add(new DynamicDsInfo(key));
+//             }
+//         }
 
         try {
             List<DynamicDsInfo> dbKeyLists = ApplicationYamlUtils.readDynamicConfig();
@@ -66,7 +66,7 @@ public class ServiceBeanDefinitionRegistry implements BeanDefinitionRegistryPost
                 return;
             }
             DYNAMICDSINFO_LIST = new ArrayList<>(dbKeyLists);
-//            [2019-06-14 11:13:10:801][maxwell-kafka-enjoy][INFO ] 10616 [com.ssx.maxwell.kafka.enjoy.configuration.ServiceBeanDefinitionRegistry.postProcessBeanDefinitionRegistry](70) : -- 动态加载bean数据源配置信息, dynamicDsInfo=DynamicDsInfo(dbKey=maxwell, database=maxwell, bizBeanName=maxwellBizImpl, cls=com.ssx.maxwell.kafka.enjoy.biz.maxwellBizImpl)
+//             [2019-06-14 11:13:10:801][maxwell-kafka-enjoy][INFO ] 10616 [com.ssx.maxwell.kafka.enjoy.configuration.ServiceBeanDefinitionRegistry.postProcessBeanDefinitionRegistry](70) : -- 动态加载bean数据源配置信息, dynamicDsInfo=DynamicDsInfo(dbKey=maxwell, database=maxwell, bizBeanName=maxwellBizImpl, cls=com.ssx.maxwell.kafka.enjoy.biz.maxwellBizImpl)
 //[2019-06-14 11:13:16:969][maxwell-kafka-enjoy][INFO ] 10616 [com.ssx.maxwell.kafka.enjoy.configuration.ServiceBeanDefinitionRegistry.postProcessBeanDefinitionRegistry](70) : -- 动态加载bean数据源配置信息, dynamicDsInfo=DynamicDsInfo(dbKey=business_test, database=test, bizBeanName=businessTestBizImpl, cls=com.ssx.maxwell.kafka.enjoy.biz.businessTestBizImpl)
             for (DynamicDsInfo dynamicDsInfo : dbKeyLists) {
                 //todo dskey 2019-6-13 19:09:56动态读取DynamicDataSourceProperties

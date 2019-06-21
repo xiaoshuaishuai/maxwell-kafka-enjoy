@@ -123,10 +123,10 @@ public class KafkaConfig {
         Map<String, Object> props = new HashMap<>();
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-//        至少有一个副本写成功
+//         至少有一个副本写成功
         props.put(ProducerConfig.ACKS_CONFIG, acks);
         props.put(ProducerConfig.BATCH_SIZE_CONFIG, batchSize);
-//        延迟
+//         延迟
         props.put(ProducerConfig.LINGER_MS_CONFIG, lingerMs);
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         return props;

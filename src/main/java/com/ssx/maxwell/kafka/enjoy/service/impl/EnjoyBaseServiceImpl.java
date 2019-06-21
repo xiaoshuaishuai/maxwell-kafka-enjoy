@@ -43,12 +43,12 @@ public abstract class EnjoyBaseServiceImpl<D, V, B, M extends EnjoyBaseMapper<D,
 
     @Override
     public Integer insertOrUpdateBatch(List<B> list) {
-//        List<D> resList = new ArrayList<>(list.size());
-//        for (B bo : list) {
-//            D d = newDO();
-//            BeanUtils.copyProperties(bo, d);
-//            resList.add(d);
-//        }
+//         List<D> resList = new ArrayList<>(list.size());
+//         for (B bo : list) {
+//             D d = newDO();
+//             BeanUtils.copyProperties(bo, d);
+//             resList.add(d);
+//         }
         //todo jvmcache refresh 2019-6-6 16:52:31
         List<List<B>> parts = Lists.partition(list, 30);
         try {

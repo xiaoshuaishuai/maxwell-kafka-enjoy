@@ -70,20 +70,20 @@ public final class JsonUtils {
         System.out.println(JsonStringToHashSet("[\"dev:test:sys_order:item:2\",\"dev:test:sys_order:custom:code3333333333:0\",\"dev:test:sys_order:list\",\"dev:test:sys_order:custom:\\\\u6d77\\\\u98de\\\\u4e1d\\\\u6d17\\\\u53d1\\\\u6c34:0\"]"));
         //["dev:test:sys_order:item:2","dev:test:sys_order:custom:code3333333333:0","dev:test:sys_order:list","dev:test:sys_order:custom:\\u6d77\\u98de\\u4e1d\\u6d17\\u53d1\\u6c34:0"]
 
-//        String bb = "[{\"key\":\"dev:test:sys_order:custom:\\\\u8033\\\\u673a:0\",\"dbDatabase\":\"test\",\"dbTable\":\"sys_order\",\"gmtCreate\":1560243670863},{\"key\":\"dev:test:sys_order:custom:code33:0\",\"dbDatabase\":\"test\",\"dbTable\":\"sys_order\",\"gmtCreate\":1560243670863},{\"key\":\"dev:test:sys_order:item:3\",\"dbDatabase\":\"test\",\"dbTable\":\"sys_order\",\"gmtCreate\":1560243670862},{\"key\":\"dev:test:sys_order:list\",\"dbDatabase\":\"test\",\"dbTable\":\"sys_order\",\"gmtCreate\":1560243670862}]";
-//        List<RedisExpireAndLoadDTO> redisExpireDTOS = mapper.readValue(bb, new TypeReference<List<RedisExpireAndLoadDTO>>() {
-//        });
-//        System.out.println(redisExpireDTOS);
-//        for (RedisExpireAndLoadDTO d : redisExpireDTOS) {
-//            System.out.println(d);
-//        }
-//        List<String> stringList = redisExpireDTOS.stream().map(RedisExpireAndLoadDTO::getKey).collect(Collectors.toList());
-//        System.out.println(stringList);
+//         String bb = "[{\"key\":\"dev:test:sys_order:custom:\\\\u8033\\\\u673a:0\",\"dbDatabase\":\"test\",\"dbTable\":\"sys_order\",\"gmtCreate\":1560243670863},{\"key\":\"dev:test:sys_order:custom:code33:0\",\"dbDatabase\":\"test\",\"dbTable\":\"sys_order\",\"gmtCreate\":1560243670863},{\"key\":\"dev:test:sys_order:item:3\",\"dbDatabase\":\"test\",\"dbTable\":\"sys_order\",\"gmtCreate\":1560243670862},{\"key\":\"dev:test:sys_order:list\",\"dbDatabase\":\"test\",\"dbTable\":\"sys_order\",\"gmtCreate\":1560243670862}]";
+//         List<RedisExpireAndLoadDTO> redisExpireDTOS = mapper.readValue(bb, new TypeReference<List<RedisExpireAndLoadDTO>>() {
+//         });
+//         System.out.println(redisExpireDTOS);
+//         for (RedisExpireAndLoadDTO d : redisExpireDTOS) {
+//             System.out.println(d);
+//         }
+//         List<String> stringList = redisExpireDTOS.stream().map(RedisExpireAndLoadDTO::getKey).collect(Collectors.toList());
+//         System.out.println(stringList);
 
         String cc = "{\"keyList\":[\"dev:test:sys_order:item:3\",\"dev:test:sys_order:list\",\"dev:test:sys_order:custom:code33:0\",\"dev:test:sys_order:custom:\\\\u8033\\\\u673a:0\"],\"dbDatabase\":\"test\",\"dbTable\":\"sys_order\"}";
 
-//        RedisExpireAndLoadDTO redisExpireDTO = (RedisExpireAndLoadDTO) JsonUtils.JsonStringToObject(cc);
-//        System.out.println(redisExpireDTO);
+//         RedisExpireAndLoadDTO redisExpireDTO = (RedisExpireAndLoadDTO) JsonUtils.JsonStringToObject(cc);
+//         System.out.println(redisExpireDTO);
 
 
         RedisExpireAndLoadDTO redisExpireDTO =

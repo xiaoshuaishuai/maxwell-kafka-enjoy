@@ -29,7 +29,7 @@ public class RedisReloadConsumer {
     private RedisReloadBiz redisReloadBiz;
 
 
-    //    @KafkaListener(topics = "${maxwell.enjoy.redis.reload-topic}", groupId = "${maxwell.enjoy.redis.reload-topic-kafka-group}", containerFactory = "autoListenerContainerFactory")
+    //     @KafkaListener(topics = "${maxwell.enjoy.redis.reload-topic}", groupId = "${maxwell.enjoy.redis.reload-topic-kafka-group}", containerFactory = "autoListenerContainerFactory")
     @KafkaListener(topics = "${maxwell.enjoy.redis.reload-topic}", groupId = "${maxwell.enjoy.redis.reload-topic-kafka-group}", containerFactory = "manualListenerContainerFactory")
     public void receive(List<ConsumerRecord<String, String>> integerStringConsumerRecords, Acknowledgment acknowledgment) {
         log.info(logPrefix + ", integerStringConsumerRecords={}", integerStringConsumerRecords);
