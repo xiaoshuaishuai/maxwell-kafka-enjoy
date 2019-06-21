@@ -1,6 +1,6 @@
 package com.ssx.maxwell.kafka.enjoy.configuration;
 
-import com.ssx.maxwell.kafka.enjoy.common.tools.JsonUtils;
+import com.ssx.maxwell.kafka.enjoy.common.tools.StringUtils;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -42,7 +42,7 @@ public class DynamicDsInfo {
     }
 
     public String getBizBeanName(String dsKey) {
-        return JsonUtils.lineToHump(dsKey) + ServiceBeanDefinitionRegistry.CLASS_SUFFIX;
+        return StringUtils.lineToHump(dsKey) + ServiceBeanDefinitionRegistry.CLASS_SUFFIX;
     }
 
 }

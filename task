@@ -2,7 +2,7 @@
 
 1.如果开启了自定义缓存，自定义缓存字段对应值进行了修改,需要清掉老的缓存。
 eg：
-key = dev:test:sys_order:3:custom:order_code:is_del
+key = dev:test:sys_order:3:custom:order_code:is_deleted
 
 当前redis缓存： key=dev:test:sys_order:3:custom:code1:0
 

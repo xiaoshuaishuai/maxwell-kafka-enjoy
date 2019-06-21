@@ -38,7 +38,7 @@ public class SysOrderDO implements Serializable {
     private Integer sendExpress;
 
     /** 0/保留,1/删除 */
-    private Integer del;
+    private Integer deleted;
 
     /** 创建时间 */
     private Date gmtCreate;

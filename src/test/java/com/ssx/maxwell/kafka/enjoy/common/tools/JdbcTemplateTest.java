@@ -43,7 +43,7 @@ public class JdbcTemplateTest {
             Map<String, Object> cacheMap = Maps.newHashMap();
             Set<String> fieldSet = map.keySet();
             for (String field : fieldSet) {
-                cacheMap.put(JsonUtils.lineToHump(field), map.get(field));
+                cacheMap.put(StringUtils.lineToHump(field), map.get(field));
             }
             cacheList.add(cacheMap);
         }

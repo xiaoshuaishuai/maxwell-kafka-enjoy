@@ -41,7 +41,7 @@ public class MappingDO implements Serializable {
      * 1:删除
      */
     @ApiModelProperty(value = "0:保留/1:删除")
-    private Integer del;
+    private Integer deleted;
     /**
      * 创建时间
      */

@@ -11,8 +11,8 @@
         <result column="table_expire" property="tableExpire"></result>
         <result column="gmt_create" property="gmtCreate"></result>
         <result column="gmt_modify" property="gmtModify"></result>
-        <result column="del" property="del"></result>
-        <result column="enable" property="enable"></result>
+        <result column="is_deleted" property="deleted"></result>
+        <result column="is_enable" property="enable"></result>
         <result column="rule" property="rule"></result>
         <result column="template" property="template"></result>
         <result column="template_sql" property="templateSql"></result>
@@ -27,8 +27,8 @@
         template,
         template_sql,
         remark,
-        enable,
-        del,
+        is_enable,
+        is_deleted,
         gmt_create,
         gmt_modify,
         create_by,
@@ -60,8 +60,8 @@
         template,
         template_sql,
         remark,
-        enable,
-        del,
+        is_enable,
+        is_deleted,
         gmt_create,
         gmt_modify,
         create_by,
@@ -78,7 +78,7 @@
             #{item.templateSql},
             #{item.remark},
             #{item.enable},
-            #{item.del},
+            #{item.deleted},
             #{item.gmtCreate},
             #{item.gmtModify},
             #{item.createBy},
@@ -94,6 +94,6 @@
         <include refid="allColumns"/>
         from
         <include refid="tableName"/>
-        where del=0 and enable=0 and db_database= #{dbDatabase} and db_table=#{dbTable}
+        where is_deleted=0 and is_enable=0 and db_database= #{dbDatabase} and db_table=#{dbTable}
     </select>
 </mapper>

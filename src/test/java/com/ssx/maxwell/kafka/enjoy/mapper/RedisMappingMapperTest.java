@@ -35,15 +35,15 @@ public class RedisMappingMapperTest {
         redisMapping.setPrimaryExpire(200L);
         redisMapping.setTableExpire(200L);
         redisMapping.setRule("1|2|3");
-        redisMapping.setTemplate("{order_code}:{is_del}(2000),{goods_name}:{is_del}(2000)");
+        redisMapping.setTemplate("{order_code}:{is_deleted}(2000),{goods_name}:{is_deleted}(2000)");
         redisMapping.setDbDatabase("test");
         redisMapping.setDbTable("sys_order");
         redisMapping.setEnable(0);
-        redisMapping.setDel(0);
+        redisMapping.setDeleted(0);
         redisMapping.setRemark("1.单表主键引导缓存\n" +
                 "2.全表缓存\n" +
-                "3.自定义缓存 {order_code}:{is_del}=订单号缓存" +
-                "{goods_name}:{is_del}=商品名称缓存");
+                "3.自定义缓存 {order_code}:{is_deleted}=订单号缓存" +
+                "{goods_name}:{is_deleted}=商品名称缓存");
         redisMapping.setGmtCreate(new Date());
         redisMapping.setGmtModify(new Date());
         redisMappingMapper.insert(redisMapping);

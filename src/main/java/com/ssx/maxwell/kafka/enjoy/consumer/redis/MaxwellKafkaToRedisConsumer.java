@@ -3,7 +3,7 @@ package com.ssx.maxwell.kafka.enjoy.consumer.redis;
 import com.google.common.base.Strings;
 import com.google.common.cache.Cache;
 import com.ssx.maxwell.kafka.enjoy.common.helper.KafkaHelper;
-import com.ssx.maxwell.kafka.enjoy.common.model.bo.RedisMappingBO;
+import com.ssx.maxwell.kafka.enjoy.common.model.db.RedisMappingDO;
 import com.ssx.maxwell.kafka.enjoy.common.model.dto.RedisExpireAndLoadDTO;
 import com.ssx.maxwell.kafka.enjoy.common.tools.JsonUtils;
 import com.ssx.maxwell.kafka.enjoy.common.tools.PatternUtils;
@@ -42,7 +42,7 @@ public class MaxwellKafkaToRedisConsumer {
     @Value("${maxwell.enjoy.redis.jvmCache}")
     private boolean redisMappingCacheSwitch;
     @Autowired
-    private Cache<String, RedisMappingBO> redisMappingCache;
+    private Cache<String, RedisMappingDO> redisMappingCache;
 
     @Value("${maxwell.enjoy.redis.expire-topic}")
     private String expireRedisTopic;
@@ -60,7 +60,7 @@ public class MaxwellKafkaToRedisConsumer {
 //        maxwell--消费消息:{"database":"test","table":"title","type":"bootstrap-insert","ts":1559548626,"data":{"id":2,"name":"2","content":"3"}}
 //        maxwell--消费消息:{"database":"test","table":"title","type":"bootstrap-insert","ts":1559548626,"data":{"id":3,"name":"3","content":"3"}}
 //        maxwell--消费消息:{"database":"test","table":"title","type":"bootstrap-complete","ts":1559548626,"data":{}}
-//{"database":"test","table":"sys_order","type":"update","ts":1559640375,"xid":2012,"commit":true,"data":{"id":1,"order_code":"1","category":0,"goods_name":"牙膏","is_send_express":1,"is_del":0,"gmt_create":"2019-06-04 17:21:45","gmt_modify":"2019-06-04 17:26:15"},"old":{"is_send_express":0,"gmt_modify":"2019-06-04 17:25:25"}}
+//{"database":"test","table":"sys_order","type":"update","ts":1559640375,"xid":2012,"commit":true,"data":{"id":1,"order_code":"1","category":0,"goods_name":"牙膏","is_send_express":1,"is_deleted":0,"gmt_create":"2019-06-04 17:21:45","gmt_modify":"2019-06-04 17:26:15"},"old":{"is_send_express":0,"gmt_modify":"2019-06-04 17:25:25"}}
         log.info(logPrefix + ", integerStringConsumerRecords={}", integerStringConsumerRecords);
         try {
             for (ConsumerRecord consumerRecord : integerStringConsumerRecords) {
@@ -77,7 +77,7 @@ public class MaxwellKafkaToRedisConsumer {
                         String database = (String) map.get("database");
                         String table = (String) map.get("table");
                         String jvmCacheKey = JvmCache.redisJvmCacheKey(profile, database, table);
-                        RedisMappingBO redisMapping = redisMappingCache.getIfPresent(jvmCacheKey);
+                        RedisMappingDO redisMapping = redisMappingCache.getIfPresent(jvmCacheKey);
                         if (null != redisMapping) {
                             String rule = redisMapping.getRule();
                             if (MaxwellBinlogConstants.REDIS_RULE_0.equals(redisMapping.getRule())) {
@@ -151,8 +151,8 @@ public class MaxwellKafkaToRedisConsumer {
                                                                     }
                                                                 }
                                                             }
-//                                                        :order_code:is_del
-//                                                        :goods_name:is_del
+//                                                        :order_code:is_deleted
+//                                                        :goods_name:is_deleted
                                                             String conversionKey = columnStringBuilder.insert(0, redisKey).toString();
                                                             log.info(logPrefix + "处理自定义缓存redisKey={}", conversionKey);
                                                             redisExpireDTO.getKeyList().add(conversionKey);

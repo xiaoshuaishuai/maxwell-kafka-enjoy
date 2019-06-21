@@ -8,15 +8,15 @@
         <result column="order_code" property="orderCode"/>
         <result column="category" property="category"/>
         <result column="goods_name" property="goodsName"/>
-        <result column="send_express" property="sendExpress"/>
-        <result column="del" property="del"/>
+        <result column="is_send_express" property="sendExpress"/>
+        <result column="is_deleted" property="deleted"></result>
         <result column="gmt_create" property="gmtCreate"/>
         <result column="gmt_modify" property="gmtModify"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, order_code, category, goods_name, send_express, del, gmt_create, gmt_modify
+        id, order_code, category, goods_name, is_send_express, is_deleted, gmt_create, gmt_modify
     </sql>
     <sql id="tableName">
         sys_order

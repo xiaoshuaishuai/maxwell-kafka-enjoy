@@ -9,16 +9,16 @@
         <result column="db_table" property="dbTable"></result>
         <result column="gmt_create" property="gmtCreate"></result>
         <result column="gmt_modify" property="gmtModify"></result>
-        <result column="del" property="del"></result>
-        <result column="enable" property="enable"></result>
+        <result column="is_deleted" property="deleted"></result>
+        <result column="is_enable" property="enable"></result>
     </resultMap>
     <sql id="allColumns">
         id,
         db_database,
         db_table,
         remark,
-        enable,
-        del,
+        is_enable,
+        is_deleted,
         gmt_create,
         gmt_modify,
         create_by,
@@ -44,8 +44,8 @@
         db_database,
         db_table,
         remark,
-        enable,
-        del,
+        is_enable,
+        is_deleted,
         gmt_create,
         gmt_modify,
         create_by,
@@ -57,7 +57,7 @@
             #{item.dbTable},
             #{item.remark},
             #{item.enable},
-            #{item.del},
+            #{item.deleted},
             #{item.gmtCreate},
             #{item.gmtModify},
             #{item.createBy},
