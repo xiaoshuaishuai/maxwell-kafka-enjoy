@@ -1,17 +1,31 @@
 package com.ssx.maxwell.kafka.enjoy.configuration;
 
+import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourceProperty;
+import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceProperties;
+import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.hikari.HikariCpConfig;
+import com.google.common.base.Strings;
+import com.ssx.maxwell.kafka.enjoy.common.model.db.DynamicDataSourceDO;
 import com.ssx.maxwell.kafka.enjoy.common.tools.ApplicationYamlUtils;
 import com.ssx.maxwell.kafka.enjoy.common.tools.DynGenerateClassUtils;
+import com.ssx.maxwell.kafka.enjoy.common.tools.JsonUtils;
+import com.ssx.maxwell.kafka.enjoy.mapper.DynamicDataSourceMapper;
+import com.zaxxer.hikari.HikariDataSource;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.BeanDefinitionRegistryPostProcessor;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.springframework.beans.factory.support.AbstractBeanDefinition.AUTOWIRE_BY_NAME;
 
@@ -22,7 +36,7 @@ import static org.springframework.beans.factory.support.AbstractBeanDefinition.A
  */
 @Component
 @Slf4j
-public class ServiceBeanDefinitionRegistry implements BeanDefinitionRegistryPostProcessor {
+public class ServiceBeanDefinitionRegistry implements BeanDefinitionRegistryPostProcessor, ApplicationContextAware {
 
     /**
      * 目标类路径
@@ -33,7 +47,14 @@ public class ServiceBeanDefinitionRegistry implements BeanDefinitionRegistryPost
      */
     public static final String CLASS_SUFFIX = "BizImpl";
 
-    public static List<DynamicDsInfo> DYNAMICDSINFO_LIST;
+    public static List<DynamicDsInfo> DYNAMIC_DS_INFO_LIST;
+
+    private ApplicationContext applicationContext;
+
+    @Autowired
+    private DynamicDataSourceMapper dynamicDataSourceMapper;
+
+    public static final String HIKARI_DATASOURCE = "com.zaxxer.hikari.HikariDataSource";
 
     @Override
     public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry beanDefinitionRegistry) throws BeansException {
@@ -60,12 +81,34 @@ public class ServiceBeanDefinitionRegistry implements BeanDefinitionRegistryPost
 //         }
 
         try {
+            DynamicDataSourceProperties dynamicDataSourceProperties = applicationContext.getBean(DynamicDataSourceProperties.class);
+            for (String s : applicationContext.getBeanDefinitionNames()) {
+                System.out.println(s);
+            }
+            List<DynamicDataSourceDO> dynamicDataSourceDOS = dynamicDataSourceMapper.list();
+            Map<String, DataSourceProperty> dataSourcePropertyMap = new HashMap<>();
+            for (DynamicDataSourceDO dataSourceDO : dynamicDataSourceDOS) {
+                DataSourceProperty dataSourceProperty = new DataSourceProperty();
+                BeanUtils.copyProperties(dataSourceDO, dataSourceProperty);
+                //fixme druid
+                if (HIKARI_DATASOURCE.equals(dataSourceDO.getType()) && !Strings.isNullOrEmpty(dataSourceDO.getPoolConfig())) {
+                    HikariCpConfig hikariCpConfig = (HikariCpConfig) JsonUtils.JsonStringToObject(dataSourceDO.getPoolConfig());
+                    dataSourceProperty.setType(HikariDataSource.class);
+                    dataSourceProperty.setHikari(hikariCpConfig);
+                }
+                dataSourcePropertyMap.put("business_" + dataSourceDO.getDbDataBase(), dataSourceProperty);
+            }
+            dynamicDataSourceProperties.setDatasource(dataSourcePropertyMap);
+
+//            dynamicDataSourceProperties.setDatasource();
+            //todo 动态数据库配置信息，这里改为从数据库配置，不从yml读取 2019-6-22 21:36:50
+
             List<DynamicDsInfo> dbKeyLists = ApplicationYamlUtils.readDynamicConfig();
             if (null == dbKeyLists || dbKeyLists.isEmpty()) {
                 log.warn("动态数据源配置为空=========");
                 return;
             }
-            DYNAMICDSINFO_LIST = new ArrayList<>(dbKeyLists);
+            DYNAMIC_DS_INFO_LIST = new ArrayList<>(dbKeyLists);
 //             [2019-06-14 11:13:10:801][maxwell-kafka-enjoy][INFO ] 10616 [com.ssx.maxwell.kafka.enjoy.configuration.ServiceBeanDefinitionRegistry.postProcessBeanDefinitionRegistry](70) : -- 动态加载bean数据源配置信息, dynamicDsInfo=DynamicDsInfo(dbKey=maxwell, database=maxwell, bizBeanName=maxwellBizImpl, cls=com.ssx.maxwell.kafka.enjoy.biz.maxwellBizImpl)
 //[2019-06-14 11:13:16:969][maxwell-kafka-enjoy][INFO ] 10616 [com.ssx.maxwell.kafka.enjoy.configuration.ServiceBeanDefinitionRegistry.postProcessBeanDefinitionRegistry](70) : -- 动态加载bean数据源配置信息, dynamicDsInfo=DynamicDsInfo(dbKey=business_test, database=test, bizBeanName=businessTestBizImpl, cls=com.ssx.maxwell.kafka.enjoy.biz.businessTestBizImpl)
             for (DynamicDsInfo dynamicDsInfo : dbKeyLists) {
@@ -93,5 +136,10 @@ public class ServiceBeanDefinitionRegistry implements BeanDefinitionRegistryPost
     @Override
     public void postProcessBeanFactory(ConfigurableListableBeanFactory configurableListableBeanFactory) throws BeansException {
 
+    }
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
     }
 }

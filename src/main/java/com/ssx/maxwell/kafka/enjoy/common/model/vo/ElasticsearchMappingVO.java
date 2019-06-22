@@ -1,4 +1,4 @@
-package com.ssx.maxwell.kafka.enjoy.common.model.vo.bo;
+package com.ssx.maxwell.kafka.enjoy.common.model.vo;
 
 import com.ssx.maxwell.kafka.enjoy.common.model.db.ElasticsearchMappingDO;
 import lombok.Data;

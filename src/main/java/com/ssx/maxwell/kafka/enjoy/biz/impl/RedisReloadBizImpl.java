@@ -98,7 +98,7 @@ public class RedisReloadBizImpl implements RedisReloadBiz {
      * @date: 2019/6/14 16:57
      */
     private DynamicDsInfo loopGetDynamicDsInfo(String dbDatabase) {
-        List<DynamicDsInfo> dynamicDsInfoList = ServiceBeanDefinitionRegistry.DYNAMICDSINFO_LIST;
+        List<DynamicDsInfo> dynamicDsInfoList = ServiceBeanDefinitionRegistry.DYNAMIC_DS_INFO_LIST;
         if (null == dynamicDsInfoList || dynamicDsInfoList.isEmpty()) {
             log.error("动态数据源BIZ加载失败、bean集合为空");
         }
