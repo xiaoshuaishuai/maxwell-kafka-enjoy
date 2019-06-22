@@ -2,7 +2,7 @@ package com.ssx.maxwell.kafka.enjoy.controller;
 
 import com.ssx.maxwell.kafka.enjoy.common.model.bo.ElasticsearchMappingBO;
 import com.ssx.maxwell.kafka.enjoy.common.model.db.ElasticsearchMappingDO;
-import com.ssx.maxwell.kafka.enjoy.common.model.vo.bo.ElasticsearchMappingVO;
+import com.ssx.maxwell.kafka.enjoy.common.model.vo.ElasticsearchMappingVO;
 import com.ssx.maxwell.kafka.enjoy.service.ElasticsearchMappingService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

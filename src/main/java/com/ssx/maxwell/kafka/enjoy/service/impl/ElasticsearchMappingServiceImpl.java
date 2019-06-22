@@ -2,7 +2,7 @@ package com.ssx.maxwell.kafka.enjoy.service.impl;
 
 import com.ssx.maxwell.kafka.enjoy.common.model.bo.ElasticsearchMappingBO;
 import com.ssx.maxwell.kafka.enjoy.common.model.db.ElasticsearchMappingDO;
-import com.ssx.maxwell.kafka.enjoy.common.model.vo.bo.ElasticsearchMappingVO;
+import com.ssx.maxwell.kafka.enjoy.common.model.vo.ElasticsearchMappingVO;
 import com.ssx.maxwell.kafka.enjoy.mapper.ElasticsearchMappingMapper;
 import com.ssx.maxwell.kafka.enjoy.service.ElasticsearchMappingService;
 import lombok.extern.slf4j.Slf4j;
