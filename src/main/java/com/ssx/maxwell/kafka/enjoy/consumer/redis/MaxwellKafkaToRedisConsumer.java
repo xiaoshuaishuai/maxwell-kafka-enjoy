@@ -144,10 +144,11 @@ public class MaxwellKafkaToRedisConsumer {
                                                                                     //转码
                                                                                     columnStringBuilder.append(UnicodeUtils.cnToUnicode((String) dataJson.get(columnString)));
                                                                                 } else {
-                                                                                    columnStringBuilder.append(dataJson.get(columnString));
+                                                                                    //字符串类型参数为空NONE填充
+                                                                                    columnStringBuilder.append(Strings.isNullOrEmpty(String.valueOf(dataJson.get(columnString))) ? MaxwellBinlogConstants.REDIS_VAL_NONE_MAGIC : dataJson.get(columnString));
                                                                                 }
                                                                             } else {
-                                                                                columnStringBuilder.append(dataJson.get(columnString));
+                                                                                columnStringBuilder.append(null == dataJson.get(columnString) ? MaxwellBinlogConstants.REDIS_VAL_NONE_MAGIC : dataJson.get(columnString));
                                                                             }
                                                                         }
                                                                     }

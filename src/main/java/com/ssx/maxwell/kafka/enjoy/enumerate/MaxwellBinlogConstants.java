@@ -31,7 +31,7 @@ public final class MaxwellBinlogConstants {
     /**
      * 自定义缓存空值填充
      */
-    public static final String REDIS_VAL_NULL_MAGIC = "N";
+    public static final String REDIS_VAL_NONE_MAGIC = "NONE";
 
 
     public enum MaxwellBinlogEnum {

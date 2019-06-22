@@ -150,7 +150,7 @@ public class RedisReloadBizImpl implements RedisReloadBiz {
                                     keyBuilder.append(":");
                                     Object dbObj = stringObjectMap.get(field);
                                     if (null == dbObj || "".equals(dbObj)) {
-                                        keyBuilder.append(MaxwellBinlogConstants.REDIS_VAL_NULL_MAGIC);
+                                        keyBuilder.append(MaxwellBinlogConstants.REDIS_VAL_NONE_MAGIC);
                                     } else {
                                         if (dbObj instanceof String) {
                                             //字符串判断是否包含中文
