@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssx.maxwell.kafka.enjoy.mapper.ElasticsearchMappingMapper">
+    <resultMap id="baseMap" type="com.ssx.maxwell.kafka.enjoy.common.model.db.DynamicDatasourceDO">
+        <id column="id" property="id"/>
+        <result column="db_database" property="dbDatabase"></result>
+        <result column="pool_type" property="poolType"></result>
+        <result column="pool_config" property="poolConfig"></result>
+        <result column="driver_class_name" property="driverClassName"></result>
+        <result column="url" property="url"></result>
+        <result column="username" property="username"></result>
+        <result column="password" property="password"></result>
+        <result column="jndi_name" property="jndiName"></result>
+        <result column="is_enable" property="enable"></result>
+        <result column="is_deleted" property="deleted"></result>
+        <result column="remark" property="remark"></result>
+        <result column="create_by" property="createBy"></result>
+        <result column="modify_by" property="modifyBy"></result>
+        <result column="gmt_create" property="gmtCreate"></result>
+        <result column="gmt_modify" property="gmtModify"></result>
+    </resultMap>
+    <sql id="allColumns">
+        id,
+        db_database,
+        pool_type,
+        pool_config,
+        driver_class_name,
+        url,
+        username,
+        password,
+        jndi_name,
+        is_enable,
+        is_deleted,
+        remark,
+        gmt_create,
+        gmt_modify,
+        create_by,
+        modify_by
+   </sql>
+
+    <sql id="tableName">
+        dynamic_datasource
+   </sql>
+
+    <select id="list" resultMap="baseMap">
+        select
+        <include refid="allColumns"/>
+        from
+        <include refid="tableName"/>
+    </select>
+
+    <insert id="insertOrUpdateBatch">
+    </insert>
+
+</mapper>

@@ -15,7 +15,7 @@ import java.util.Date;
 @Data
 @Accessors(chain = true)
 @ToString(callSuper = true)
-public class DynamicDataSourceDO {
+public class DynamicDatasourceDO {
     /**
      * 主键
      */
@@ -23,16 +23,18 @@ public class DynamicDataSourceDO {
     private Long id;
     /**
      * database name
+     * //fixme conversion dbDataBase
      */
     @ApiModelProperty(value = "database name")
-    private String dbDataBase;
+    private String dbDatabase;
     
     /**
      * 连接池类型，如果不设置自动查找 druid > hikari
      * //todo 连接池没有配置在数据库，默认采用hikari配置文件中的配置，可以考虑配置在库中用json字符串映射相关连接池
+     * //fixme conversion dbDataBase
      */
-    @ApiModelProperty(value = "连接池类型，如果不设置自动查找 druid   hikari 默认 hikari")
-    private String type;
+    @ApiModelProperty(value = "连接池类型，如果不设置自动查找 1/druid  0/hikari 默认 0")
+    private Integer poolType;
     
     /**
      * druid or hikari json配置

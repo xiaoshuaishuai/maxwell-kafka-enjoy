@@ -1,7 +1,7 @@
 package com.ssx.maxwell.kafka.enjoy.mapper;
 
-import com.ssx.maxwell.kafka.enjoy.common.model.bo.DynamicDataSourceBO;
-import com.ssx.maxwell.kafka.enjoy.common.model.db.DynamicDataSourceDO;
+import com.ssx.maxwell.kafka.enjoy.common.model.bo.DynamicDatasourceBO;
+import com.ssx.maxwell.kafka.enjoy.common.model.db.DynamicDatasourceDO;
 import org.springframework.stereotype.Component;
 
 /**
@@ -10,5 +10,5 @@ import org.springframework.stereotype.Component;
  * @description:
  */
 @Component
-public interface DynamicDataSourceMapper extends EnjoyBaseMapper<DynamicDataSourceDO, DynamicDataSourceBO> {
+public interface DynamicDataSourceMapper extends EnjoyBaseMapper<DynamicDatasourceDO, DynamicDatasourceBO> {
 }

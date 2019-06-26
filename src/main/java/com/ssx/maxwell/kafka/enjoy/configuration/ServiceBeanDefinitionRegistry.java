@@ -4,7 +4,7 @@ import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourcePrope
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceProperties;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.hikari.HikariCpConfig;
 import com.google.common.base.Strings;
-import com.ssx.maxwell.kafka.enjoy.common.model.db.DynamicDataSourceDO;
+import com.ssx.maxwell.kafka.enjoy.common.model.db.DynamicDatasourceDO;
 import com.ssx.maxwell.kafka.enjoy.common.tools.ApplicationYamlUtils;
 import com.ssx.maxwell.kafka.enjoy.common.tools.DynGenerateClassUtils;
 import com.ssx.maxwell.kafka.enjoy.common.tools.JsonUtils;
@@ -55,6 +55,8 @@ public class ServiceBeanDefinitionRegistry implements BeanDefinitionRegistryPost
     private DynamicDataSourceMapper dynamicDataSourceMapper;
 
     public static final String HIKARI_DATASOURCE = "com.zaxxer.hikari.HikariDataSource";
+    public static final int HIKARI_DATASOURCE_INT = 0;
+
 
     @Override
     public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry beanDefinitionRegistry) throws BeansException {
@@ -85,18 +87,18 @@ public class ServiceBeanDefinitionRegistry implements BeanDefinitionRegistryPost
             for (String s : applicationContext.getBeanDefinitionNames()) {
                 System.out.println(s);
             }
-            List<DynamicDataSourceDO> dynamicDataSourceDOS = dynamicDataSourceMapper.list();
+            List<DynamicDatasourceDO> dynamicDataSourceDOS = dynamicDataSourceMapper.list();
             Map<String, DataSourceProperty> dataSourcePropertyMap = new HashMap<>();
-            for (DynamicDataSourceDO dataSourceDO : dynamicDataSourceDOS) {
+            for (DynamicDatasourceDO dataSourceDO : dynamicDataSourceDOS) {
                 DataSourceProperty dataSourceProperty = new DataSourceProperty();
                 BeanUtils.copyProperties(dataSourceDO, dataSourceProperty);
                 //fixme druid
-                if (HIKARI_DATASOURCE.equals(dataSourceDO.getType()) && !Strings.isNullOrEmpty(dataSourceDO.getPoolConfig())) {
+                if (HIKARI_DATASOURCE_INT == dataSourceDO.getPoolType() && !Strings.isNullOrEmpty(dataSourceDO.getPoolConfig())) {
                     HikariCpConfig hikariCpConfig = (HikariCpConfig) JsonUtils.JsonStringToObject(dataSourceDO.getPoolConfig());
                     dataSourceProperty.setType(HikariDataSource.class);
                     dataSourceProperty.setHikari(hikariCpConfig);
                 }
-                dataSourcePropertyMap.put("business_" + dataSourceDO.getDbDataBase(), dataSourceProperty);
+                dataSourcePropertyMap.put("business_" + dataSourceDO.getDbDatabase(), dataSourceProperty);
             }
             dynamicDataSourceProperties.setDatasource(dataSourcePropertyMap);
 
