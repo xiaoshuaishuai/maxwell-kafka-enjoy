@@ -4,6 +4,7 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.ssx.maxwell.kafka.enjoy.biz.RedisReloadBiz;
+import com.ssx.maxwell.kafka.enjoy.common.helper.BeanHelper;
 import com.ssx.maxwell.kafka.enjoy.common.helper.RedissonHelper;
 import com.ssx.maxwell.kafka.enjoy.common.helper.StringRedisTemplateHelper;
 import com.ssx.maxwell.kafka.enjoy.common.model.bo.RedisMappingBO;
@@ -39,11 +40,11 @@ public class RedisReloadBizImpl implements RedisReloadBiz {
     @Autowired
     private RedissonHelper redissonHelper;
     @Autowired
+    private BeanHelper beanHelper;
+    @Autowired
     private RedisMappingService redisMappingService;
     @Value("${spring.profiles.active:dev}")
     private String profile;
-    @Autowired
-    private SpringContextUtils springContextUtils;
     @Autowired
     private StringRedisTemplateHelper stringRedisTemplateHelper;
 
@@ -65,21 +66,21 @@ public class RedisReloadBizImpl implements RedisReloadBiz {
                             String jdbcSql = MessageFormat.format(MaxwellBinlogConstants.RedisRunSqlTemplateEnum.SQL_PRIMARY_ID.getTemplate(), dbTable, dbPid);
                             String redisKey = MessageFormat.format(MaxwellBinlogConstants.RedisCacheKeyTemplateEnum.REDIS_CACHE_KEY_TEMPLATE_ITEM_PK_ID.getTemplate(), profile, dbDatabase, dbTable, dbPid);
                             log.info("sql= {} , key= {}", jdbcSql, redisKey);
-                            executeToRedis(loopGetDynamicDsInfo(dbDatabase), jdbcSql, redisKey, redisMapping, false, redisMapping.getPrimaryExpire());
+                            executeToRedis(beanHelper.loopGetDynamicDsInfo(dbDatabase), jdbcSql, redisKey, redisMapping, false, redisMapping.getPrimaryExpire());
                         }
                         if (ArrayUtils.contains(ruleArr, MaxwellBinlogConstants.REDIS_RULE_2)) {
                             //全表缓存
                             String jdbcSql = MessageFormat.format(MaxwellBinlogConstants.RedisRunSqlTemplateEnum.SQL_ALL.getTemplate(), dbTable);
                             String redisKey = MessageFormat.format(MaxwellBinlogConstants.RedisCacheKeyTemplateEnum.REDIS_CACHE_KEY_TEMPLATE_PREFIX_LIST.getTemplate(), profile, dbDatabase, dbTable);
                             log.info("sql= {} , key= {}", jdbcSql, redisKey);
-                            executeToRedis(loopGetDynamicDsInfo(dbDatabase), jdbcSql, redisKey, redisMapping, false, redisMapping.getTableExpire());
+                            executeToRedis(beanHelper.loopGetDynamicDsInfo(dbDatabase), jdbcSql, redisKey, redisMapping, false, redisMapping.getTableExpire());
                         }
                         if (ArrayUtils.contains(ruleArr, MaxwellBinlogConstants.REDIS_RULE_3)) {
                             //自定义缓存
                             String jdbcSql = MessageFormat.format(MaxwellBinlogConstants.RedisRunSqlTemplateEnum.SQL_PRIMARY_ID.getTemplate(), dbTable, dbPid);
                             String redisKey = MessageFormat.format(MaxwellBinlogConstants.RedisCacheKeyTemplateEnum.REDIS_CACHE_KEY_TEMPLATE_PREFIX_CUSTOM.getTemplate(), profile, dbDatabase, dbTable);
                             log.info("sql= {} , key= {}", jdbcSql, redisKey);
-                            executeToRedis(loopGetDynamicDsInfo(dbDatabase), jdbcSql, redisKey, redisMapping, true, Long.MAX_VALUE);
+                            executeToRedis(beanHelper.loopGetDynamicDsInfo(dbDatabase), jdbcSql, redisKey, redisMapping, true, Long.MAX_VALUE);
 
                         }
                     }
@@ -87,27 +88,6 @@ public class RedisReloadBizImpl implements RedisReloadBiz {
             }
         });
         return false;
-    }
-
-    /**
-     * 功能描述: 获取数据源相关信息
-     *
-     * @param: [dbDatabase]
-     * @return: com.ssx.maxwell.kafka.enjoy.configuration.DynamicDsInfo
-     * @author: shuaishuai.xiao
-     * @date: 2019/6/14 16:57
-     */
-    private DynamicDsInfo loopGetDynamicDsInfo(String dbDatabase) {
-        List<DynamicDsInfo> dynamicDsInfoList = ServiceBeanDefinitionRegistry.DYNAMIC_DS_INFO_LIST;
-        if (null == dynamicDsInfoList || dynamicDsInfoList.isEmpty()) {
-            log.error("动态数据源BIZ加载失败、bean集合为空");
-        }
-        for (DynamicDsInfo d : dynamicDsInfoList) {
-            if (null != d && dbDatabase.equals(d.getDatabase())) {
-                return d;
-            }
-        }
-        return null;
     }
 
     /**
@@ -125,7 +105,7 @@ public class RedisReloadBizImpl implements RedisReloadBiz {
             String template = redisMapping.getTemplate();
             log.info("自定义缓存, template={}", template);
             if (!Strings.isNullOrEmpty(template)) {
-                List<Map<String, Object>> dbDataList = queryDbList(dynamicDsInfo, sql);
+                List<Map<String, Object>> dbDataList = beanHelper.queryDbList(dynamicDsInfo, sql);
                 if (null == dbDataList || dbDataList.isEmpty()) {
                     log.warn("自定义缓存查询数据库集合为空, 不进行构建, redisMapping={}", redisMapping);
                 } else {
@@ -149,21 +129,7 @@ public class RedisReloadBizImpl implements RedisReloadBiz {
                                 if (!Strings.isNullOrEmpty(field)) {
                                     keyBuilder.append(":");
                                     Object dbObj = stringObjectMap.get(field);
-                                    if (null == dbObj || "".equals(dbObj)) {
-                                        keyBuilder.append(MaxwellBinlogConstants.REDIS_VAL_NONE_MAGIC);
-                                    } else {
-                                        if (dbObj instanceof String) {
-                                            //字符串判断是否包含中文
-                                            if (PatternUtils.isContainChinese((String) dbObj)) {
-                                                //转码
-                                                keyBuilder.append(UnicodeUtils.cnToUnicode((String) dbObj));
-                                            } else {
-                                                keyBuilder.append(dbObj);
-                                            }
-                                        } else {
-                                            keyBuilder.append(dbObj);
-                                        }
-                                    }
+                                    beanHelper.appendRedisKeySuffix(dbObj, keyBuilder);
                                 }
                             }
                             //获取自定义缓存过期时间
@@ -177,7 +143,7 @@ public class RedisReloadBizImpl implements RedisReloadBiz {
 
             }
         } else {
-            List<Map<String, Object>> dbDataList = queryDbList(dynamicDsInfo, sql);
+            List<Map<String, Object>> dbDataList = beanHelper.queryDbList(dynamicDsInfo, sql);
             if (null == dbDataList || dbDataList.isEmpty()) {
                 //处理DB查询无数据情况
                 CacheListDTO cacheListDTO = new CacheListDTO().setNone(true);
@@ -189,21 +155,6 @@ public class RedisReloadBizImpl implements RedisReloadBiz {
         }
 
     }
-
-    private List<Map<String, Object>> queryDbList(DynamicDsInfo dynamicDsInfo, String sql) {
-        try {
-            Object object = springContextUtils.getBean(dynamicDsInfo.getBizBeanName());
-            Class cls = object.getClass();
-            Method method = cls.getMethod(DynGenerateClassUtils.BIZ_DEFAULT_METHOD_NAME, new Class[]{String.class});
-            List<Map<String, Object>> dbDataList = (List<Map<String, Object>>) method.invoke(object, sql);
-            log.info("数据库源数据返回,dynamicDsInfo={}, sql={},list={}", dynamicDsInfo, sql, dbDataList);
-            return dbDataList;
-        } catch (Exception e) {
-            log.error("反射执行BIZ出错,e=", e);
-        }
-        return null;
-    }
-
     /**
      * 功能描述: set to redis
      *

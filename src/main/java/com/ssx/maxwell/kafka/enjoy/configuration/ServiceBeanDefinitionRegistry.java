@@ -49,7 +49,7 @@ public class ServiceBeanDefinitionRegistry extends InstantiationAwareBeanPostPro
             DYNAMIC_DS_INFO_LIST = new ArrayList<>(dbKeyLists);
             for (DynamicDsInfo dynamicDsInfo : dbKeyLists) {
                 log.info("动态加载bean数据源配置信息, dynamicDsInfo={}", dynamicDsInfo);
-                Class bizClass = DynGenerateClassUtils.createBizClass(DIST_PKG, dynamicDsInfo.getBizBeanName(), dynamicDsInfo.getDbKey());
+                Class bizClass = DynGenerateClassUtils.createBizClass(DIST_PKG, dynamicDsInfo.getClassName(), dynamicDsInfo.getDbKey());
                 BeanDefinitionBuilder beanDefinitionBuilder = BeanDefinitionBuilder.rootBeanDefinition(bizClass);
                 beanDefinitionBuilder.addPropertyReference("jdbcTemplate", "jdbcTemplate");
                 beanDefinitionBuilder.setAutowireMode(AUTOWIRE_BY_NAME);

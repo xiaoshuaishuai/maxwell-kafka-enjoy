@@ -182,7 +182,7 @@ public class MaxwellKafkaToRedisConsumer {
                     }
                     //todo 不开启jvm缓存 查数据库 2019-6-4 16:15:44
                 } else {
-                    log.warn(logPrefix + ", redis_mapping未配置该表, 忽略消息, message={}", message);
+                    log.info(logPrefix + ", redis_mapping未配置该表, 忽略消息, message={}", message);
                 }
             }
             acknowledgment.acknowledge();

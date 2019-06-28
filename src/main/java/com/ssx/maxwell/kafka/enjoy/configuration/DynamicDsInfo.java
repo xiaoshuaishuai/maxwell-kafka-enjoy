@@ -26,6 +26,11 @@ public class DynamicDsInfo {
     private String bizBeanName;
     /**
      * 类
+     * AAA
+     */
+    private String className;
+    /**
+     * 类
      * com.xx.xx.AAA
      */
     private String cls;
@@ -35,6 +40,7 @@ public class DynamicDsInfo {
         this.bizBeanName = getBizBeanName(dbKey);
         this.database = dbKey;
         this.cls = ServiceBeanDefinitionRegistry.DIST_PKG + "." + getClassName(bizBeanName);
+        this.className = getClassName(bizBeanName);
     }
 
     /**
