@@ -5,6 +5,7 @@ import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourcePrope
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.hikari.HikariCpConfig;
 import com.google.common.collect.Maps;
 import com.ssx.maxwell.kafka.enjoy.common.tools.JsonUtils;
+import com.ssx.maxwell.kafka.enjoy.enumerate.SqlConstants;
 import com.zaxxer.hikari.HikariDataSource;
 import lombok.extern.slf4j.Slf4j;
 
@@ -21,7 +22,6 @@ import java.util.Map;
 @Slf4j
 public class JdbcDynamicDataSourceProviderImpl extends AbstractJdbcDataSourceProvider {
 
-    public static final String LOAD_DS_SQL = "SELECT id, db_database, pool_name, pool_config, driver_class_name, url, username, `password`, jndi_name FROM `dynamic_datasource` WHERE is_enable = 0 and is_deleted = 0 GROUP BY db_database;";
     /**
      * DRUID数据源类
      */
@@ -39,7 +39,7 @@ public class JdbcDynamicDataSourceProviderImpl extends AbstractJdbcDataSourcePro
     @Override
     protected Map<String, DataSourceProperty> executeStmt(Statement statement) throws SQLException {
         Map<String, DataSourceProperty> resultMap = Maps.newHashMap();
-        ResultSet rs = statement.executeQuery(LOAD_DS_SQL);
+        ResultSet rs = statement.executeQuery(SqlConstants.LOAD_DS_SQL);
         try {
             while (rs.next()) {
                 String dbDatabase = rs.getString("db_database");

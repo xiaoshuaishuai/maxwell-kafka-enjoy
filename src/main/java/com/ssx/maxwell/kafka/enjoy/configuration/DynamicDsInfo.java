@@ -13,11 +13,11 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class DynamicDsInfo {
     /**
-     * db_key
+     * db_key =  数据库
      */
     private String dbKey;
     /**
-     * 数据库
+     * 数据库 =  db_key
      */
     private String database;
     /**
@@ -33,16 +33,33 @@ public class DynamicDsInfo {
     public DynamicDsInfo(String dbKey) {
         this.dbKey = dbKey;
         this.bizBeanName = getBizBeanName(dbKey);
-        if (!"master".equals(dbKey) && dbKey.startsWith("business_")) {
-            this.database = dbKey.substring(9);
-        } else {
-            this.database = dbKey;
-        }
-        this.cls = ServiceBeanDefinitionRegistry.DIST_PKG + "." + bizBeanName;
+        this.database = dbKey;
+        this.cls = ServiceBeanDefinitionRegistry.DIST_PKG + "." + getClassName(bizBeanName);
     }
 
+    /**
+     * testDatasourceBizImpl
+     *
+     * @param dsKey
+     * @return
+     */
     public String getBizBeanName(String dsKey) {
         return StringUtils.lineToHump(dsKey) + ServiceBeanDefinitionRegistry.CLASS_SUFFIX;
+    }
+
+    /**
+     * bizBeanName 首字母转大写
+     * testDatasourceBizImpl 转 TestDatasourceBizImpl
+     *
+     * @param bizBeanName
+     * @return
+     */
+    public String getClassName(String bizBeanName) {
+        StringBuilder className = new StringBuilder();
+        char zeroIndexChar = bizBeanName.charAt(0);
+        className.append(String.valueOf(zeroIndexChar).toUpperCase());
+        className.append(bizBeanName.substring(1));
+        return className.toString();
     }
 
 }
