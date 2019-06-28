@@ -23,7 +23,6 @@ public class DynamicDatasourceDO {
     private Long id;
     /**
      * database name
-     * //fixme conversion dbDataBase
      */
     @ApiModelProperty(value = "database name")
     private String dbDatabase;
