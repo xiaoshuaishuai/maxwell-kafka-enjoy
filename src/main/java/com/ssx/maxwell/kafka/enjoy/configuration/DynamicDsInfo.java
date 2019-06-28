@@ -33,7 +33,7 @@ public class DynamicDsInfo {
     public DynamicDsInfo(String dbKey) {
         this.dbKey = dbKey;
         this.bizBeanName = getBizBeanName(dbKey);
-        if (!"maxwell".equals(dbKey) && dbKey.startsWith("business_")) {
+        if (!"master".equals(dbKey) && dbKey.startsWith("business_")) {
             this.database = dbKey.substring(9);
         } else {
             this.database = dbKey;

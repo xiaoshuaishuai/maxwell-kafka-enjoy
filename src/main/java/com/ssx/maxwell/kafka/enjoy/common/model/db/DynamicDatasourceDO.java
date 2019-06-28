@@ -30,11 +30,9 @@ public class DynamicDatasourceDO {
     
     /**
      * 连接池类型，如果不设置自动查找 druid > hikari
-     * //todo 连接池没有配置在数据库，默认采用hikari配置文件中的配置，可以考虑配置在库中用json字符串映射相关连接池
-     * //fixme conversion dbDataBase
      */
-    @ApiModelProperty(value = "连接池类型，如果不设置自动查找 1/druid  0/hikari 默认 0")
-    private Integer poolType;
+    @ApiModelProperty(value = "连接池类")
+    private String poolName;
     
     /**
      * druid or hikari json配置

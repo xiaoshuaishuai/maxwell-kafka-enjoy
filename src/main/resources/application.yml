@@ -19,28 +19,12 @@ spring:
   datasource:
     dynamic:
       datasource:
-        maxwell:
+        master:
           driver-class-name: com.mysql.jdbc.Driver
           url: jdbc:mysql://192.168.225.1:3306/maxwell?useUnicode=true&characterEncoding=UTF8&useSSL=false&allowMultiQueries=true&autoReconnect=true&failOverReadOnly=false&maxReconnects=10&tinyInt1isBit=false
           username: root
           password: root
           type: com.zaxxer.hikari.HikariDataSource
-#        business_test:
-#          driver-class-name: com.mysql.jdbc.Driver
-#          url: jdbc:mysql://192.168.225.1:3306/test?useUnicode=true&characterEncoding=UTF8&useSSL=false&allowMultiQueries=true&autoReconnect=true&failOverReadOnly=false&maxReconnects=10&tinyInt1isBit=false
-#          username: root
-#          password: root
-#          type: com.zaxxer.hikari.HikariDataSource
-        hikari:
-          minimum-idle: 5
-          maximum-pool-size: 15
-          auto-commit: true
-          idle-timeout: 30000
-          pool-name: DatebookHikariCP
-          max-lifetime: 1800000
-          connection-timeout: 30000
-          connection-test-query: SELECT 1
-      primary: maxwell
   redis:
     host: 192.168.225.1
     port: 6379
@@ -90,9 +74,12 @@ maxwell:
 logging:
   level:
     root: info
+
 management:
   endpoints:
     web:
       exposure:
         include: "*"
-
+  health:
+    elasticsearch:
+      enabled: false

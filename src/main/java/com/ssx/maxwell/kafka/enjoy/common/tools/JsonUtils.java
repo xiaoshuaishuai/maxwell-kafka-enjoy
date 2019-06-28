@@ -1,5 +1,6 @@
 package com.ssx.maxwell.kafka.enjoy.common.tools;
 
+import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.hikari.HikariCpConfig;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -11,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Properties;
 
 /**
  * @author: shuaishuai.xiao
@@ -44,20 +46,6 @@ public final class JsonUtils {
         return mapper.readValue(text, Map.class);
     }
 
-    public static final HashSet<Object> JsonStringToHashSet(String text) throws IOException {
-        if (Strings.isNullOrEmpty(text)) {
-            return null;
-        }
-        return mapper.readValue(text, HashSet.class);
-    }
-
-    public static final Object JsonStringToObject(String text) throws IOException {
-        if (Strings.isNullOrEmpty(text)) {
-            return null;
-        }
-        return mapper.readValue(text, Object.class);
-    }
-
 
     public static void main(String[] args) throws IOException {
 
@@ -67,7 +55,7 @@ public final class JsonUtils {
         Map dataJson = (Map) map.get("data");
         System.out.println(dataJson.get("id"));
 
-        System.out.println(JsonStringToHashSet("[\"dev:test:sys_order:item:2\",\"dev:test:sys_order:custom:code3333333333:0\",\"dev:test:sys_order:list\",\"dev:test:sys_order:custom:\\\\u6d77\\\\u98de\\\\u4e1d\\\\u6d17\\\\u53d1\\\\u6c34:0\"]"));
+//        System.out.println(JsonStringToHashSet("[\"dev:test:sys_order:item:2\",\"dev:test:sys_order:custom:code3333333333:0\",\"dev:test:sys_order:list\",\"dev:test:sys_order:custom:\\\\u6d77\\\\u98de\\\\u4e1d\\\\u6d17\\\\u53d1\\\\u6c34:0\"]"));
         //["dev:test:sys_order:item:2","dev:test:sys_order:custom:code3333333333:0","dev:test:sys_order:list","dev:test:sys_order:custom:\\u6d77\\u98de\\u4e1d\\u6d17\\u53d1\\u6c34:0"]
 
 //         String bb = "[{\"key\":\"dev:test:sys_order:custom:\\\\u8033\\\\u673a:0\",\"dbDatabase\":\"test\",\"dbTable\":\"sys_order\",\"gmtCreate\":1560243670863},{\"key\":\"dev:test:sys_order:custom:code33:0\",\"dbDatabase\":\"test\",\"dbTable\":\"sys_order\",\"gmtCreate\":1560243670863},{\"key\":\"dev:test:sys_order:item:3\",\"dbDatabase\":\"test\",\"dbTable\":\"sys_order\",\"gmtCreate\":1560243670862},{\"key\":\"dev:test:sys_order:list\",\"dbDatabase\":\"test\",\"dbTable\":\"sys_order\",\"gmtCreate\":1560243670862}]";
@@ -90,6 +78,13 @@ public final class JsonUtils {
                 JsonUtils.getMapper().readValue(cc, new TypeReference<RedisExpireAndLoadDTO>() {
                 });
         System.out.println(redisExpireDTO);
+
+
+        String k = "{\"minIdle\":5,\"maxPoolSize\":15,\"isAutoCommit\":true,\"idleTimeout\":30000,\"maxLifetime\":1800000,\"connectionTimeout\":30000,\"connectionTestQuery\":\"SELECT 1\"}";
+        HikariCpConfig hikariCpConfig = mapper.readValue(k, HikariCpConfig.class);
+        System.out.println(hikariCpConfig.toString());
+
+
 
     }
 }

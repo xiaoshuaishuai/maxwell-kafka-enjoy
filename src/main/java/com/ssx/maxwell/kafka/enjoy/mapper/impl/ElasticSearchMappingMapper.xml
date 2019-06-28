@@ -3,14 +3,15 @@
 <mapper namespace="com.ssx.maxwell.kafka.enjoy.mapper.ElasticsearchMappingMapper">
     <resultMap id="baseMap" type="com.ssx.maxwell.kafka.enjoy.common.model.db.ElasticsearchMappingDO">
         <id column="id" property="id"/>
-        <result column="remark" property="remark"></result>
-        <result column="create_by" property="createBy"></result>
         <result column="db_database" property="dbDatabase"></result>
         <result column="db_table" property="dbTable"></result>
+        <result column="remark" property="remark"></result>
+        <result column="is_enable" property="enable"></result>
+        <result column="is_deleted" property="deleted"></result>
         <result column="gmt_create" property="gmtCreate"></result>
         <result column="gmt_modify" property="gmtModify"></result>
-        <result column="is_deleted" property="deleted"></result>
-        <result column="is_enable" property="enable"></result>
+        <result column="create_by" property="createBy"></result>
+        <result column="modify_by" property="modifyBy"></result>
     </resultMap>
     <sql id="allColumns">
         id,

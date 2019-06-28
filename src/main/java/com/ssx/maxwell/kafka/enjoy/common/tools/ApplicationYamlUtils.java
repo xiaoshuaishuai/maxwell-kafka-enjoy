@@ -18,7 +18,7 @@ import java.util.Set;
  */
 @Slf4j
 public class ApplicationYamlUtils {
-    private static final String[] DB_KEY_ARRAY = {"maxwell", "business_"};
+    private static final String[] DB_KEY_ARRAY = {"master", "business_"};
 
     /**
      * 查询动态数据源db_key
