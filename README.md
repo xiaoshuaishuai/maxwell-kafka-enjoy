@@ -209,7 +209,7 @@ CREATE TABLE `elasticsearch_mapping` (
 INSERT INTO `maxwell`.`dynamic_datasource` (`id`, `db_database`, `pool_name`, `pool_config`, `driver_class_name`, `url`, `username`, `password`, `jndi_name`, `is_enable`, `is_deleted`, `gmt_create`, `gmt_modify`, `create_by`, `modify_by`) VALUES ('1', 'master', 'com.zaxxer.hikari.HikariDataSource', '{\"minIdle\":5,\"maxPoolSize\":15,\"isAutoCommit\":true,\"idleTimeout\":30000,\"maxLifetime\":1800000,\"connectionTimeout\":30000,\"connectionTestQuery\":\"SELECT 1\"}', 'com.mysql.jdbc.Driver', 'jdbc:mysql://192.168.225.1:3306/maxwell?useUnicode=true&characterEncoding=UTF8&useSSL=false&allowMultiQueries=true&autoReconnect=true&failOverReadOnly=false&maxReconnects=10&tinyInt1isBit=false', 'root', 'root', NULL, '0', '0', now(), now(), '110', '110');
 INSERT INTO `maxwell`.`dynamic_datasource` (`id`, `db_database`, `pool_name`, `pool_config`, `driver_class_name`, `url`, `username`, `password`, `jndi_name`, `is_enable`, `is_deleted`, `gmt_create`, `gmt_modify`, `create_by`, `modify_by`) VALUES ('2', 'test', 'com.zaxxer.hikari.HikariDataSource', '{\"minIdle\":5,\"maxPoolSize\":15,\"isAutoCommit\":true,\"idleTimeout\":30000,\"maxLifetime\":1800000,\"connectionTimeout\":30000,\"connectionTestQuery\":\"SELECT 1\"}', 'com.mysql.jdbc.Driver', 'jdbc:mysql://192.168.225.1:3306/test?useUnicode=true&characterEncoding=UTF8&useSSL=false&allowMultiQueries=true&autoReconnect=true&failOverReadOnly=false&maxReconnects=10&tinyInt1isBit=false', 'root', 'root', NULL, '0', '0', now(), now(), '110', '110');
 -- 测试test数据库下sys_order表进行redis缓存同步
-INSERT INTO `maxwell`.`redis_mapping` (`id`, `db_database`, `db_table`, `primary_expire`, `table_expire`, `rule`, `template`, `template_sql`, `remark`, `is_enable`, `is_deleted`, `gmt_create`, `gmt_modify`, `create_by`, `modify_by`) VALUES ('3', 'test', 'sys_order', '-1', '200', '1,2,3', ':order_code:is_deleted(1800),:goods_name:is_deleted(3600)', NULL, '1.单表主键引导缓存\n2.全表缓存\n3.自定义缓存 {order_code}:{is_del}=订单号缓存{goods_name}:{is_del}=商品名称缓存  ', '0', '0', now(), now(), '0', '0');
+INSERT INTO `maxwell`.`redis_mapping` (`id`, `db_database`, `db_table`, `primary_expire`, `table_expire`, `rule`, `template`, `template_sql`, `remark`, `is_enable`, `is_deleted`, `gmt_create`, `gmt_modify`, `create_by`, `modify_by`) VALUES ('1', 'test', 'sys_order', '-1', '200', '1,2,3', ':order_code:is_deleted(1800),:goods_name:is_deleted(3600)', NULL, '1.单表主键引导缓存\n2.全表缓存\n3.自定义缓存 {order_code}:{is_del}=订单号缓存{goods_name}:{is_del}=商品名称缓存  ', '0', '0', now(), now(), '0', '0');
 -- 创建test数据库
 CREATE DATABASE `test` CHARACTER SET utf8 COLLATE utf8_general_ci;
 use test;
@@ -244,15 +244,24 @@ INSERT INTO `test`.`sys_order` (`id`, `order_code`, `category`, `goods_name`, `i
 ./maxwell-bootstrap --config=../config.properties --host 192.168.225.1 --port 3306  --user root --password root --database test --table sys_order --log_level debug --client_id maxwell
 ```
 #### 全量数据同步结果
+>基于对sys_order表映射的redis规则配置
+ ![sys_order表配置信息](./docs/img/test_order.jpg)
 
+输出：
+<br/>
+> sys_order表对应所有redis键值
 ![sys_order表对应所有redis键值](./docs/img/keys.jpg)
-
+<br/>
+sys_order表对应主键缓存
 ![sys_order表对应主键缓存](./docs/img/主键缓存.jpg)
-
+<br/>
+sys_order表对应全表缓存
 ![sys_order表对应全表缓存](./docs/img/全表缓存.jpg)
-
+<br/>
+sys_order表对应自定义缓存缓存(按照商品名称)
 ![sys_order表对应自定义缓存缓存(按照商品名称)](./docs/img/自定义缓存1.jpg)
-
+<br/>
+sys_order表对应自定义缓存缓存(按照编号)
 ![sys_order表对应自定义缓存缓存(按照编号)](./docs/img/自定义缓存2.jpg)
 
 #### 增量数据同步结果
