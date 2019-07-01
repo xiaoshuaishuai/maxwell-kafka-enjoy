@@ -58,6 +58,7 @@ INSERT INTO `maxwell`.`dynamic_datasource` (`id`, `db_database`, `pool_name`, `p
 INSERT INTO `maxwell`.`redis_mapping` (`id`, `db_database`, `db_table`, `primary_expire`, `table_expire`, `rule`, `template`, `template_sql`, `remark`, `is_enable`, `is_deleted`, `gmt_create`, `gmt_modify`, `create_by`, `modify_by`) VALUES ('3', 'test', 'sys_order', '-1', '200', '1,2,3', ':order_code:is_deleted(1800),:goods_name:is_deleted(3600)', NULL, '1.单表主键引导缓存\n2.全表缓存\n3.自定义缓存 {order_code}:{is_del}=订单号缓存{goods_name}:{is_del}=商品名称缓存  ', '0', '0', now(), now(), '0', '0');
 -- 创建test数据库
 CREATE DATABASE `test` CHARACTER SET utf8 COLLATE utf8_general_ci;
+use test;
 -- 创建test数据库下sys_order测试表
 CREATE TABLE `sys_order` (
   `id` bigint(10) NOT NULL AUTO_INCREMENT COMMENT '主键',
