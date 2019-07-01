@@ -12,18 +12,18 @@
 ### 
 ``` mysql配置参考
 datadir=/var/lib/mysql
-    socket=/var/lib/mysql/mysql.sock
-    # Disabling symbolic-links is recommended to prevent assorted security risks
-    symbolic-links=0
-    log-error=/var/log/mysqld.log
-    pid-file=/var/run/mysqld/mysqld.pid
-    bind-address =0.0.0.0
-    server-id=1
-    log-bin=master
-    binlog_format=row
-    wait_timeout=31536000
-    interactive_timeout=31536000
-    sql_mode=STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION
+socket=/var/lib/mysql/mysql.sock
+# Disabling symbolic-links is recommended to prevent assorted security risks
+symbolic-links=0
+log-error=/var/log/mysqld.log
+pid-file=/var/run/mysqld/mysqld.pid
+bind-address =0.0.0.0
+server-id=1
+log-bin=master
+binlog_format=row
+wait_timeout=31536000
+interactive_timeout=31536000
+sql_mode=STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION
 ```
 二. 启动zookeeper(kafka依赖,当然你也可以用kafka内置的，取决于怎样配置kafka)
 
