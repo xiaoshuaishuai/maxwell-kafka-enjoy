@@ -167,6 +167,7 @@ CREATE TABLE `dynamic_datasource` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `uk_database_name` (`db_database`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='动态数据源配置表';
+
 CREATE TABLE `redis_mapping` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'id',
   `db_database` varchar(255) NOT NULL DEFAULT '0' COMMENT '数据库',
@@ -186,6 +187,7 @@ CREATE TABLE `redis_mapping` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `uk_db_database_db_table` (`db_database`,`db_table`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='redis和数据库表映射关系';
+
 CREATE TABLE `elasticsearch_mapping` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'id',
   `db_database` varchar(255) NOT NULL DEFAULT '0' COMMENT '数据库',
@@ -200,6 +202,7 @@ CREATE TABLE `elasticsearch_mapping` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `uk_db_database_db_table` (`db_database`,`db_table`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='es数据库表映射关系';
+
 -- 测试初始化配置test数据库
 INSERT INTO `maxwell`.`dynamic_datasource` (`id`, `db_database`, `pool_name`, `pool_config`, `driver_class_name`, `url`, `username`, `password`, `jndi_name`, `is_enable`, `is_deleted`, `gmt_create`, `gmt_modify`, `create_by`, `modify_by`) VALUES ('1', 'master', 'com.zaxxer.hikari.HikariDataSource', '{\"minIdle\":5,\"maxPoolSize\":15,\"isAutoCommit\":true,\"idleTimeout\":30000,\"maxLifetime\":1800000,\"connectionTimeout\":30000,\"connectionTestQuery\":\"SELECT 1\"}', 'com.mysql.jdbc.Driver', 'jdbc:mysql://192.168.225.1:3306/maxwell?useUnicode=true&characterEncoding=UTF8&useSSL=false&allowMultiQueries=true&autoReconnect=true&failOverReadOnly=false&maxReconnects=10&tinyInt1isBit=false', 'root', 'root', NULL, '0', '0', now(), now(), '110', '110');
 INSERT INTO `maxwell`.`dynamic_datasource` (`id`, `db_database`, `pool_name`, `pool_config`, `driver_class_name`, `url`, `username`, `password`, `jndi_name`, `is_enable`, `is_deleted`, `gmt_create`, `gmt_modify`, `create_by`, `modify_by`) VALUES ('2', 'test', 'com.zaxxer.hikari.HikariDataSource', '{\"minIdle\":5,\"maxPoolSize\":15,\"isAutoCommit\":true,\"idleTimeout\":30000,\"maxLifetime\":1800000,\"connectionTimeout\":30000,\"connectionTestQuery\":\"SELECT 1\"}', 'com.mysql.jdbc.Driver', 'jdbc:mysql://192.168.225.1:3306/test?useUnicode=true&characterEncoding=UTF8&useSSL=false&allowMultiQueries=true&autoReconnect=true&failOverReadOnly=false&maxReconnects=10&tinyInt1isBit=false', 'root', 'root', NULL, '0', '0', now(), now(), '110', '110');
@@ -208,6 +211,7 @@ INSERT INTO `maxwell`.`redis_mapping` (`id`, `db_database`, `db_table`, `primary
 -- 创建test数据库
 CREATE DATABASE `test` CHARACTER SET utf8 COLLATE utf8_general_ci;
 use test;
+
 -- 创建test数据库下sys_order测试表
 CREATE TABLE `sys_order` (
   `id` bigint(10) NOT NULL AUTO_INCREMENT COMMENT '主键',
@@ -221,6 +225,7 @@ CREATE TABLE `sys_order` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `unique_code_idx` (`order_code`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
 -- 初始化测试数据
 INSERT INTO `test`.`sys_order` (`id`, `order_code`, `category`, `goods_name`, `is_send_express`, `is_deleted`, `gmt_create`, `gmt_modify`) VALUES ('1', 'code1', '0', '牙膏', '0', '0', now(), now());
 INSERT INTO `test`.`sys_order` (`id`, `order_code`, `category`, `goods_name`, `is_send_express`, `is_deleted`, `gmt_create`, `gmt_modify`) VALUES ('2', 'code2', '0', '海飞丝洗发水', '0', '0',  now(), now());
@@ -229,6 +234,26 @@ INSERT INTO `test`.`sys_order` (`id`, `order_code`, `category`, `goods_name`, `i
 INSERT INTO `test`.`sys_order` (`id`, `order_code`, `category`, `goods_name`, `is_send_express`, `is_deleted`, `gmt_create`, `gmt_modify`) VALUES ('5', 'code5', '0', '法海', '0', '0',  now(), now());
 INSERT INTO `test`.`sys_order` (`id`, `order_code`, `category`, `goods_name`, `is_send_express`, `is_deleted`, `gmt_create`, `gmt_modify`) VALUES ('6', 'code6', '0', '梳子', '0', '0',  now(), now());
 ```
-#### maxwell消息格式
->{"database":"test","table":"sys_order","type":"update","ts":1559640375,"xid":2012,"commit":true,"data":{"id":1,"order_code":"1","category":0,"goods_name":"牙膏","is_send_express":1,"is_deleted":0,"gmt_create":"2019-06-04 17:21:45","gmt_modify":"2019-06-04 17:26:15"},"old":{"is_send_express":0,"gmt_modify":"2019-06-04 17:25:25"}}
+七. 启动maxwell-kafka-enjoy工程
+
+#### 全量数据同步缓存
+在maxwell服务下，执行
+```
+./maxwell-bootstrap --config=../config.properties --host 192.168.225.1 --port 3306  --user root --password root --database test --table sys_order --log_level debug --client_id maxwell
+```
+#### 全量数据同步结果
+
+[sys_order表对应所有redis键值](./docs/img/keys.jpg)
+
+[sys_order表对应主键缓存](./docs/img/主键缓存.jpg)
+
+[sys_order表对应全表缓存](./docs/img/全表缓存.jpg)
+
+[sys_order表对应自定义缓存缓存(按照商品名称)](./docs/img/自定义缓存1.jpg)
+
+[sys_order表对应自定义缓存缓存(按照编号)](./docs/img/自定义缓存2.jpg)
+
+#### 增量数据同步结果
+
+> 增量数据同步，会根据redis_mapping配置缓存模板信息进行增量同步
 
