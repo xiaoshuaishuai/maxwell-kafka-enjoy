@@ -31,7 +31,7 @@ public class RedisExpireAndLoadDTO {
     /**
      * 目标表的主键id
      */
-    private Long dbPid;
+    private String dbPid;
 
     /**
      * update情况下

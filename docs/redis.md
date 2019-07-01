@@ -29,7 +29,6 @@
 ---
 
 ### 对redis缓存提供的功能
->  **maxwell-kafka-enjoy**只提供缓存失效功能
 * 单表主键引导缓存
 >举例：
 环境=dev, database=xx, table=table_test, id=1,对应的单条缓存为=**dev:xx:table_test:item:1**

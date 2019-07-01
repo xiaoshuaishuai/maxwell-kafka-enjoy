@@ -6,6 +6,7 @@ import com.google.common.collect.Lists;
 import com.ssx.maxwell.kafka.enjoy.biz.impl.RedisReloadBizImpl;
 import com.ssx.maxwell.kafka.enjoy.common.helper.BeanHelper;
 import com.ssx.maxwell.kafka.enjoy.common.helper.KafkaHelper;
+import com.ssx.maxwell.kafka.enjoy.common.helper.StringRedisTemplateHelper;
 import com.ssx.maxwell.kafka.enjoy.common.model.bo.RedisMappingBO;
 import com.ssx.maxwell.kafka.enjoy.common.model.db.RedisMappingDO;
 import com.ssx.maxwell.kafka.enjoy.common.model.dto.RedisExpireAndLoadDTO;
@@ -42,7 +43,7 @@ public class RedisExpireConsumer {
 
     private static final String logPrefix = "maxwell--<redis失效缓存>--消费消息-->";
     @Autowired
-    private StringRedisTemplate customerStringRedisTemplate;
+    private StringRedisTemplateHelper stringRedisTemplateHelper;
     @Autowired
     private RedisMappingService redisMappingService;
     @Autowired
@@ -88,7 +89,7 @@ public class RedisExpireConsumer {
                         }
                     }
                     log.info("keyList={}", keyList);
-                    customerStringRedisTemplate.delete(keyList);
+                    stringRedisTemplateHelper.delete(keyList);
                 } catch (Exception redisException) {
                     //todo 2019-6-14 13:47:47 如果出现删除失败、redis连接等情况、将数据落入DB、由定时任务扫表进行清除动作、当然扫表有可能也失败同时增加预警
                     //总之为了尽快清除redis中的脏数据，存在的越久数据不一致也就越久
@@ -136,7 +137,7 @@ public class RedisExpireConsumer {
      * @author: shuaishuai.xiao
      * @date: 2019/6/28 18:14
      */
-    private void assemblyRedisKey(RedisMappingDO redisMapping, String template, Map oldDataJson, Long dbPid, List<String> keyList) {
+    private void assemblyRedisKey(RedisMappingDO redisMapping, String template, Map oldDataJson, String dbPid, List<String> keyList) {
         //:order_code:is_deleted(1800)
         //:goods_name:is_deleted(3600)
         String[] columnArray = template.split(":");

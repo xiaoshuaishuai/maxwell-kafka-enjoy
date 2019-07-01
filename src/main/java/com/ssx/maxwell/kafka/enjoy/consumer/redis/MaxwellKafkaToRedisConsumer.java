@@ -105,7 +105,7 @@ public class MaxwellKafkaToRedisConsumer {
                                             Map dataJson = (Map) jsonMessageMap.get("data");
                                             Map oldDataJson = (Map) jsonMessageMap.get("old");
                                             Integer id = (Integer) dataJson.get("id");
-                                            redisExpireDTO.setDbPid(Long.valueOf(id));
+                                            redisExpireDTO.setDbPid(String.valueOf(id));
                                             if (ArrayUtils.contains(ruleArr, MaxwellBinlogConstants.REDIS_RULE_1)) {
                                                 //处理单表主键缓存
                                                 String redisKey = MessageFormat.format(MaxwellBinlogConstants.RedisCacheKeyTemplateEnum.REDIS_CACHE_KEY_TEMPLATE_ITEM_PK_ID.getTemplate(), profile, database, table, id);

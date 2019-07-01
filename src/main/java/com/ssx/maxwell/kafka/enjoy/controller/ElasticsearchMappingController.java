@@ -1,5 +1,6 @@
 package com.ssx.maxwell.kafka.enjoy.controller;
 
+import com.ssx.maxwell.kafka.enjoy.common.model.RespData;
 import com.ssx.maxwell.kafka.enjoy.common.model.bo.ElasticsearchMappingBO;
 import com.ssx.maxwell.kafka.enjoy.common.model.db.ElasticsearchMappingDO;
 import com.ssx.maxwell.kafka.enjoy.common.model.vo.ElasticsearchMappingVO;
@@ -29,20 +30,20 @@ public class ElasticsearchMappingController extends BaseController<Elasticsearch
     @RequestMapping("/list")
     @ResponseBody
     @Override
-    public List<ElasticsearchMappingVO> list() {
-        return elasticSearchMappingService.listToV();
+    public RespData<List<ElasticsearchMappingVO>> list() {
+        return success(elasticSearchMappingService.listToV());
     }
 
 
     @ApiOperation(value = "批量插入或修改", notes = "批量插入或修改", httpMethod = "POST", tags = "1.0.0")
     @PostMapping(value = "/insertOrUpdateBatch")
     @Override
-    public Integer insertOrUpdateBatch(@RequestBody List<ElasticsearchMappingBO> list) {
+    public RespData<Integer> insertOrUpdateBatch(@RequestBody List<ElasticsearchMappingBO> list) {
         list.forEach(t -> {
             t.setGmtCreate(new Date());
             t.setGmtModify(new Date());
         });
-        return elasticSearchMappingService.insertOrUpdateBatch(list);
+        return success(elasticSearchMappingService.insertOrUpdateBatch(list));
     }
 
 }

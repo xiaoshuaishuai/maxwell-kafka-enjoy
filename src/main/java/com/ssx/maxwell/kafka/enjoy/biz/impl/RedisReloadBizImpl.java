@@ -9,7 +9,7 @@ import com.ssx.maxwell.kafka.enjoy.common.helper.RedissonHelper;
 import com.ssx.maxwell.kafka.enjoy.common.helper.StringRedisTemplateHelper;
 import com.ssx.maxwell.kafka.enjoy.common.model.bo.RedisMappingBO;
 import com.ssx.maxwell.kafka.enjoy.common.model.db.RedisMappingDO;
-import com.ssx.maxwell.kafka.enjoy.common.model.dto.CacheListDTO;
+import com.ssx.maxwell.kafka.enjoy.common.model.dto.RedisCacheListDTO;
 import com.ssx.maxwell.kafka.enjoy.common.tools.*;
 import com.ssx.maxwell.kafka.enjoy.configuration.DynamicDsInfo;
 import com.ssx.maxwell.kafka.enjoy.configuration.ServiceBeanDefinitionRegistry;
@@ -49,7 +49,7 @@ public class RedisReloadBizImpl implements RedisReloadBiz {
     private StringRedisTemplateHelper stringRedisTemplateHelper;
 
     @Override
-    public boolean reloadCache(String dbDatabase, String dbTable, Long dbPid) {
+    public boolean reloadCache(String dbDatabase, String dbTable, String dbPid) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(dbDatabase).append(dbTable);
         redissonHelper.lock(stringBuilder.toString(), 10, 5, TimeUnit.SECONDS, () -> {
@@ -63,8 +63,7 @@ public class RedisReloadBizImpl implements RedisReloadBiz {
                     if (ArrayUtils.isNotEmpty(ruleArr)) {
                         if (ArrayUtils.contains(ruleArr, MaxwellBinlogConstants.REDIS_RULE_1)) {
                             //单表主键缓存
-                            String jdbcSql = MessageFormat.format(MaxwellBinlogConstants.RedisRunSqlTemplateEnum.SQL_PRIMARY_ID.getTemplate(), dbTable, dbPid);
-                            String redisKey = MessageFormat.format(MaxwellBinlogConstants.RedisCacheKeyTemplateEnum.REDIS_CACHE_KEY_TEMPLATE_ITEM_PK_ID.getTemplate(), profile, dbDatabase, dbTable, dbPid);
+                            String jdbcSql = MessageFormat.format(MaxwellBinlogConstants.RedisRunSqlTemplateEnum.SQL_PRIMARY_ID.getTemplate(), dbTable, dbPid);                            String redisKey = MessageFormat.format(MaxwellBinlogConstants.RedisCacheKeyTemplateEnum.REDIS_CACHE_KEY_TEMPLATE_ITEM_PK_ID.getTemplate(), profile, dbDatabase, dbTable, dbPid);
                             log.info("sql= {} , key= {}", jdbcSql, redisKey);
                             executeToRedis(beanHelper.loopGetDynamicDsInfo(dbDatabase), jdbcSql, redisKey, redisMapping, false, redisMapping.getPrimaryExpire());
                         }
@@ -146,7 +145,7 @@ public class RedisReloadBizImpl implements RedisReloadBiz {
             List<Map<String, Object>> dbDataList = beanHelper.queryDbList(dynamicDsInfo, sql);
             if (null == dbDataList || dbDataList.isEmpty()) {
                 //处理DB查询无数据情况
-                CacheListDTO cacheListDTO = new CacheListDTO().setNone(true);
+                RedisCacheListDTO cacheListDTO = new RedisCacheListDTO().setNone(true);
                 cacheListDTO.setObj(Lists.newArrayList());
                 setValueToRedis(redisKey, cacheListDTO, expire);
             } else {
@@ -163,7 +162,7 @@ public class RedisReloadBizImpl implements RedisReloadBiz {
      * @author: shuaishuai.xiao
      * @date: 2019/6/14 17:29
      */
-    private void setValueToRedis(String redisKey, CacheListDTO cacheListDTO, Long expire) {
+    private void setValueToRedis(String redisKey, RedisCacheListDTO cacheListDTO, Long expire) {
         try {
             if ("-1".equals(expire) || -1 == expire) {
                 stringRedisTemplateHelper.set(redisKey, cacheListDTO);
@@ -183,8 +182,8 @@ public class RedisReloadBizImpl implements RedisReloadBiz {
      * @author: shuaishuai.xiao
      * @date: 2019/6/14 17:30
      */
-    private CacheListDTO buildCacheListDTO(List<Map<String, Object>> dbDataList) {
-        CacheListDTO cacheListDTO = new CacheListDTO().setNone(false);
+    private RedisCacheListDTO buildCacheListDTO(List<Map<String, Object>> dbDataList) {
+        RedisCacheListDTO cacheListDTO = new RedisCacheListDTO().setNone(false);
         List<Map<String, Object>> cacheList = new ArrayList(dbDataList.size());
         for (Object dbObj : dbDataList) {
             Map<String, Object> map = (Map<String, Object>) dbObj;

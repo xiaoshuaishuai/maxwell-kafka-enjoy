@@ -70,6 +70,9 @@ public final class MaxwellBinlogConstants {
 
     }
 
+    public static final String KEY_CUSTOM = ":custom";
+    public static final String KEY_LIST = ":list";
+    public static final String KEY_ITEM = ":item";
     /**
      * 环境+database+table
      */
@@ -77,15 +80,15 @@ public final class MaxwellBinlogConstants {
     /**
      * 环境+database+table+1+item+主键
      */
-    public static final String REDIS_CACHE_KEY_TEMPLATE_ITEM_PK_ID = REDIS_CACHE_KEY_TEMPLATE_PREFIX + REDIS_RULE_1 + ":item:{3}";
+    public static final String REDIS_CACHE_KEY_TEMPLATE_ITEM_PK_ID = REDIS_CACHE_KEY_TEMPLATE_PREFIX + REDIS_RULE_1 + KEY_ITEM + ":{3}";
     /**
      * 环境+database+table+2+list
      */
-    public static final String REDIS_CACHE_KEY_TEMPLATE_PREFIX_LIST = REDIS_CACHE_KEY_TEMPLATE_PREFIX + REDIS_RULE_2 + ":list";
+    public static final String REDIS_CACHE_KEY_TEMPLATE_PREFIX_LIST = REDIS_CACHE_KEY_TEMPLATE_PREFIX + REDIS_RULE_2 + KEY_LIST;
     /**
      * 环境+database+table+3+自定义+custom
      */
-    public static final String REDIS_CACHE_KEY_TEMPLATE_PREFIX_CUSTOM = REDIS_CACHE_KEY_TEMPLATE_PREFIX + REDIS_RULE_3 + ":custom";
+    public static final String REDIS_CACHE_KEY_TEMPLATE_PREFIX_CUSTOM = REDIS_CACHE_KEY_TEMPLATE_PREFIX + REDIS_RULE_3 + KEY_CUSTOM;
 
     public enum RedisCacheKeyTemplateEnum {
         /**

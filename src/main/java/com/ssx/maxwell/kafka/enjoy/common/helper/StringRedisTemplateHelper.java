@@ -34,8 +34,16 @@ public class StringRedisTemplateHelper {
         customerStringRedisTemplate.opsForValue().set(key, v, timeout, unit);
     }
 
-    Long delete(Collection<String> keys) {
+    public Long delete(Collection<String> keys) {
         log.info("redis delete={}", keys);
         return customerStringRedisTemplate.delete(keys);
     }
+
+    public String getValue(String key){
+        log.info("start redis get key={}", key);
+        String value = customerStringRedisTemplate.opsForValue().get(key);
+        log.info("end redis get key={}, value={}", key, value);
+        return value;
+    }
+
 }

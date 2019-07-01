@@ -1,5 +1,6 @@
 package com.ssx.maxwell.kafka.enjoy.controller;
 
+import com.ssx.maxwell.kafka.enjoy.common.model.RespData;
 import com.ssx.maxwell.kafka.enjoy.common.model.bo.test.SysOrderBO;
 import com.ssx.maxwell.kafka.enjoy.common.model.db.test.SysOrderDO;
 import com.ssx.maxwell.kafka.enjoy.common.model.vo.test.SysOrderVO;
@@ -18,12 +19,12 @@ import java.util.List;
 public class SysOrderController extends BaseController<SysOrderDO, SysOrderVO, SysOrderBO> {
 
     @Override
-    public List<SysOrderVO> list() {
+    public RespData<List<SysOrderVO>> list() {
         return null;
     }
 
     @Override
-    public Integer insertOrUpdateBatch(List<SysOrderBO> list) {
+    public RespData<Integer> insertOrUpdateBatch(List<SysOrderBO> list) {
         return null;
     }
 }

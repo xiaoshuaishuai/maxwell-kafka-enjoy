@@ -15,7 +15,7 @@ import java.util.List;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-public class CacheListDTO<T extends Serializable> implements Serializable {
+public class RedisCacheListDTO<T extends Serializable> implements Serializable {
     /**
      * 1.如果第一次从redis读取数据为null,
      * 那么调用mapper查询db返回CacheBo对象,如果此时DB中也不存在,那么isNone=true

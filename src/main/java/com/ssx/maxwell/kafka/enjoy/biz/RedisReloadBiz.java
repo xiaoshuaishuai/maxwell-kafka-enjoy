@@ -13,5 +13,5 @@ public interface RedisReloadBiz {
      * @author: shuaishuai.xiao
      * @date: 2019/6/14 13:50
      */
-    boolean reloadCache(String dbDatabase, String dbTable, Long dbPid);
+    boolean reloadCache(String dbDatabase, String dbTable, String dbPid);
 }
