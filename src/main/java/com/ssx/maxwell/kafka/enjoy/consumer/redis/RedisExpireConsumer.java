@@ -165,7 +165,11 @@ public class RedisExpireConsumer {
                     keyBuilder.append(":");
                     //从old json 修改的字段取值
                     if(oldDataJson.containsKey(field)){
-                        beanHelper.appendRedisKeySuffix((String) oldDataJson.get(field), keyBuilder);
+                        if(oldDataJson.get(field) instanceof String){
+                            beanHelper.appendRedisKeySuffix((String) oldDataJson.get(field), keyBuilder);
+                        }else {
+                            beanHelper.appendRedisKeySuffix(String.valueOf(oldDataJson.get(field)), keyBuilder);
+                        }
                     }else {
                         //不存在证明该字段未做修改， 从数据库取
                         Object dbObj = dbObjectMap.get(field);
