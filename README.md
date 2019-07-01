@@ -1,4 +1,5 @@
-> **maxwell消费者**，提供全量及增量redis，elasticsearch数据过期和数据同步功能。
+#### **maxwell消费者**，提供mysql数据全量及增量同步至redis。
+
 #### 依赖
 * jdk1.8
 * maxwell-1.22.1
@@ -6,6 +7,7 @@
 * kafka_2.11-2.0.0
 * redis4.0
 * elasticsearch
+
 #### 快速开始
 一. 启动mysql服务
 > service mysqld start
@@ -243,15 +245,15 @@ INSERT INTO `test`.`sys_order` (`id`, `order_code`, `category`, `goods_name`, `i
 ```
 #### 全量数据同步结果
 
-[sys_order表对应所有redis键值](./docs/img/keys.jpg)
+![sys_order表对应所有redis键值](./docs/img/keys.jpg)
 
-[sys_order表对应主键缓存](./docs/img/主键缓存.jpg)
+![sys_order表对应主键缓存](./docs/img/主键缓存.jpg)
 
-[sys_order表对应全表缓存](./docs/img/全表缓存.jpg)
+![sys_order表对应全表缓存](./docs/img/全表缓存.jpg)
 
-[sys_order表对应自定义缓存缓存(按照商品名称)](./docs/img/自定义缓存1.jpg)
+![sys_order表对应自定义缓存缓存(按照商品名称)](./docs/img/自定义缓存1.jpg)
 
-[sys_order表对应自定义缓存缓存(按照编号)](./docs/img/自定义缓存2.jpg)
+![sys_order表对应自定义缓存缓存(按照编号)](./docs/img/自定义缓存2.jpg)
 
 #### 增量数据同步结果
 
