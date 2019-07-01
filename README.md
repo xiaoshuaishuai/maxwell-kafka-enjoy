@@ -249,7 +249,7 @@ INSERT INTO `test`.`sys_order` (`id`, `order_code`, `category`, `goods_name`, `i
 
 输出：
 <br/>
-> sys_order表对应所有redis键值
+sys_order表对应所有redis键值
 ![sys_order表对应所有redis键值](./docs/img/keys.jpg)
 <br/>
 sys_order表对应主键缓存
