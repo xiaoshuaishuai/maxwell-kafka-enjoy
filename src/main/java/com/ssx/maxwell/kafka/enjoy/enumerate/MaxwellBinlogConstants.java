@@ -69,10 +69,10 @@ public final class MaxwellBinlogConstants {
         }
 
     }
-
-    public static final String KEY_CUSTOM = REDIS_RULE_1 + ":custom";
+    public static final String KEY_ITEM = REDIS_RULE_1 + ":item";
     public static final String KEY_LIST = REDIS_RULE_2 + ":list";
-    public static final String KEY_ITEM = REDIS_RULE_3 + ":item";
+    public static final String KEY_CUSTOM = REDIS_RULE_3 + ":custom";
+
     /**
      * 环境+database+table
      */

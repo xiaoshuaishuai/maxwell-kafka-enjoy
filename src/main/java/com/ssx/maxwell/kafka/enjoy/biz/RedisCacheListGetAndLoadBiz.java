@@ -19,9 +19,10 @@ public interface RedisCacheListGetAndLoadBiz {
      * 针对于客户端 通过key 直接查询场景
      *
      * @param key
+     * @param template 针对自定义缓存，需要把模板传过来 :order_code:is_deleted(1800), 其他缓存可传""
      * @return
      */
-    RespData<RedisCacheListDTO> get(@NonNull String key);
+    RespData<RedisCacheListDTO> get(@NonNull String key, String template);
 //    /**
 //     * 全表缓存查询
 //     * @param dbDatabase

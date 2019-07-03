@@ -9,6 +9,7 @@ public enum GlobalCallbackEnum {
     REDIS_MAPPING_NO_DEFIEND(100000001, "redis_mapping未配置该表对应缓存模板"),
     KEY_NOT_RECOGNIZED(100000002, "不识别key"),
     JSON_PARSE_ERROR(100000003, "JSON转换异常"),
+    PARAMETER_ERROR(100000004, "key参数格式错误"),
 
     ;
     /**
