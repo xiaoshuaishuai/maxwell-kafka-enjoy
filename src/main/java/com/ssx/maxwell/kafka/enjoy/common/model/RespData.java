@@ -2,9 +2,7 @@ package com.ssx.maxwell.kafka.enjoy.common.model;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.Accessors;
 
 /**
@@ -18,9 +16,12 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @AllArgsConstructor
 @NoArgsConstructor
+@RequiredArgsConstructor
 public class RespData<T> {
+    @NonNull
     @ApiModelProperty("响应码")
     private Integer code;
+    @NonNull
     @ApiModelProperty("响应消息")
     private String message;
     @ApiModelProperty("响应数据")

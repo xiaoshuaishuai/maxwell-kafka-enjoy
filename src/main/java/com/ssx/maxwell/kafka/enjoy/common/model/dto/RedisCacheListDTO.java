@@ -18,8 +18,8 @@ import java.util.List;
 public class RedisCacheListDTO<T extends Serializable> implements Serializable {
     /**
      * 1.如果第一次从redis读取数据为null,
-     * 那么调用mapper查询db返回CacheBo对象,如果此时DB中也不存在,那么isNone=true
-     * 2.如果第一读取redis返回的对象为 CacheBo 但是  isNone = true,此时就不要再查库了！
+     * 那么调用mapper查询db返回RedisCacheListDTO对象,如果此时DB中也不存在,那么isNone=true
+     * 2.如果第一读取redis返回的对象为 RedisCacheListDTO 但是  isNone = true,此时就不要再查库了！
      */
     private boolean isNone = false;
 
