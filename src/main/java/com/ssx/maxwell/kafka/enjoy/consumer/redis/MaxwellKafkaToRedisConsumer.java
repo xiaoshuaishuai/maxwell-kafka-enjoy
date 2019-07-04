@@ -106,12 +106,18 @@ public class MaxwellKafkaToRedisConsumer {
                                             Map oldDataJson = (Map) jsonMessageMap.get("old");
                                             Integer id = (Integer) dataJson.get("id");
                                             redisExpireDTO.setDbPid(String.valueOf(id));
+//                                            redisExpireDTO.setDataJson(dataJson);
                                             if (ArrayUtils.contains(ruleArr, MaxwellBinlogConstants.REDIS_RULE_1)) {
                                                 //处理单表主键缓存
                                                 String redisKey = MessageFormat.format(MaxwellBinlogConstants.RedisCacheKeyTemplateEnum.REDIS_CACHE_KEY_TEMPLATE_ITEM_PK_ID.getTemplate(), profile, database, table, id);
+                                                // id字段 修改
+                                                if (null != oldDataJson && !oldDataJson.isEmpty() && oldDataJson.containsKey("id") && null != oldDataJson.get("id")) {
+                                                    String key = MessageFormat.format(MaxwellBinlogConstants.RedisCacheKeyTemplateEnum.REDIS_CACHE_KEY_TEMPLATE_ITEM_PK_ID.getTemplate(), profile, database, table, oldDataJson.get("id") + "");
+                                                    redisExpireDTO.getKeyList().add(key);
+                                                    log.info(logPrefix + "处理单表主键缓存[id变更]redisKey={}", key);
+                                                }
                                                 redisExpireDTO.getKeyList().add(redisKey);
                                                 log.info(logPrefix + "处理单表主键缓存redisKey={}", redisKey);
-
                                             }
                                             if (ArrayUtils.contains(ruleArr, MaxwellBinlogConstants.REDIS_RULE_2)) {
                                                 //处理全表缓存

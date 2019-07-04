@@ -3,6 +3,7 @@ package com.ssx.maxwell.kafka.enjoy.common.model.dto;
 import com.google.common.collect.Lists;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
 
 import java.util.List;
 import java.util.Map;
@@ -39,5 +40,23 @@ public class RedisExpireAndLoadDTO {
      * 用于清理自定义缓存相关字段修改之前旧的缓存
      */
     private Map oldDataJson;
+    /**
+     * 最新data
+     */
+    private Map dataJson;
 
+    private List<ReloadKeyDTO> reloadKeyDTOS  = Lists.newArrayList();
+
+    @Data
+    @Accessors(chain = true)
+    public static class ReloadKeyDTO{
+        /**
+         * 删除的缓存对应的模板，模板对应的缓存需要重新装载
+         */
+        private String templates;
+        /**
+         * 模糊key
+         */
+        private String fuzzyKey;
+    }
 }

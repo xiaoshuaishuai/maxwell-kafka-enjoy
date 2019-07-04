@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.text.MessageFormat;
 
 /**
  * @author: shuaishuai.xiao
@@ -60,14 +61,30 @@ public class RedisCacheListGetAndLoadBizImpl implements RedisCacheListGetAndLoad
         redisMappingBO.setDbDatabase(dbDatabase).setDbTable(dbTable);
         RedisMappingDO redisMapping = redisMappingService.getByDatabaseAndTable(redisMappingBO);
         if (MaxwellBinlogConstants.KEY_LIST.endsWith(key)) {
+            if(!redisMapping.getRule().contains(MaxwellBinlogConstants.REDIS_RULE_2)){
+                return new RespData<>(GlobalCallbackEnum.PARAMETER_RULE_ERROR.getValue(), GlobalCallbackEnum.PARAMETER_RULE_ERROR.getIntro());
+            }
             //dev:test:sys_order:2:list
-            redisCacheListDTOHelper.allTableRedisCacheLoadAndGet(redisMapping, dbDatabase, dbTable);
+            RedisCacheListDTO redisCacheListDTO = redisCacheListDTOHelper.allTableRedisCacheLoadAndGet(redisMapping, dbDatabase, dbTable);
+            return new RespData<>(GlobalCallbackEnum.SUCCESS.getValue(), GlobalCallbackEnum.SUCCESS.getIntro(), redisCacheListDTO);
         } else if (MaxwellBinlogConstants.KEY_ITEM.contains(key)) {
             //dev:test:sys_order:1:item:1
+            if(!redisMapping.getRule().contains(MaxwellBinlogConstants.REDIS_RULE_1)){
+                return new RespData<>(GlobalCallbackEnum.PARAMETER_RULE_ERROR.getValue(), GlobalCallbackEnum.PARAMETER_RULE_ERROR.getIntro());
+            }
             String dbPid = keyArray[5];
-            redisCacheListDTOHelper.primaryRedisCacheLoadAndGet(redisMapping, dbDatabase, dbTable, dbPid);
+            RedisCacheListDTO redisCacheListDTO = redisCacheListDTOHelper.primaryRedisCacheLoadAndGet(redisMapping, dbDatabase, dbTable, dbPid);
+            return new RespData<>(GlobalCallbackEnum.SUCCESS.getValue(), GlobalCallbackEnum.SUCCESS.getIntro(), redisCacheListDTO);
         } else if (MaxwellBinlogConstants.KEY_CUSTOM.contains(key)) {
             //todo 2019-7-3 17:31:03 自定义缓存加载
+            if(Strings.isNullOrEmpty(template)){
+                return new RespData<>(GlobalCallbackEnum.PARAMETER_TEMPLATE_ERROR.getValue(), GlobalCallbackEnum.PARAMETER_TEMPLATE_ERROR.getIntro());
+            }
+            if(!redisMapping.getRule().contains(MaxwellBinlogConstants.REDIS_RULE_3)){
+                return new RespData<>(GlobalCallbackEnum.PARAMETER_RULE_ERROR.getValue(), GlobalCallbackEnum.PARAMETER_RULE_ERROR.getIntro());
+            }
+            RedisCacheListDTO redisCacheListDTO = redisCacheListDTOHelper.customRedisCacheLoadAndGet(key, template);
+            return new RespData<>(GlobalCallbackEnum.SUCCESS.getValue(), GlobalCallbackEnum.SUCCESS.getIntro(), redisCacheListDTO);
         }
         return null;
     }

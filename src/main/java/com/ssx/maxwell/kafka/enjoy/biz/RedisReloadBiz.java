@@ -1,5 +1,12 @@
 package com.ssx.maxwell.kafka.enjoy.biz;
 
+import com.ssx.maxwell.kafka.enjoy.common.model.dto.RedisExpireAndLoadDTO;
+import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
+
+import java.util.List;
+import java.util.Map;
+
 /**
  * @author: shuaishuai.xiao
  * @date: 2019/6/12 13:44
@@ -8,10 +15,10 @@ package com.ssx.maxwell.kafka.enjoy.biz;
 public interface RedisReloadBiz {
     /**
      * 功能描述: 加载缓存至redis
-     * @param: [dbDatabase, dbTable, dbPid]
+     * @param: [dbDatabase, dbTable, dbPid, reloadKeyDTOS]
      * @return: boolean
      * @author: shuaishuai.xiao
      * @date: 2019/6/14 13:50
      */
-    boolean reloadCache(String dbDatabase, String dbTable, String dbPid);
+    boolean reloadCache(@NonNull String dbDatabase, @NonNull String dbTable, @NonNull String dbPid, @Nullable List<RedisExpireAndLoadDTO.ReloadKeyDTO> reloadKeyDTOS,  @NonNull Map dataJson);
 }

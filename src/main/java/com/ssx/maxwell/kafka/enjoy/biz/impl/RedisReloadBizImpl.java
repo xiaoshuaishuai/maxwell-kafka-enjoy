@@ -6,13 +6,18 @@ import com.ssx.maxwell.kafka.enjoy.common.helper.RedisCacheListDTOHelper;
 import com.ssx.maxwell.kafka.enjoy.common.helper.RedissonHelper;
 import com.ssx.maxwell.kafka.enjoy.common.model.bo.RedisMappingBO;
 import com.ssx.maxwell.kafka.enjoy.common.model.db.RedisMappingDO;
+import com.ssx.maxwell.kafka.enjoy.common.model.dto.RedisExpireAndLoadDTO;
 import com.ssx.maxwell.kafka.enjoy.enumerate.MaxwellBinlogConstants;
 import com.ssx.maxwell.kafka.enjoy.service.RedisMappingService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -31,7 +36,7 @@ public class RedisReloadBizImpl implements RedisReloadBiz {
     private RedisCacheListDTOHelper redisCacheListDTOHelper;
 
     @Override
-    public boolean reloadCache(String dbDatabase, String dbTable, String dbPid) {
+    public boolean reloadCache(@NonNull String dbDatabase, @NonNull String dbTable, @NonNull String dbPid, @Nullable List<RedisExpireAndLoadDTO.ReloadKeyDTO> reloadKeyDTOS, @NonNull Map dataJson) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(dbDatabase).append(dbTable);
         redissonHelper.lock(stringBuilder.toString(), 10, 5, TimeUnit.SECONDS, () -> {
@@ -50,7 +55,7 @@ public class RedisReloadBizImpl implements RedisReloadBiz {
                             redisCacheListDTOHelper.allTableRedisCacheLoadAndGet(redisMapping, dbDatabase, dbTable);
                         }
                         if (ArrayUtils.contains(ruleArr, MaxwellBinlogConstants.REDIS_RULE_3)) {
-                            redisCacheListDTOHelper.customRedisCacheLoadAndGet(redisMapping, dbDatabase, dbTable, dbPid);
+                            redisCacheListDTOHelper.customRedisCacheLoad(redisMapping, dbDatabase, dbTable, reloadKeyDTOS, dataJson);
                         }
                     }
                 }
@@ -58,22 +63,4 @@ public class RedisReloadBizImpl implements RedisReloadBiz {
         });
         return false;
     }
-
-
-/*
-    public static void main(String[] args) {
-        String a = ":order_code:is_deleted,:goods_name:is_deleted";
-        String[] a1 = a.split(",");
-        System.out.println(a1);
-        for (String s : a1) {
-            System.out.println(s);
-            String[] a2 = s.split(":");
-            for (String f : a2) {
-                if (!Strings.isNullOrEmpty(f)) {
-                    System.out.println("f=====" + f);
-                }
-            }
-        }
-    }*/
-
 }
