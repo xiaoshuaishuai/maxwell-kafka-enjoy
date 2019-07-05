@@ -7,6 +7,7 @@ import com.ssx.maxwell.kafka.enjoy.common.model.db.RedisMappingDO;
 import com.ssx.maxwell.kafka.enjoy.common.model.dto.RedisExpireAndLoadDTO;
 import com.ssx.maxwell.kafka.enjoy.common.tools.JsonUtils;
 import com.ssx.maxwell.kafka.enjoy.common.tools.PatternUtils;
+import com.ssx.maxwell.kafka.enjoy.common.tools.TemplateUtils;
 import com.ssx.maxwell.kafka.enjoy.common.tools.UnicodeUtils;
 import com.ssx.maxwell.kafka.enjoy.configuration.JvmCache;
 import com.ssx.maxwell.kafka.enjoy.enumerate.MaxwellBinlogConstants;
@@ -19,6 +20,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import java.io.IOException;
 import java.text.MessageFormat;
@@ -106,7 +108,7 @@ public class MaxwellKafkaToRedisConsumer {
                                             Map oldDataJson = (Map) jsonMessageMap.get("old");
                                             Integer id = (Integer) dataJson.get("id");
                                             redisExpireDTO.setDbPid(String.valueOf(id));
-//                                            redisExpireDTO.setDataJson(dataJson);
+                                            redisExpireDTO.setDataJson(dataJson);
                                             if (ArrayUtils.contains(ruleArr, MaxwellBinlogConstants.REDIS_RULE_1)) {
                                                 //处理单表主键缓存
                                                 String redisKey = MessageFormat.format(MaxwellBinlogConstants.RedisCacheKeyTemplateEnum.REDIS_CACHE_KEY_TEMPLATE_ITEM_PK_ID.getTemplate(), profile, database, table, id);
@@ -128,41 +130,15 @@ public class MaxwellKafkaToRedisConsumer {
                                             }
                                             if (ArrayUtils.contains(ruleArr, MaxwellBinlogConstants.REDIS_RULE_3)) {
                                                 redisExpireDTO.setOldDataJson(oldDataJson);
-                                                String template = redisMapping.getTemplate();
-                                                if (!Strings.isNullOrEmpty(template)) {
-                                                    String[] templateArr = template.split(",");
+                                                List<String> keySuffixList = TemplateUtils.templateConversionKey(redisMapping.getTemplate(), dataJson);
+                                                if(!CollectionUtils.isEmpty(keySuffixList)){
                                                     String redisKey = MessageFormat.format(MaxwellBinlogConstants.RedisCacheKeyTemplateEnum.REDIS_CACHE_KEY_TEMPLATE_PREFIX_CUSTOM.getTemplate(), profile, database, table);
-                                                    if (ArrayUtils.isNotEmpty(templateArr)) {
-                                                        for (String templateString : templateArr) {
-                                                            StringBuilder columnStringBuilder = new StringBuilder();
-                                                            if (!Strings.isNullOrEmpty(templateString) && templateString.contains(":")) {
-                                                                String[] columnArr = templateString.split(":");
-                                                                if (ArrayUtils.isNotEmpty(columnArr)) {
-                                                                    for (String columnString : columnArr) {
-                                                                        if (dataJson.containsKey(columnString)) {
-                                                                            columnStringBuilder.append(":");
-                                                                            if (dataJson.get(columnString) instanceof String) {
-                                                                                //字符串判断是否包含中文
-                                                                                if (PatternUtils.isContainChinese((String) dataJson.get(columnString))) {
-                                                                                    //转码
-                                                                                    columnStringBuilder.append(UnicodeUtils.cnToUnicode((String) dataJson.get(columnString)));
-                                                                                } else {
-                                                                                    //字符串类型参数为空NONE填充
-                                                                                    columnStringBuilder.append(Strings.isNullOrEmpty(String.valueOf(dataJson.get(columnString))) ? MaxwellBinlogConstants.REDIS_VAL_NONE_MAGIC : dataJson.get(columnString));
-                                                                                }
-                                                                            } else {
-                                                                                columnStringBuilder.append(null == dataJson.get(columnString) ? MaxwellBinlogConstants.REDIS_VAL_NONE_MAGIC : dataJson.get(columnString));
-                                                                            }
-                                                                        }
-                                                                    }
-                                                                }
-                                                            }
-//                                                         :order_code:is_deleted
-//                                                         :goods_name:is_deleted
-                                                            String conversionKey = columnStringBuilder.insert(0, redisKey).toString();
-                                                            log.info(logPrefix + "处理自定义缓存redisKey={}", conversionKey);
-                                                            redisExpireDTO.getKeyList().add(conversionKey);
-                                                        }
+                                                    for(String keySuffix : keySuffixList){
+                                                        // :order_code:is_deleted
+                                                        // :goods_name:is_deleted
+                                                        String conversionKey = redisKey + keySuffix ;
+                                                        log.info(logPrefix + "处理自定义缓存redisKey={}", conversionKey);
+                                                        redisExpireDTO.getKeyList().add(conversionKey);
                                                     }
                                                 }
                                             }

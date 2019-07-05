@@ -27,6 +27,12 @@ public class BeanHelper {
     @Autowired
     private SpringContextUtils springContextUtils;
 
+    /**
+     * 通过具体数据源bean执行SQL
+     * @param dynamicDsInfo
+     * @param sql
+     * @return
+     */
     public List<Map<String, Object>> queryDbList(DynamicDsInfo dynamicDsInfo, String sql) {
         try {
             Object object = springContextUtils.getBean(dynamicDsInfo.getBizBeanName());
@@ -60,23 +66,5 @@ public class BeanHelper {
             }
         }
         return null;
-    }
-
-    public static void appendRedisKeySuffix(Object dbObj, StringBuilder keyBuilder){
-        if (null == dbObj || "".equals(dbObj)) {
-            keyBuilder.append(MaxwellBinlogConstants.REDIS_VAL_NONE_MAGIC);
-        } else {
-            if (dbObj instanceof String) {
-                //字符串判断是否包含中文
-                if (PatternUtils.isContainChinese((String) dbObj)) {
-                    //转码
-                    keyBuilder.append(UnicodeUtils.cnToUnicode((String) dbObj));
-                } else {
-                    keyBuilder.append(dbObj);
-                }
-            } else {
-                keyBuilder.append(dbObj);
-            }
-        }
     }
 }

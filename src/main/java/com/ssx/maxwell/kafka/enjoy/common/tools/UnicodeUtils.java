@@ -1,5 +1,7 @@
 package com.ssx.maxwell.kafka.enjoy.common.tools;
 
+import com.google.common.base.Strings;
+
 /**
  * @author: shuaishuai.xiao
  * @date: 2019/6/4 18:20
@@ -11,6 +13,8 @@ public class UnicodeUtils {
         String name = "马甲";
         System.out.println(cnToUnicode(name));
         System.out.println(unicodeToCn(cnToUnicode(name)));
+        System.out.println(isUnicode(cnToUnicode(name)));
+        System.out.println(isUnicode(unicodeToCn(cnToUnicode(name))));
     }
 
     //unicode转成中文
@@ -35,5 +39,15 @@ public class UnicodeUtils {
         return returnStr;
     }
 
-
+    /**
+     * 判断是否为Unicode编码格式
+     * @param string
+     * @return
+     */
+    public static boolean isUnicode(String string){
+        if(Strings.isNullOrEmpty(string)){
+            return false;
+        }
+        return string.contains("\\u");
+    }
 }

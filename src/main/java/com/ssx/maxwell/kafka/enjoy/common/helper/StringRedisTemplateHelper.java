@@ -30,12 +30,6 @@ public class StringRedisTemplateHelper {
     @Autowired
     private StringRedisTemplate customerStringRedisTemplate;
 
-    private static final String REDIS_SENTINEL_MASTER_CONFIG_PROPERTY = "spring.redis.sentinel.master";
-    private static final String REDIS_SENTINEL_NODES_CONFIG_PROPERTY = "spring.redis.sentinel.nodes";
-
-    private static final String REDIS_CLUSTER_NODES_CONFIG_PROPERTY = "spring.redis.cluster.nodes";
-    private static final String REDIS_CLUSTER_MAX_REDIRECTS_CONFIG_PROPERTY = "spring.redis.cluster.max-redirects";
-
     public void set(String key, Object value) throws JsonProcessingException {
         String v = JsonUtils.ObjectToJsonString(value);
         log.info("redis set-- key={}, value={}", key, v);

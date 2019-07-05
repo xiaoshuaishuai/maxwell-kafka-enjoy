@@ -15,11 +15,11 @@ import com.ssx.maxwell.kafka.enjoy.enumerate.MaxwellBinlogConstants;
 import com.ssx.maxwell.kafka.enjoy.service.RedisMappingService;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.text.MessageFormat;
 
 /**
  * @author: shuaishuai.xiao
@@ -50,7 +50,6 @@ public class RedisCacheListGetAndLoadBizImpl implements RedisCacheListGetAndLoad
                 return new RespData<>(GlobalCallbackEnum.JSON_PARSE_ERROR.getValue(), GlobalCallbackEnum.JSON_PARSE_ERROR.getIntro());
             }
         }
-
         if(!key.contains(":") || key.split(":").length < 5){
             return new RespData<>(GlobalCallbackEnum.PARAMETER_ERROR.getValue(), GlobalCallbackEnum.PARAMETER_ERROR.getIntro());
         }
@@ -76,16 +75,20 @@ public class RedisCacheListGetAndLoadBizImpl implements RedisCacheListGetAndLoad
             RedisCacheListDTO redisCacheListDTO = redisCacheListDTOHelper.primaryRedisCacheLoadAndGet(redisMapping, dbDatabase, dbTable, dbPid);
             return new RespData<>(GlobalCallbackEnum.SUCCESS.getValue(), GlobalCallbackEnum.SUCCESS.getIntro(), redisCacheListDTO);
         } else if (MaxwellBinlogConstants.KEY_CUSTOM.contains(key)) {
-            //todo 2019-7-3 17:31:03 自定义缓存加载
             if(Strings.isNullOrEmpty(template)){
                 return new RespData<>(GlobalCallbackEnum.PARAMETER_TEMPLATE_ERROR.getValue(), GlobalCallbackEnum.PARAMETER_TEMPLATE_ERROR.getIntro());
             }
             if(!redisMapping.getRule().contains(MaxwellBinlogConstants.REDIS_RULE_3)){
                 return new RespData<>(GlobalCallbackEnum.PARAMETER_RULE_ERROR.getValue(), GlobalCallbackEnum.PARAMETER_RULE_ERROR.getIntro());
             }
+            String temps = redisMapping.getTemplate();
+            if(Strings.isNullOrEmpty(temps) || !ArrayUtils.contains(temps.split(","), template)){
+                return new RespData<>(GlobalCallbackEnum.PARAMETER_NOTEXIST_TEMPLATE_ERROR.getValue(), GlobalCallbackEnum.PARAMETER_NOTEXIST_TEMPLATE_ERROR.getIntro());
+            }
             RedisCacheListDTO redisCacheListDTO = redisCacheListDTOHelper.customRedisCacheLoadAndGet(key, template);
             return new RespData<>(GlobalCallbackEnum.SUCCESS.getValue(), GlobalCallbackEnum.SUCCESS.getIntro(), redisCacheListDTO);
+        }else {
+            return new RespData<>(GlobalCallbackEnum.KEY_NOT_RECOGNIZED.getValue(), GlobalCallbackEnum.KEY_NOT_RECOGNIZED.getIntro());
         }
-        return null;
     }
 }

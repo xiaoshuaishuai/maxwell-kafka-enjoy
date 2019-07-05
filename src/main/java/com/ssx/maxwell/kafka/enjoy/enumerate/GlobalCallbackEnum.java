@@ -12,6 +12,7 @@ public enum GlobalCallbackEnum {
     PARAMETER_ERROR(100000004, "key参数格式错误"),
     PARAMETER_RULE_ERROR(100000005, "缓存规则未配置"),
     PARAMETER_TEMPLATE_ERROR(100000006, "自定义缓存模板参数不能为空"),
+    PARAMETER_NOTEXIST_TEMPLATE_ERROR(100000007, "模板未配置"),
 
     ;
     /**

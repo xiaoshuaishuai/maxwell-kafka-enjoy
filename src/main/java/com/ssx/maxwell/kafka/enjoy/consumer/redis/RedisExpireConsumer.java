@@ -9,6 +9,7 @@ import com.ssx.maxwell.kafka.enjoy.common.model.bo.RedisMappingBO;
 import com.ssx.maxwell.kafka.enjoy.common.model.db.RedisMappingDO;
 import com.ssx.maxwell.kafka.enjoy.common.model.dto.RedisExpireAndLoadDTO;
 import com.ssx.maxwell.kafka.enjoy.common.tools.JsonUtils;
+import com.ssx.maxwell.kafka.enjoy.common.tools.TemplateUtils;
 import com.ssx.maxwell.kafka.enjoy.enumerate.MaxwellBinlogConstants;
 import com.ssx.maxwell.kafka.enjoy.service.RedisMappingService;
 import lombok.extern.slf4j.Slf4j;
@@ -75,7 +76,7 @@ public class RedisExpireConsumer {
                                 for (String temp : templateArray) {
                                     if (!Strings.isNullOrEmpty(columnFilter(temp, oldDataJson))) {
                                         //模糊key 不包含过期时间
-                                        String assembly = assemblyRedisKey(temp, oldDataJson);
+                                        String assembly = assemblyRedisKey(temp, oldDataJson, redisExpireDTO.getDataJson());
                                         if(!Strings.isNullOrEmpty(assembly)){
                                             String redisKey = MessageFormat.format(MaxwellBinlogConstants.RedisCacheKeyTemplateEnum.REDIS_CACHE_KEY_TEMPLATE_PREFIX_CUSTOM.getTemplate(), profile, redisMapping.getDbDatabase(), redisMapping.getDbTable());
                                             fuzzyKeyList.add(redisKey + assembly);
@@ -137,7 +138,7 @@ public class RedisExpireConsumer {
         return null;
     }
 
-    private String assemblyRedisKey( String template, Map oldDataJson) {
+    private String assemblyRedisKey( String template, Map oldDataJson, Map dataJson) {
         //:order_code:is_deleted(1800)
         //:goods_name:is_deleted(3600)
         //自定义缓存相关的key，可能包含模糊key
@@ -145,22 +146,29 @@ public class RedisExpireConsumer {
         if (null != columnArray && columnArray.length > 0) {
             StringBuilder keyStringBuilder = new StringBuilder();
             for(String column : columnArray){
+                if(Strings.isNullOrEmpty(column)){
+                    continue;
+                }
                 keyStringBuilder.append(":");
                 if(column.contains("(")){
                     //筛选掉过期时间配置
                     column = column.substring(0, column.indexOf("("));
                 }
                 if(oldDataJson.containsKey(column)){
-                    keyStringBuilder.append(oldDataJson.get(column) + "");
+                    Object dbObj = oldDataJson.get(column);
+                    TemplateUtils.encodeRedisKeySuffix(dbObj, keyStringBuilder);
                 }else {
-                    keyStringBuilder.append(column);
+                    keyStringBuilder.append(column + "");
                 }
             }
             String[] keyStringBuilderArray = keyStringBuilder.toString().split(":");
             StringBuilder keyStringBuilderArrayAfter = new StringBuilder();
             for (int i = 0; i < columnArray.length; i++) {
-                keyStringBuilderArrayAfter.append(":");
                 String column = columnArray[i];
+                if(Strings.isNullOrEmpty(column)){
+                    continue;
+                }
+                keyStringBuilderArrayAfter.append(":");
                 if(column.contains("(")){
                     //筛选掉过期时间配置
                     column = column.substring(0, column.indexOf("("));
