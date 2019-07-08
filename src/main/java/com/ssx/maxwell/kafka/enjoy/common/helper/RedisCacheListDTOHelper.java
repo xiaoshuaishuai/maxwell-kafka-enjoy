@@ -12,13 +12,11 @@ import com.ssx.maxwell.kafka.enjoy.common.tools.TemplateUtils;
 import com.ssx.maxwell.kafka.enjoy.common.tools.UrlCodeUtils;
 import com.ssx.maxwell.kafka.enjoy.configuration.DynamicDsInfo;
 import com.ssx.maxwell.kafka.enjoy.enumerate.MaxwellBinlogConstants;
-import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.lang.NonNull;
-import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
@@ -54,7 +52,7 @@ public class RedisCacheListDTOHelper {
      * @param dbPid
      * @return
      */
-    public RedisCacheListDTO primaryRedisCacheLoadAndGet(RedisMappingDO redisMapping, String dbDatabase, String dbTable, String dbPid) {
+    public String primaryRedisCacheLoadAndGet(RedisMappingDO redisMapping, String dbDatabase, String dbTable, String dbPid) {
         //单表主键缓存
         String jdbcSql = MessageFormat.format(MaxwellBinlogConstants.RedisRunSqlTemplateEnum.SQL_PRIMARY_ID.getTemplate(), dbTable, "'" + dbPid + "'");
         String redisKey = MessageFormat.format(MaxwellBinlogConstants.RedisCacheKeyTemplateEnum.REDIS_CACHE_KEY_TEMPLATE_ITEM_PK_ID.getTemplate(), profile, dbDatabase, dbTable, dbPid);
@@ -70,7 +68,7 @@ public class RedisCacheListDTOHelper {
      * @param dbTable
      * @return
      */
-    public RedisCacheListDTO allTableRedisCacheLoadAndGet(RedisMappingDO redisMapping, String dbDatabase, String dbTable) {
+    public String allTableRedisCacheLoadAndGet(RedisMappingDO redisMapping, String dbDatabase, String dbTable) {
         //全表缓存
         String jdbcSql = MessageFormat.format(MaxwellBinlogConstants.RedisRunSqlTemplateEnum.SQL_ALL.getTemplate(), dbTable);
         String redisKey = MessageFormat.format(MaxwellBinlogConstants.RedisCacheKeyTemplateEnum.REDIS_CACHE_KEY_TEMPLATE_PREFIX_LIST.getTemplate(), profile, dbDatabase, dbTable);
@@ -100,6 +98,42 @@ public class RedisCacheListDTOHelper {
             }
         }
         return;
+        /*  模糊key删除=---------------------------------------------------------
+        for(RedisExpireAndLoadDTO.ReloadKeyDTO reloadKeyDTO :  reloadKeyDTOS){
+            String[] fuzzyKeyArray = reloadKeyDTO.getFuzzyKey().split(":");
+            String[] templatesArray = reloadKeyDTO.getTemplates().split(":");
+            List<String> columnList = Lists.newArrayList();
+            for (int i = 0; i < fuzzyKeyArray.length; i++) {
+                if(!fuzzyKeyArray[i].contains("*")){
+                    if(fuzzyKeyArray[i].contains("(")){
+                        //筛选掉过期时间配置
+                        columnList.add(templatesArray[i].substring(0, templatesArray[i].indexOf("(")));
+                    }
+                }
+            }
+            StringBuilder whereSql = new StringBuilder();
+            columnList.forEach(column->{
+                if(whereSql.toString().contains("=")){
+                    whereSql.append(" AND ");
+                }
+                Object dbValue = dataJson.get(column);
+                if(null == dbValue){
+                    whereSql.append(column).append(" = ").append("");
+                }else {
+                    if(dbValue instanceof String){
+                        whereSql.append(column).append(" = ").append("'").append(dbValue).append("'");
+                    }else {
+                        whereSql.append(column).append(" = ").append(dbValue);
+                    }
+                }
+
+            });
+            //自定义缓存
+            String jdbcSql = MessageFormat.format(MaxwellBinlogConstants.RedisRunSqlTemplateEnum.SQL_CUSTOM.getTemplate(), dbTable, whereSql.toString());
+            String redisKey = MessageFormat.format(MaxwellBinlogConstants.RedisCacheKeyTemplateEnum.REDIS_CACHE_KEY_TEMPLATE_PREFIX_CUSTOM.getTemplate(), profile, dbDatabase, dbTable);
+            log.info("sql= {} , key= {}", jdbcSql, redisKey);
+            customExecuteToRedis(beanHelper.loopGetDynamicDsInfo(dbDatabase), jdbcSql, redisKey, redisMapping, reloadKeyDTO.getTemplates(), Long.MAX_VALUE);
+        }*/
     }
 
     /**
@@ -109,7 +143,7 @@ public class RedisCacheListDTOHelper {
      * @param template
      * @return
      */
-    public RedisCacheListDTO customRedisCacheLoadAndGet(String key, String template) throws UnsupportedEncodingException {
+    public String customRedisCacheLoadAndGet(String key, String template) throws UnsupportedEncodingException {
         //fixme dev:test:sys_order:3:custom:code6:0
         //:goods_name:is_deleted(3600)
         String[] keyArray = key.split(":");
@@ -171,8 +205,7 @@ public class RedisCacheListDTOHelper {
             log.warn("自定义缓存查询数据库集合为空, 不进行构建, sql={}", jdbcSql);
         } else {
             RedisCacheListDTO redisCacheListDTO = buildCacheListDTO(dbDataList);
-            setValueToRedis(finalKey, redisCacheListDTO, expire);
-            return redisCacheListDTO;
+            return setValueToRedis(finalKey, redisCacheListDTO, expire);
         }
         return null;
     }
@@ -181,23 +214,21 @@ public class RedisCacheListDTOHelper {
      * 功能描述: 执行至redis业务
      *
      * @param: [dynamicDsInfo, sql, redisKey, redisMapping, isCustom, rule]
-     * @return: RedisCacheListDTO
+     * @return: String
      * @author: shuaishuai.xiao
      * @date: 2019/6/14 17:31
      */
-    private RedisCacheListDTO executePrimaryAndAllTableToRedis(DynamicDsInfo dynamicDsInfo, String sql, String redisKey, Long expire) {
+    private String executePrimaryAndAllTableToRedis(DynamicDsInfo dynamicDsInfo, String sql, String redisKey, Long expire) {
         //主键缓存 全表缓存走这里
         List<Map<String, Object>> dbDataList = beanHelper.queryDbList(dynamicDsInfo, sql);
         if (null == dbDataList || dbDataList.isEmpty()) {
             //处理DB查询无数据情况
             RedisCacheListDTO cacheListDTO = new RedisCacheListDTO().setNone(true);
             cacheListDTO.setObj(Lists.newArrayList());
-            setValueToRedis(redisKey, cacheListDTO, expire);
-            return cacheListDTO;
+            return setValueToRedis(redisKey, cacheListDTO, expire);
         } else {
             RedisCacheListDTO redisCacheListDTO = buildCacheListDTO(dbDataList);
-            setValueToRedis(redisKey, redisCacheListDTO, expire);
-            return redisCacheListDTO;
+            return setValueToRedis(redisKey, redisCacheListDTO, expire);
         }
     }
 
@@ -265,20 +296,21 @@ public class RedisCacheListDTOHelper {
      * 功能描述: set to redis
      *
      * @param: [redisMapping, redisKey, cacheListDTO, expire]
-     * @return: void
+     * @return: String
      * @author: shuaishuai.xiao
      * @date: 2019/6/14 17:29
      */
-    private void setValueToRedis(String redisKey, RedisCacheListDTO cacheListDTO, Long expire) {
+    public String setValueToRedis(String redisKey, RedisCacheListDTO cacheListDTO, Long expire) {
         try {
             if ("-1".equals(expire) || -1 == expire) {
-                stringRedisTemplateHelper.set(redisKey, cacheListDTO);
+                return stringRedisTemplateHelper.set(redisKey, cacheListDTO);
             } else {
-                stringRedisTemplateHelper.set(redisKey, cacheListDTO, expire, TimeUnit.SECONDS);
+                return stringRedisTemplateHelper.set(redisKey, cacheListDTO, expire, TimeUnit.SECONDS);
             }
         } catch (Exception e) {
             log.error("redis存值出错, e={}", e);
         }
+        return null;
     }
 
     /**

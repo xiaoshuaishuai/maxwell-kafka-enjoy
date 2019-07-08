@@ -30,16 +30,18 @@ public class StringRedisTemplateHelper {
     @Autowired
     private StringRedisTemplate customerStringRedisTemplate;
 
-    public void set(String key, Object value) throws JsonProcessingException {
+    public String set(String key, Object value) throws JsonProcessingException {
         String v = JsonUtils.ObjectToJsonString(value);
         log.info("redis set-- key={}, value={}", key, v);
         customerStringRedisTemplate.opsForValue().set(key, v);
+        return v;
     }
 
-    public void set(String key, Object value, long timeout, TimeUnit unit) throws JsonProcessingException {
+    public String set(String key, Object value, long timeout, TimeUnit unit) throws JsonProcessingException {
         String v = JsonUtils.ObjectToJsonString(value);
         log.info("redis set-- key={}, value={}, timeout={}, unit={}", key, v, timeout, unit);
         customerStringRedisTemplate.opsForValue().set(key, v, timeout, unit);
+        return v;
     }
 
     public Long delete(Collection<String> keys) {
@@ -77,9 +79,8 @@ public class StringRedisTemplateHelper {
     }
 
     public String getValue(String key){
-        log.info("start redis get key={}", key);
         String value = customerStringRedisTemplate.opsForValue().get(key);
-        log.info("end redis get key={}, value={}", key, value);
+        log.info("redis get key={}, value={}", key, value);
         return value;
     }
 

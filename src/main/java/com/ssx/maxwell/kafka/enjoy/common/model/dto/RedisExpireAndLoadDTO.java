@@ -3,7 +3,6 @@ package com.ssx.maxwell.kafka.enjoy.common.model.dto;
 import com.google.common.collect.Lists;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.experimental.Accessors;
 
 import java.util.List;
 import java.util.Map;
