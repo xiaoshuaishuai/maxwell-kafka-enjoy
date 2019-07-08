@@ -245,11 +245,7 @@ INSERT INTO `test`.`sys_order` (`id`, `order_code`, `category`, `goods_name`, `i
 ```
 ./maxwell-bootstrap --config=../config.properties --host 192.168.225.1 --port 3306  --user root --password root --database test --table sys_order --log_level debug --client_id maxwell
 ```
-#### 全量数据同步结果
->基于对sys_order表映射的redis规则配置
- ![sys_order表配置信息](./docs/img/test_order.jpg)
-
-#### 增量数据同步结果
+#### 增量数据同步
 
 > 增量数据同步，会根据redis_mapping配置缓存模板信息进行增量同步
 
