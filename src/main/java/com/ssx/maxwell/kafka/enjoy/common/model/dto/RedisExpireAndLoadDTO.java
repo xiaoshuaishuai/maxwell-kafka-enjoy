@@ -17,9 +17,9 @@ import java.util.Map;
 @EqualsAndHashCode
 public class RedisExpireAndLoadDTO {
     /**
-     * 过期key
+     * 删除key集合
      */
-    private List<String> keyList = Lists.newArrayList();
+    private List<String> deleteKeyList = Lists.newArrayList();
 
     /**
      * 数据库
@@ -45,18 +45,18 @@ public class RedisExpireAndLoadDTO {
      */
     private Map dataJson;
 
-    private List<ReloadKeyDTO> reloadKeyDTOS  = Lists.newArrayList();
-
-    @Data
-    @Accessors(chain = true)
-    public static class ReloadKeyDTO{
-        /**
-         * 删除的缓存对应的模板，模板对应的缓存需要重新装载
-         */
-        private String templates;
-        /**
-         * 模糊key
-         */
-        private String fuzzyKey;
-    }
+//    private List<ReloadKeyDTO> reloadKeyDTOS  = Lists.newArrayList();
+//
+//    @Data
+//    @Accessors(chain = true)
+//    public static class ReloadKeyDTO{
+//        /**
+//         * 删除的缓存对应的模板，模板对应的缓存需要重新装载
+//         */
+//        private String templates;
+//        /**
+//         * 模糊key
+//         */
+//        private String fuzzyKey;
+//    }
 }

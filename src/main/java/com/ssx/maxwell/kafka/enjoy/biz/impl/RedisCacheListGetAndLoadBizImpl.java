@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 
 /**
  * @author: shuaishuai.xiao
@@ -85,7 +86,13 @@ public class RedisCacheListGetAndLoadBizImpl implements RedisCacheListGetAndLoad
             if(Strings.isNullOrEmpty(temps) || !ArrayUtils.contains(temps.split(","), template)){
                 return new RespData<>(GlobalCallbackEnum.PARAMETER_NOTEXIST_TEMPLATE_ERROR.getValue(), GlobalCallbackEnum.PARAMETER_NOTEXIST_TEMPLATE_ERROR.getIntro());
             }
-            RedisCacheListDTO redisCacheListDTO = redisCacheListDTOHelper.customRedisCacheLoadAndGet(key, template);
+            RedisCacheListDTO redisCacheListDTO = null;
+            try {
+                redisCacheListDTO = redisCacheListDTOHelper.customRedisCacheLoadAndGet(key, template);
+            } catch (UnsupportedEncodingException e) {
+                log.error("URL编码异常e={}", e);
+                return new RespData<>(GlobalCallbackEnum.SYSTEM_ENCODE_ERROR.getValue(), GlobalCallbackEnum.SYSTEM_ENCODE_ERROR.getIntro());
+            }
             return new RespData<>(GlobalCallbackEnum.SUCCESS.getValue(), GlobalCallbackEnum.SUCCESS.getIntro(), redisCacheListDTO);
         }else {
             return new RespData<>(GlobalCallbackEnum.KEY_NOT_RECOGNIZED.getValue(), GlobalCallbackEnum.KEY_NOT_RECOGNIZED.getIntro());

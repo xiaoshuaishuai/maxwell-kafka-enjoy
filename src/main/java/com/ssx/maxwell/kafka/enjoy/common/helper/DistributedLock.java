@@ -2,6 +2,7 @@ package com.ssx.maxwell.kafka.enjoy.common.helper;
 
 import com.ssx.maxwell.kafka.enjoy.common.exception.RedissonWaitLockFailException;
 
+import java.io.UnsupportedEncodingException;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -27,10 +28,10 @@ public interface DistributedLock {
      * @author: shuaishuai.xiao
      * @date: 2019/6/12 13:08
      */
-    void lock(String path, long waitTime, long leaseTime, TimeUnit unit, HandleData handleData) throws RedissonWaitLockFailException;
+    void lock(String path, long waitTime, long leaseTime, TimeUnit unit, HandleData handleData) throws RedissonWaitLockFailException, UnsupportedEncodingException;
 
     @FunctionalInterface
     interface HandleData {
-        void handle();
+        void handle() throws UnsupportedEncodingException;
     }
 }

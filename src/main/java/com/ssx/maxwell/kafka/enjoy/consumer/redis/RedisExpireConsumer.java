@@ -23,6 +23,7 @@ import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
+import java.io.UnsupportedEncodingException;
 import java.text.MessageFormat;
 import java.util.List;
 import java.util.Map;
@@ -62,7 +63,7 @@ public class RedisExpireConsumer {
                         });
                 log.info(logPrefix + "redisExpireDTO={}", redisExpireDTO);
                 try {
-                    Map oldDataJson = redisExpireDTO.getOldDataJson();
+                    /*Map oldDataJson = redisExpireDTO.getOldDataJson();
                     if (null != oldDataJson && !oldDataJson.isEmpty()) {
                         List<String> fuzzyKeyList = Lists.newArrayList();
                         RedisMappingBO redisMappingBO = new RedisMappingBO();
@@ -76,7 +77,7 @@ public class RedisExpireConsumer {
                                 for (String temp : templateArray) {
                                     if (!Strings.isNullOrEmpty(columnFilter(temp, oldDataJson))) {
                                         //模糊key 不包含过期时间
-                                        String assembly = assemblyRedisKey(temp, oldDataJson, redisExpireDTO.getDataJson());
+                                        String assembly = assemblyRedisKey(temp, oldDataJson);
                                         if(!Strings.isNullOrEmpty(assembly)){
                                             String redisKey = MessageFormat.format(MaxwellBinlogConstants.RedisCacheKeyTemplateEnum.REDIS_CACHE_KEY_TEMPLATE_PREFIX_CUSTOM.getTemplate(), profile, redisMapping.getDbDatabase(), redisMapping.getDbTable());
                                             fuzzyKeyList.add(redisKey + assembly);
@@ -94,9 +95,9 @@ public class RedisExpireConsumer {
                             //模糊删除
                             stringRedisTemplateHelper.likeDelete(fuzzyKeyList);
                         }
-                    }
-                    log.info("redisExpireDTO.getKeyList()={}", redisExpireDTO.getKeyList());
-                    stringRedisTemplateHelper.delete(redisExpireDTO.getKeyList());
+                    }*/
+                    log.info("redisExpireDTO.getKeyList()={}", redisExpireDTO.getDeleteKeyList());
+                    stringRedisTemplateHelper.delete(redisExpireDTO.getDeleteKeyList());
                 } catch (Exception redisException) {
                     //todo 2019-6-14 13:47:47 如果出现删除失败、redis连接等情况、将数据落入DB、由定时任务扫表进行清除动作、当然扫表有可能也失败同时增加预警
                     //总之为了尽快清除redis中的脏数据，存在的越久数据不一致也就越久
@@ -138,7 +139,7 @@ public class RedisExpireConsumer {
         return null;
     }
 
-    private String assemblyRedisKey( String template, Map oldDataJson, Map dataJson) {
+    private String assemblyRedisKey( String template, Map oldDataJson) throws UnsupportedEncodingException {
         //:order_code:is_deleted(1800)
         //:goods_name:is_deleted(3600)
         //自定义缓存相关的key，可能包含模糊key

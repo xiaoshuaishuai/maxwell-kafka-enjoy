@@ -9,11 +9,10 @@ import com.ssx.maxwell.kafka.enjoy.common.model.dto.RedisCacheListDTO;
 import com.ssx.maxwell.kafka.enjoy.common.model.dto.RedisExpireAndLoadDTO;
 import com.ssx.maxwell.kafka.enjoy.common.tools.StringUtils;
 import com.ssx.maxwell.kafka.enjoy.common.tools.TemplateUtils;
-import com.ssx.maxwell.kafka.enjoy.common.tools.UnicodeUtils;
+import com.ssx.maxwell.kafka.enjoy.common.tools.UrlCodeUtils;
 import com.ssx.maxwell.kafka.enjoy.configuration.DynamicDsInfo;
 import com.ssx.maxwell.kafka.enjoy.enumerate.MaxwellBinlogConstants;
 import lombok.Data;
-import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +22,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
+import java.io.UnsupportedEncodingException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -84,60 +84,22 @@ public class RedisCacheListDTOHelper {
      * @param redisMapping
      * @param dbDatabase
      * @param dbTable
-     * @param reloadKeyDTOS
      * @return
      */
-    public void customRedisCacheLoad(@NonNull RedisMappingDO redisMapping, @NonNull String dbDatabase, @NonNull String dbTable, @Nullable List<RedisExpireAndLoadDTO.ReloadKeyDTO> reloadKeyDTOS, @NonNull Map dataJson) {
-        if (CollectionUtils.isEmpty(reloadKeyDTOS)) {
-            if (!Strings.isNullOrEmpty(redisMapping.getTemplate())) {
-                String[] templateArr = redisMapping.getTemplate().split(",");
-                if (ArrayUtils.isNotEmpty(templateArr)) {
-                    String redisKey = MessageFormat.format(MaxwellBinlogConstants.RedisCacheKeyTemplateEnum.REDIS_CACHE_KEY_TEMPLATE_PREFIX_CUSTOM.getTemplate(), profile, dbDatabase, dbTable);
-                    for (String templateString : templateArr) {
-                        String keySuffix = TemplateUtils.templateConversionKeyAlone(templateString, dataJson);
-                        String conversionKey = redisKey + keySuffix ;
-                        log.info("处理自定义缓存redisKey={}", conversionKey);
-                        this.customRedisCacheLoadAndGet(conversionKey, templateString);
-                    }
+    public void customRedisCacheLoad(@NonNull RedisMappingDO redisMapping, @NonNull String dbDatabase, @NonNull String dbTable, @NonNull Map dataJson) throws UnsupportedEncodingException {
+        if (!Strings.isNullOrEmpty(redisMapping.getTemplate())) {
+            String[] templateArr = redisMapping.getTemplate().split(",");
+            if (ArrayUtils.isNotEmpty(templateArr)) {
+                String redisKey = MessageFormat.format(MaxwellBinlogConstants.RedisCacheKeyTemplateEnum.REDIS_CACHE_KEY_TEMPLATE_PREFIX_CUSTOM.getTemplate(), profile, dbDatabase, dbTable);
+                for (String templateString : templateArr) {
+                    String keySuffix = TemplateUtils.templateConversionKeyAlone(templateString, dataJson);
+                    String conversionKey = redisKey + keySuffix ;
+                    log.info("处理自定义缓存redisKey={}", conversionKey);
+                    this.customRedisCacheLoadAndGet(conversionKey, templateString);
                 }
             }
-            return;
         }
-        for (RedisExpireAndLoadDTO.ReloadKeyDTO reloadKeyDTO : reloadKeyDTOS) {
-            String[] fuzzyKeyArray = reloadKeyDTO.getFuzzyKey().split(":");
-            String[] templatesArray = reloadKeyDTO.getTemplates().split(":");
-            List<String> columnList = Lists.newArrayList();
-            for (int i = 0; i < fuzzyKeyArray.length; i++) {
-                if (!fuzzyKeyArray[i].contains("*")) {
-                    // 构建where查询条件
-                    if (fuzzyKeyArray[i].contains("(")) {
-                        //筛选掉过期时间配置
-                        columnList.add(templatesArray[i].substring(0, templatesArray[i].indexOf("(")));
-                    }
-                }
-            }
-            StringBuilder whereSql = new StringBuilder();
-            columnList.forEach(column -> {
-                if (whereSql.toString().contains("=")) {
-                    whereSql.append(" AND ");
-                }
-                Object dbValue = dataJson.get(column);
-                if (null == dbValue) {
-                    whereSql.append(column).append(" IS NULL");
-                } else {
-                    if (dbValue instanceof String) {
-                        whereSql.append(column).append(" = ").append("'").append(dbValue).append("'");
-                    } else {
-                        whereSql.append(column).append(" = ").append(dbValue);
-                    }
-                }
-            });
-            // 自定义缓存
-            String jdbcSql = MessageFormat.format(MaxwellBinlogConstants.RedisRunSqlTemplateEnum.SQL_CUSTOM.getTemplate(), dbTable, whereSql.toString(), "");
-            String redisKeyPrefix = MessageFormat.format(MaxwellBinlogConstants.RedisCacheKeyTemplateEnum.REDIS_CACHE_KEY_TEMPLATE_PREFIX_CUSTOM.getTemplate(), profile, dbDatabase, dbTable);
-            log.info("sql= {} , redisKeyPrefix= {}", jdbcSql, redisKeyPrefix);
-            customExecuteToRedis(beanHelper.loopGetDynamicDsInfo(dbDatabase), jdbcSql, redisKeyPrefix, reloadKeyDTO.getTemplates());
-        }
+        return;
     }
 
     /**
@@ -147,7 +109,7 @@ public class RedisCacheListDTOHelper {
      * @param template
      * @return
      */
-    public RedisCacheListDTO customRedisCacheLoadAndGet(String key, String template) {
+    public RedisCacheListDTO customRedisCacheLoadAndGet(String key, String template) throws UnsupportedEncodingException {
         //fixme dev:test:sys_order:3:custom:code6:0
         //:goods_name:is_deleted(3600)
         String[] keyArray = key.split(":");
@@ -191,8 +153,8 @@ public class RedisCacheListDTOHelper {
             if (Strings.isNullOrEmpty(dbValue)) {
                 whereSql.append(column).append(" IS NULL ");
             } else {
-                if (UnicodeUtils.isUnicode(dbValue)) {
-                    dbValue = UnicodeUtils.unicodeToCn(dbValue);
+                if (UrlCodeUtils.isEncode(dbValue)) {
+                    dbValue = UrlCodeUtils.decode(dbValue);
                 }
                 whereSql.append(column).append(" = ").append("'").append(dbValue).append("'");
             }
@@ -239,7 +201,7 @@ public class RedisCacheListDTOHelper {
         }
     }
 
-    private void customExecuteToRedis(DynamicDsInfo dynamicDsInfo, String sql, String redisKeyPrefix, String template) {
+    private void customExecuteToRedis(DynamicDsInfo dynamicDsInfo, String sql, String redisKeyPrefix, String template) throws UnsupportedEncodingException {
         log.info("自定义缓存, template={}", template);
         if (!Strings.isNullOrEmpty(template)) {
             List<Map<String, Object>> dbDataList = beanHelper.queryDbList(dynamicDsInfo, sql);
@@ -253,11 +215,11 @@ public class RedisCacheListDTOHelper {
         }
     }
 
-    private RedisCacheListDTO buildRedisCacheListDTO(String template, List<Map<String, Object>> dbDataList, String redisKeyPrefix) {
+    private void buildRedisCacheListDTO(String template, List<Map<String, Object>> dbDataList, String redisKeyPrefix) throws UnsupportedEncodingException {
         String[] templateArray = template.split(":");
-        StringBuilder keyBuilderSuffix = new StringBuilder();
         Map<String, List<Map<String, Object>>> keySuffixMap = Maps.newHashMap();
         for (Map<String, Object> dbObjMap : dbDataList) {
+            StringBuilder keyBuilderSuffix = new StringBuilder();
             for (int k = 0; k < templateArray.length; k++) {
                 String column = null;
                 if (k == templateArray.length - 1) {
@@ -290,14 +252,13 @@ public class RedisCacheListDTOHelper {
         Long expire = Long.valueOf(template.substring(template.indexOf("(") + 1, template.indexOf(")")));
         Set<String> keySuffixSet = keySuffixMap.keySet();
         for (String keySuffix : keySuffixSet) {
-            String finalKey = redisKeyPrefix + keySuffix;
+            String finalKey = new String(redisKeyPrefix + keySuffix);
             log.info("自定义缓存, key={}, expire={}", finalKey, expire);
             RedisCacheListDTO cacheListDTO = new RedisCacheListDTO();
             cacheListDTO.setNone(CollectionUtils.isEmpty(keySuffixMap.get(keySuffix)) ? true : false);
             cacheListDTO.setObj(CollectionUtils.isEmpty(keySuffixMap.get(keySuffix)) ? Lists.newArrayList() : keySuffixMap.get(keySuffix));
             setValueToRedis(finalKey, cacheListDTO, expire);
         }
-        return null;
     }
 
     /**

@@ -40,7 +40,7 @@ public class RedisReloadConsumer {
                         JsonUtils.getMapper().readValue(value, new TypeReference<RedisExpireAndLoadDTO>() {
                         });
                 log.info(logPrefix + "redisExpireDTO={}", redisExpireDTO);
-                redisReloadBiz.reloadCache(redisExpireDTO.getDbDatabase(), redisExpireDTO.getDbTable(), redisExpireDTO.getDbPid(), redisExpireDTO.getReloadKeyDTOS(), redisExpireDTO.getDataJson());
+                redisReloadBiz.reloadCache(redisExpireDTO.getDbDatabase(), redisExpireDTO.getDbTable(), redisExpireDTO.getDbPid(), redisExpireDTO.getDataJson(), redisExpireDTO.getOldDataJson());
             }
             acknowledgment.acknowledge();
         } catch (Exception e) {

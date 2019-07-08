@@ -1,10 +1,8 @@
 package com.ssx.maxwell.kafka.enjoy.biz;
 
-import com.ssx.maxwell.kafka.enjoy.common.model.dto.RedisExpireAndLoadDTO;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -20,5 +18,5 @@ public interface RedisReloadBiz {
      * @author: shuaishuai.xiao
      * @date: 2019/6/14 13:50
      */
-    boolean reloadCache(@NonNull String dbDatabase, @NonNull String dbTable, @NonNull String dbPid, @Nullable List<RedisExpireAndLoadDTO.ReloadKeyDTO> reloadKeyDTOS,  @NonNull Map dataJson);
+    boolean reloadCache(@NonNull String dbDatabase, @NonNull String dbTable, @NonNull String dbPid, @NonNull Map dataJson, @Nullable  Map oldDataJson);
 }

@@ -5,6 +5,7 @@ import com.google.common.collect.Lists;
 import com.ssx.maxwell.kafka.enjoy.enumerate.MaxwellBinlogConstants;
 import org.apache.commons.lang3.ArrayUtils;
 
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Map;
 
@@ -21,24 +22,58 @@ public class TemplateUtils {
      *
      * @param template
      * @param dataJson
+     * @param oldDataJson
      * @return
      */
-    public static List<String> templateConversionKey(String template, Map dataJson) {
+    public static List<String> templateConversionKey(String template, Map dataJson, Map oldDataJson) throws UnsupportedEncodingException {
         List<String> resList = Lists.newArrayList();
         if (!Strings.isNullOrEmpty(template)) {
             String[] templateArr = template.split(",");
             if (ArrayUtils.isNotEmpty(templateArr)) {
                 for (String templateString : templateArr) {
-                    if(!Strings.isNullOrEmpty(templateConversionKeyAlone(templateString, dataJson))){
-                        resList.add(templateConversionKeyAlone(templateString, dataJson));
+                    if(!Strings.isNullOrEmpty(templateConversionKeyAlone(templateString, dataJson, oldDataJson))){
+                        resList.add(templateConversionKeyAlone(templateString, dataJson, oldDataJson));
                     }
                 }
             }
         }
         return resList;
     }
-
-    public static String templateConversionKeyAlone(String template, Map dataJson) {
+    /**
+     * 功能描述: 用于构建删除key
+     * @param: [template, dataJson, oldDataJson]
+     * @return: java.lang.String
+     * @author: shuaishuai.xiao
+     * @date: 2019/7/8 15:01
+     */
+    public static String templateConversionKeyAlone(String template, Map dataJson, Map oldDataJson) throws UnsupportedEncodingException {
+        StringBuilder columnStringBuilder = new StringBuilder();
+        if (!Strings.isNullOrEmpty(template) && template.contains(":")) {
+            String[] columnArr = template.split(":");
+            if (ArrayUtils.isNotEmpty(columnArr)) {
+                for (String columnString : columnArr) {
+                    if (columnString.contains("(")) {
+                        //筛选掉过期时间配置
+                        columnString = columnString.substring(0, columnString.indexOf("("));
+                    }
+                    if (oldDataJson.containsKey(columnString)) {
+                        getJsonData(oldDataJson, columnString, columnStringBuilder);
+                    }else if (dataJson.containsKey(columnString)) {
+                        getJsonData(dataJson, columnString, columnStringBuilder);
+                    }
+                }
+            }
+        }
+        return columnStringBuilder.toString();
+    }
+    /**
+     * 功能描述: 用于构建重载key
+     * @param: [template, dataJson]
+     * @return: java.lang.String
+     * @author: shuaishuai.xiao
+     * @date: 2019/7/8 15:02
+     */
+    public static String templateConversionKeyAlone(String template, Map dataJson) throws UnsupportedEncodingException {
         StringBuilder columnStringBuilder = new StringBuilder();
         if (!Strings.isNullOrEmpty(template) && template.contains(":")) {
             String[] columnArr = template.split(":");
@@ -49,19 +84,7 @@ public class TemplateUtils {
                         columnString = columnString.substring(0, columnString.indexOf("("));
                     }
                     if (dataJson.containsKey(columnString)) {
-                        columnStringBuilder.append(":");
-                        if (dataJson.get(columnString) instanceof String) {
-                            //字符串判断是否包含中文
-                            if (PatternUtils.isContainChinese((String) dataJson.get(columnString))) {
-                                //转码
-                                columnStringBuilder.append(UnicodeUtils.cnToUnicode((String) dataJson.get(columnString)));
-                            } else {
-                                //字符串类型参数为空NONE填充
-                                columnStringBuilder.append(Strings.isNullOrEmpty(String.valueOf(dataJson.get(columnString))) ? MaxwellBinlogConstants.REDIS_VAL_NONE_MAGIC : dataJson.get(columnString));
-                            }
-                        } else {
-                            columnStringBuilder.append(null == dataJson.get(columnString) ? MaxwellBinlogConstants.REDIS_VAL_NONE_MAGIC : dataJson.get(columnString));
-                        }
+                        getJsonData(dataJson, columnString, columnStringBuilder);
                     }
                 }
             }
@@ -69,21 +92,37 @@ public class TemplateUtils {
         return columnStringBuilder.toString();
     }
 
+    private static void getJsonData(Map dataJson, String columnString, StringBuilder columnStringBuilder) throws UnsupportedEncodingException {
+        columnStringBuilder.append(":");
+        if (dataJson.get(columnString) instanceof String) {
+            //字符串判断是否包含中文
+            if (PatternUtils.isContainChinese((String) dataJson.get(columnString))) {
+                //转码
+                columnStringBuilder.append(UrlCodeUtils.encode((String) dataJson.get(columnString)));
+            } else {
+                //字符串类型参数为空NONE填充
+                columnStringBuilder.append(Strings.isNullOrEmpty(String.valueOf(dataJson.get(columnString))) ? MaxwellBinlogConstants.REDIS_VAL_NONE_MAGIC : dataJson.get(columnString));
+            }
+        } else {
+            columnStringBuilder.append(null == dataJson.get(columnString) ? MaxwellBinlogConstants.REDIS_VAL_NONE_MAGIC : dataJson.get(columnString));
+        }
+    }
+
     /**
-     * 中文转Unicode
+     * 中文URL编码、 因为Unicode编码之后包含\ \ \ ,redis 模糊查询过滤不出， 所以此处采用了URL编码
      * 值为空转NONE填充
      * @param dbObj
      * @param keyBuilder
      */
-    public static void encodeRedisKeySuffix(Object dbObj, StringBuilder keyBuilder){
+    public static void encodeRedisKeySuffix(Object dbObj, StringBuilder keyBuilder) throws UnsupportedEncodingException {
         if (null == dbObj || "".equals(dbObj)) {
             keyBuilder.append(MaxwellBinlogConstants.REDIS_VAL_NONE_MAGIC);
         } else {
             if (dbObj instanceof String) {
                 //字符串判断是否包含中文
                 if (PatternUtils.isContainChinese((String) dbObj)) {
-                    //转unicode码
-                    keyBuilder.append(UnicodeUtils.cnToUnicode((String) dbObj));
+                    //url编码
+                    keyBuilder.append(UrlCodeUtils.encode((String) dbObj));
                 } else {
                     keyBuilder.append(dbObj);
                 }

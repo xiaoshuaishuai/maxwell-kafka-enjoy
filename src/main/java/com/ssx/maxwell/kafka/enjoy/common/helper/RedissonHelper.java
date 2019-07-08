@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.io.UnsupportedEncodingException;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -42,7 +43,7 @@ public class RedissonHelper implements DistributedLock {
     }
 
     @Override
-    public void lock(String path, long waitTime, long leaseTime, TimeUnit unit, HandleData handleData) {
+    public void lock(String path, long waitTime, long leaseTime, TimeUnit unit, HandleData handleData) throws UnsupportedEncodingException {
         RLock rLock = null;
         boolean isLock = false;
         try {

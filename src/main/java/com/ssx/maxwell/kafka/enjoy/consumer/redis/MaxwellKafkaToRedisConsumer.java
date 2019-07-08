@@ -6,9 +6,7 @@ import com.ssx.maxwell.kafka.enjoy.common.helper.KafkaHelper;
 import com.ssx.maxwell.kafka.enjoy.common.model.db.RedisMappingDO;
 import com.ssx.maxwell.kafka.enjoy.common.model.dto.RedisExpireAndLoadDTO;
 import com.ssx.maxwell.kafka.enjoy.common.tools.JsonUtils;
-import com.ssx.maxwell.kafka.enjoy.common.tools.PatternUtils;
 import com.ssx.maxwell.kafka.enjoy.common.tools.TemplateUtils;
-import com.ssx.maxwell.kafka.enjoy.common.tools.UnicodeUtils;
 import com.ssx.maxwell.kafka.enjoy.configuration.JvmCache;
 import com.ssx.maxwell.kafka.enjoy.enumerate.MaxwellBinlogConstants;
 import lombok.extern.slf4j.Slf4j;
@@ -115,22 +113,22 @@ public class MaxwellKafkaToRedisConsumer {
                                                 // id字段 修改
                                                 if (null != oldDataJson && !oldDataJson.isEmpty() && oldDataJson.containsKey("id") && null != oldDataJson.get("id")) {
                                                     String key = MessageFormat.format(MaxwellBinlogConstants.RedisCacheKeyTemplateEnum.REDIS_CACHE_KEY_TEMPLATE_ITEM_PK_ID.getTemplate(), profile, database, table, oldDataJson.get("id") + "");
-                                                    redisExpireDTO.getKeyList().add(key);
+                                                    redisExpireDTO.getDeleteKeyList().add(key);
                                                     log.info(logPrefix + "处理单表主键缓存[id变更]redisKey={}", key);
                                                 }
-                                                redisExpireDTO.getKeyList().add(redisKey);
+                                                redisExpireDTO.getDeleteKeyList().add(redisKey);
                                                 log.info(logPrefix + "处理单表主键缓存redisKey={}", redisKey);
                                             }
                                             if (ArrayUtils.contains(ruleArr, MaxwellBinlogConstants.REDIS_RULE_2)) {
                                                 //处理全表缓存
                                                 String redisKey = MessageFormat.format(MaxwellBinlogConstants.RedisCacheKeyTemplateEnum.REDIS_CACHE_KEY_TEMPLATE_PREFIX_LIST.getTemplate(), profile, database, table);
-                                                redisExpireDTO.getKeyList().add(redisKey);
+                                                redisExpireDTO.getDeleteKeyList().add(redisKey);
                                                 log.info(logPrefix + "处理全表缓存redisKey={}", redisKey);
 
                                             }
                                             if (ArrayUtils.contains(ruleArr, MaxwellBinlogConstants.REDIS_RULE_3)) {
                                                 redisExpireDTO.setOldDataJson(oldDataJson);
-                                                List<String> keySuffixList = TemplateUtils.templateConversionKey(redisMapping.getTemplate(), dataJson);
+                                                List<String> keySuffixList = TemplateUtils.templateConversionKey(redisMapping.getTemplate(), dataJson, oldDataJson);
                                                 if(!CollectionUtils.isEmpty(keySuffixList)){
                                                     String redisKey = MessageFormat.format(MaxwellBinlogConstants.RedisCacheKeyTemplateEnum.REDIS_CACHE_KEY_TEMPLATE_PREFIX_CUSTOM.getTemplate(), profile, database, table);
                                                     for(String keySuffix : keySuffixList){
@@ -138,7 +136,7 @@ public class MaxwellKafkaToRedisConsumer {
                                                         // :goods_name:is_deleted
                                                         String conversionKey = redisKey + keySuffix ;
                                                         log.info(logPrefix + "处理自定义缓存redisKey={}", conversionKey);
-                                                        redisExpireDTO.getKeyList().add(conversionKey);
+                                                        redisExpireDTO.getDeleteKeyList().add(conversionKey);
                                                     }
                                                 }
                                             }
@@ -147,7 +145,7 @@ public class MaxwellKafkaToRedisConsumer {
                                 }
                             }
                             //推送过期key队列
-                            if (null != redisExpireDTO && redisExpireDTO.getKeyList().size() > 0) {
+                            if (null != redisExpireDTO && redisExpireDTO.getDeleteKeyList().size() > 0) {
                                 kafkaHelper.sendMQ(expireRedisTopic, redisExpireDTO
                                         , result -> log.info(logPrefix + "redis清除缓存key发送MQ成功, result={}", result)
                                         , ex -> {

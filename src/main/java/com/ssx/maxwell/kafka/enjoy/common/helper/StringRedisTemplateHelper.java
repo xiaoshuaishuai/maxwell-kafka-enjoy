@@ -71,7 +71,7 @@ public class StringRedisTemplateHelper {
                 });
                 fuzzySet.addAll(set);
             }
-            log.info("redis 模糊删除组装之后 delete={}", fuzzySet);
+            log.info("redis 模糊查询key, 满足条件将要delete key={}", fuzzySet);
             return customerStringRedisTemplate.delete(fuzzySet);
         }
     }
