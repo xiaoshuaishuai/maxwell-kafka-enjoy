@@ -56,10 +56,12 @@ public class TemplateUtils {
                         //筛选掉过期时间配置
                         columnString = columnString.substring(0, columnString.indexOf("("));
                     }
-                    if (oldDataJson.containsKey(columnString)) {
-                        getJsonData(oldDataJson, columnString, columnStringBuilder);
-                    }else if (dataJson.containsKey(columnString)) {
-                        getJsonData(dataJson, columnString, columnStringBuilder);
+                    if(!Strings.isNullOrEmpty(columnString)){
+                        if (null != oldDataJson && oldDataJson.containsKey(columnString)) {
+                            getJsonData(oldDataJson, columnString, columnStringBuilder);
+                        }else if (null != dataJson && dataJson.containsKey(columnString)) {
+                            getJsonData(dataJson, columnString, columnStringBuilder);
+                        }
                     }
                 }
             }
@@ -83,8 +85,10 @@ public class TemplateUtils {
                         //筛选掉过期时间配置
                         columnString = columnString.substring(0, columnString.indexOf("("));
                     }
-                    if (dataJson.containsKey(columnString)) {
-                        getJsonData(dataJson, columnString, columnStringBuilder);
+                    if(!Strings.isNullOrEmpty(columnString)){
+                        if (null != dataJson && dataJson.containsKey(columnString)) {
+                            getJsonData(dataJson, columnString, columnStringBuilder);
+                        }
                     }
                 }
             }
