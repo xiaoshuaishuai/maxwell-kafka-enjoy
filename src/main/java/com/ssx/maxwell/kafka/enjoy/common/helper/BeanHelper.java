@@ -1,12 +1,9 @@
 package com.ssx.maxwell.kafka.enjoy.common.helper;
 
 import com.ssx.maxwell.kafka.enjoy.common.tools.DynGenerateClassUtils;
-import com.ssx.maxwell.kafka.enjoy.common.tools.PatternUtils;
 import com.ssx.maxwell.kafka.enjoy.common.tools.SpringContextUtils;
-import com.ssx.maxwell.kafka.enjoy.common.tools.UnicodeUtils;
 import com.ssx.maxwell.kafka.enjoy.configuration.DynamicDsInfo;
 import com.ssx.maxwell.kafka.enjoy.configuration.ServiceBeanDefinitionRegistry;
-import com.ssx.maxwell.kafka.enjoy.enumerate.MaxwellBinlogConstants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
