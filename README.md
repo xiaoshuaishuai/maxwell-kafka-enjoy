@@ -6,9 +6,10 @@
 * mysql5.7.26
 * kafka_2.11-2.0.0
 * redis4.0
-* elasticsearch(非必须)
 
 ----
+![Image text](./docs/img/description.jpg)
+
 后面考虑内置maxwell，maxwell不需独立部署
 #### 快速开始
 一. 启动mysql服务
