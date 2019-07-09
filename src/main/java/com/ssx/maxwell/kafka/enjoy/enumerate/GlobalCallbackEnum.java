@@ -13,6 +13,7 @@ public enum GlobalCallbackEnum {
     PARAMETER_RULE_ERROR(100000005, "缓存规则未配置"),
     PARAMETER_TEMPLATE_ERROR(100000006, "缓存未命中,自定义缓存模板参数不能为空"),
     SYSTEM_ENCODE_ERROR(100000008, "编码异常"),
+    LOSE_DATA_ERROR(100000009, "redis_mapping缺失数据库表对应记录"),
 
     ;
     /**

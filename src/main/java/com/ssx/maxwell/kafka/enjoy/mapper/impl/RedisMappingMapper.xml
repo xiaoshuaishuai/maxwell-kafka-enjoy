@@ -16,6 +16,8 @@
         <result column="rule" property="rule"></result>
         <result column="template" property="template"></result>
         <result column="template_sql" property="templateSql"></result>
+        <result column="table_order_by" property="tableOrderBy"></result>
+        <result column="template_order_by" property="templateOrderBy"></result>
     </resultMap>
     <sql id="allColumns">
         id,
@@ -23,9 +25,11 @@
         db_table,
         primary_expire,
         table_expire,
+        table_order_by,
         rule,
         template,
         template_sql,
+        template_order_by,
         remark,
         is_enable,
         is_deleted,
@@ -56,9 +60,11 @@
         db_table,
         primary_expire,
         table_expire,
+        table_order_by,
         rule,
         template,
         template_sql,
+        template_order_by,
         remark,
         is_enable,
         is_deleted,
@@ -73,9 +79,11 @@
             #{item.dbTable},
             #{item.primaryExpire},
             #{item.tableExpire},
+            #{item.tableOrderBy},
             #{item.rule},
             #{item.template},
             #{item.templateSql},
+            #{item.templateOrderBy},
             #{item.remark},
             #{item.enable},
             #{item.deleted},

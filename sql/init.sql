@@ -24,9 +24,11 @@ CREATE TABLE `redis_mapping` (
   `db_table` varchar(255) NOT NULL DEFAULT '0' COMMENT '表',
   `primary_expire` bigint(18) DEFAULT '-1' COMMENT '主键缓存过期时间，默认永不过期',
   `table_expire` bigint(18) DEFAULT '-1' COMMENT '全表缓存过期时间, 默认-1永不过期, 单位：秒',
+  `table_order_by` varchar(1024) DEFAULT NULL COMMENT ' 全表缓存排序规则SQL  ORDER BY GMT_MODIFY DESC, XX ASC\r\n',
   `rule` varchar(255) DEFAULT '0' COMMENT ' 缓存生成规则,可以配置多个,多个使用,分割, 1,2 ... 1,3 ...  1,2,3\r\n 默认0.无缓存\r\n 1.单表主键引导缓存\r\n 2.全表缓存\r\n 3.自定义缓存\r\n',
-  `template` varchar(1024) DEFAULT '0' COMMENT '当rule包含3时,template, template ,分割\r\n 自定义缓存模板\r\n 默认0.无模板\r\n字段1:字段2:字段3(过期时间)\r\n字段1:字段2:字段3,字段1:字段2(过期时间)\r\n 字段必须是table里对应的数据库字段,否则无法映射成功\r\n',
+  `template` varchar(1024) DEFAULT '' COMMENT '当rule包含3时,template, template ,分割\r\n 自定义缓存模板\r\n字段1:字段2:字段3(过期时间)\r\n字段1:字段2:字段3,字段1:字段2(过期时间)\r\n 字段必须是table里对应的数据库字段,否则无法映射成功\r\n',
   `template_sql` varchar(1024) DEFAULT NULL COMMENT '自定义模板对应sql,分割\r\n与template一一对应',
+  `template_order_by` varchar(1024) DEFAULT NULL COMMENT '\r\n 自定义模板对应sql,分割\r\n 与template一一对应\r\n ORDER BY GMT_MODIFY DESC,ORDER BY GMT_MODIFY DESC,ORDER BY GMT_MODIFY DESC\r\nORDER BY GMT_MODIFY DESC,,\r\n,,,\r\n可空，如果为空不排序\r\n理论上template多少个分割符template_order_by就需要多少个分隔符，否则排序不生效',
   `remark` varchar(1024) DEFAULT '' COMMENT '备注',
   `is_enable` tinyint(1) DEFAULT '0' COMMENT '0:启用 1:禁用',
   `is_deleted` tinyint(1) DEFAULT '0' COMMENT '0:保留 1:删除',
@@ -70,12 +72,13 @@ CREATE TABLE `sys_order` (
   `gmt_create` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `gmt_modify` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `unique_code_idx` (`order_code`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 -- 初始化测试数据
-INSERT INTO `test`.`sys_order` (`id`, `order_code`, `category`, `goods_name`, `is_send_express`, `is_deleted`, `gmt_create`, `gmt_modify`) VALUES ('1', 'code1', '0', '牙膏', '0', '0', now(), now());
-INSERT INTO `test`.`sys_order` (`id`, `order_code`, `category`, `goods_name`, `is_send_express`, `is_deleted`, `gmt_create`, `gmt_modify`) VALUES ('2', 'code2', '0', '海飞丝洗发水', '0', '0',  now(), now());
-INSERT INTO `test`.`sys_order` (`id`, `order_code`, `category`, `goods_name`, `is_send_express`, `is_deleted`, `gmt_create`, `gmt_modify`) VALUES ('3', 'code3', '0', '耳机', '0', '0',  now(), now());
-INSERT INTO `test`.`sys_order` (`id`, `order_code`, `category`, `goods_name`, `is_send_express`, `is_deleted`, `gmt_create`, `gmt_modify`) VALUES ('4', 'code4', '0', '马甲', '0', '0',  now(), now());
-INSERT INTO `test`.`sys_order` (`id`, `order_code`, `category`, `goods_name`, `is_send_express`, `is_deleted`, `gmt_create`, `gmt_modify`) VALUES ('5', 'code5', '0', '法海', '0', '0',  now(), now());
-INSERT INTO `test`.`sys_order` (`id`, `order_code`, `category`, `goods_name`, `is_send_express`, `is_deleted`, `gmt_create`, `gmt_modify`) VALUES ('6', 'code6', '0', '梳子', '0', '0',  now(), now());
+INSERT INTO `test`.`sys_order` (`id`, `order_code`, `category`, `goods_name`, `is_send_express`, `is_deleted`, `gmt_create`, `gmt_modify`) VALUES ('1', 'code1', '0', '牙膏', '0', '0', '2019-06-04 17:21:45', '2019-07-08 13:49:23');
+INSERT INTO `test`.`sys_order` (`id`, `order_code`, `category`, `goods_name`, `is_send_express`, `is_deleted`, `gmt_create`, `gmt_modify`) VALUES ('2', 'code2', '0', '海飞丝洗发水', '0', '0', '2019-06-04 17:21:45', '2019-06-14 16:09:30');
+INSERT INTO `test`.`sys_order` (`id`, `order_code`, `category`, `goods_name`, `is_send_express`, `is_deleted`, `gmt_create`, `gmt_modify`) VALUES ('3', 'code3', '0', '耳机', '0', '0', '2019-06-11 17:01:06', '2019-06-14 17:57:00');
+INSERT INTO `test`.`sys_order` (`id`, `order_code`, `category`, `goods_name`, `is_send_express`, `is_deleted`, `gmt_create`, `gmt_modify`) VALUES ('4', 'code4', '0', '马甲', '0', '0', '2019-06-14 15:01:04', '2019-06-14 15:01:04');
+INSERT INTO `test`.`sys_order` (`id`, `order_code`, `category`, `goods_name`, `is_send_express`, `is_deleted`, `gmt_create`, `gmt_modify`) VALUES ('5', 'code5', '0', '法海', '0', '0', '2019-06-14 15:01:42', '2019-06-14 15:01:42');
+INSERT INTO `test`.`sys_order` (`id`, `order_code`, `category`, `goods_name`, `is_send_express`, `is_deleted`, `gmt_create`, `gmt_modify`) VALUES ('6', 'code6', '0', '梳子', '0', '0', '2019-06-14 17:39:23', '2019-07-08 16:57:08');
+INSERT INTO `test`.`sys_order` (`id`, `order_code`, `category`, `goods_name`, `is_send_express`, `is_deleted`, `gmt_create`, `gmt_modify`) VALUES ('7', 'code7', '0', 'brother', '0', '0', '2019-07-08 10:48:51', '2019-07-08 15:16:34');
+INSERT INTO `test`.`sys_order` (`id`, `order_code`, `category`, `goods_name`, `is_send_express`, `is_deleted`, `gmt_create`, `gmt_modify`) VALUES ('8', 'code8', '0', 'brother', '0', '0', '2019-07-09 17:10:29', '2019-07-09 17:10:34');

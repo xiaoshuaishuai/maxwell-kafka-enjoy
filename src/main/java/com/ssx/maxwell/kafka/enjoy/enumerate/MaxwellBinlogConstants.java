@@ -129,35 +129,23 @@ public final class MaxwellBinlogConstants {
 
     }
 
-    /**
-     * 按照主键id查询
-     */
-    public static final String SQL_PRIMARY_ID = "SELECT * FROM {0} WHERE ID = {1} ORDER BY GMT_MODIFY DESC";
-    /**
-     * //fixme 全表查询缓存- 大表慎用  --大表不建议开启全表缓存-- 没意义  后面考虑支持分页缓存
-     * 全表查询- 大表慎用
-     */
-    public static final String SQL_ALL = "SELECT * FROM {0} ORDER BY GMT_MODIFY DESC LIMIT 100000";
-    /**
-     * 自定义缓存SQL
-     */
-    public static final String SQL_CUSTOM = "SELECT * FROM {0} WHERE {1} {2} ORDER BY GMT_MODIFY DESC  LIMIT 100000";
-
     public enum RedisRunSqlTemplateEnum {
         /**
          * {0} dbTable
          * {1} id
          */
-        SQL_PRIMARY_ID(MaxwellBinlogConstants.SQL_PRIMARY_ID, "主键ID查询SQL"),
+        SQL_PRIMARY_ID(SqlConstants.SQL_PRIMARY_ID, "主键ID查询SQL"),
         /**
          * {0} dbTable
+         * {1} order by ...
          */
-        SQL_ALL(MaxwellBinlogConstants.SQL_ALL, "全表查询"),
+        SQL_ALL(SqlConstants.SQL_ALL, "全表查询"),
         /**
          * {0} dbTable
          * {1} 查询条件
+         * {2} order by ...
          */
-        SQL_CUSTOM(MaxwellBinlogConstants.SQL_CUSTOM, "自定义缓存查询"),
+        SQL_CUSTOM(SqlConstants.SQL_CUSTOM, "自定义缓存查询"),
         ;
         @Setter
         @Getter

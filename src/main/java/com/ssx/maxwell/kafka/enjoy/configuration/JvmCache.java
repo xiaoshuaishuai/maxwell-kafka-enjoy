@@ -1,7 +1,9 @@
 package com.ssx.maxwell.kafka.enjoy.configuration;
 
+import com.google.common.base.Strings;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.ssx.maxwell.kafka.enjoy.common.exception.RedisMappingCheckException;
 import com.ssx.maxwell.kafka.enjoy.common.model.datao.RedisMappingDO;
 import com.ssx.maxwell.kafka.enjoy.common.tools.ClassUtils;
 import com.ssx.maxwell.kafka.enjoy.mapper.RedisMappingMapper;
@@ -43,18 +45,24 @@ public class JvmCache {
         Cache<String, RedisMappingDO> cache = CacheBuilder.newBuilder().initialCapacity(10)
                 .maximumSize(1000)
                 .build();
-        try {
             List<RedisMappingDO> redisMappingList = redisMappingMapper.list();
             if (!CollectionUtils.isEmpty(redisMappingList)) {
+                for(RedisMappingDO redisMappingDO : redisMappingList){
+                    //检查自定义缓存配置是否正确
+                    if(null != redisMappingDO && !Strings.isNullOrEmpty(redisMappingDO.getTemplate())){
+                        String[] templateArray = redisMappingDO.getTemplate().split(",");
+                        for(String template : templateArray){
+                            if(!Strings.isNullOrEmpty(template) && !template.startsWith(":")){
+                                throw new RedisMappingCheckException("template自定义缓存模板错误,:开头 ,分割   redisMappingDO="+ redisMappingDO.toString());
+                            }
+                        }
+                    }
+                }
                 Map<String, RedisMappingDO> mappingMap = redisMappingList.stream()
                         .collect(Collectors.toMap(redisMapping -> redisJvmCacheKey(profile, redisMapping.getDbDatabase(), redisMapping.getDbTable()),
                                 r -> r, (k1, k2) -> k1));
                 cache.putAll(mappingMap);
             }
-        } catch (Exception e) {
-            log.error("加载redis缓存信息配置出错,e={}", e);
-            System.exit(-1);
-        }
         return cache;
     }
 

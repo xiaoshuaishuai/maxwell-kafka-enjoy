@@ -9,14 +9,13 @@ import com.ssx.maxwell.kafka.enjoy.biz.RedisCacheListGetAndLoadBiz;
 import com.ssx.maxwell.kafka.enjoy.common.helper.RedisCacheListDTOHelper;
 import com.ssx.maxwell.kafka.enjoy.common.helper.StringRedisTemplateHelper;
 import com.ssx.maxwell.kafka.enjoy.common.model.RespData;
-import com.ssx.maxwell.kafka.enjoy.common.model.bo.RedisMappingBO;
 import com.ssx.maxwell.kafka.enjoy.common.model.datao.RedisMappingDO;
 import com.ssx.maxwell.kafka.enjoy.common.model.dto.RedisCacheListDTO;
 import com.ssx.maxwell.kafka.enjoy.common.tools.JsonUtils;
 import com.ssx.maxwell.kafka.enjoy.common.tools.StringUtils;
+import com.ssx.maxwell.kafka.enjoy.configuration.JvmCache;
 import com.ssx.maxwell.kafka.enjoy.enumerate.GlobalCallbackEnum;
 import com.ssx.maxwell.kafka.enjoy.enumerate.MaxwellBinlogConstants;
-import com.ssx.maxwell.kafka.enjoy.service.RedisMappingService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,10 +39,9 @@ public class RedisCacheListGetAndLoadBizImpl implements RedisCacheListGetAndLoad
     @Autowired
     private RedisCacheListDTOHelper redisCacheListDTOHelper;
     @Autowired
-    private RedisMappingService redisMappingService;
-    @Autowired
     private Cache<String, Class<?>> dataObjectCache;
-
+    @Autowired
+    private Cache<String, RedisMappingDO> redisMappingCache;
     @Override
     public RespData<String> get(@NonNull String key, String template) {
         String value = stringRedisTemplateHelper.getValue(key);
@@ -55,11 +53,17 @@ public class RedisCacheListGetAndLoadBizImpl implements RedisCacheListGetAndLoad
             return new RespData<>(GlobalCallbackEnum.PARAMETER_ERROR.getValue(), GlobalCallbackEnum.PARAMETER_ERROR.getIntro());
         }
         String[] keyArray = key.split(":");
+        String profile = keyArray[0];
         String dbDatabase = keyArray[1];
         String dbTable = keyArray[2];
-        RedisMappingBO redisMappingBO = new RedisMappingBO();
-        redisMappingBO.setDbDatabase(dbDatabase).setDbTable(dbTable);
-        RedisMappingDO redisMapping = redisMappingService.getByDatabaseAndTable(redisMappingBO);
+//        RedisMappingBO redisMappingBO = new RedisMappingBO();
+//        redisMappingBO.setDbDatabase(dbDatabase).setDbTable(dbTable);
+//        RedisMappingDO redisMapping = redisMappingService.getByDatabaseAndTable(redisMappingBO);
+        String jvmCacheKey = JvmCache.redisJvmCacheKey(profile, dbDatabase, dbTable);
+        RedisMappingDO redisMapping = redisMappingCache.getIfPresent(jvmCacheKey);
+        if(null == redisMapping){
+            return new RespData<>(GlobalCallbackEnum.LOSE_DATA_ERROR.getValue(), GlobalCallbackEnum.LOSE_DATA_ERROR.getIntro());
+        }
         if (key.endsWith(MaxwellBinlogConstants.KEY_LIST)) {
             log.info("查询全表缓存==============key={}, template={}", key, template);
             if (!redisMapping.getRule().contains(MaxwellBinlogConstants.REDIS_RULE_2)) {
@@ -91,7 +95,21 @@ public class RedisCacheListGetAndLoadBizImpl implements RedisCacheListGetAndLoad
             }
             String v = null;
             try {
-                v = redisCacheListDTOHelper.customRedisCacheLoadAndGet(key, template);
+                String orderBySql = null;
+                int idx = 0;
+                String[] tempArray = temps.split(",");
+                for (int i = 0; i < tempArray.length; i++) {
+                    if(template.equals(tempArray[i])){
+                        idx = i;
+                    }
+                }
+                if(!Strings.isNullOrEmpty(redisMapping.getTemplateOrderBy())){
+                    String[] tempOrderByArray = redisMapping.getTemplateOrderBy().split(",");
+                    if(null != tempOrderByArray && tempOrderByArray.length > 0 && tempArray.length == tempOrderByArray.length){
+                        orderBySql = tempOrderByArray[idx];
+                    }
+                }
+                v = redisCacheListDTOHelper.customRedisCacheLoadAndGet(key, template, orderBySql);
             } catch (UnsupportedEncodingException e) {
                 log.error("URL编码异常e={},value={}", e, v);
                 return new RespData<>(GlobalCallbackEnum.SYSTEM_ENCODE_ERROR.getValue(), GlobalCallbackEnum.SYSTEM_ENCODE_ERROR.getIntro());

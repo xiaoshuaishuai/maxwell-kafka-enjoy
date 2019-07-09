@@ -16,6 +16,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
@@ -51,7 +52,7 @@ public class RedisCacheListDTOHelper {
      * @param dbPid
      * @return
      */
-    public String primaryRedisCacheLoadAndGet(RedisMappingDO redisMapping, String dbDatabase, String dbTable, String dbPid) {
+    public String primaryRedisCacheLoadAndGet(@NonNull RedisMappingDO redisMapping, @NonNull String dbDatabase, @NonNull String dbTable, @NonNull String dbPid) {
         //单表主键缓存
         String jdbcSql = MessageFormat.format(MaxwellBinlogConstants.RedisRunSqlTemplateEnum.SQL_PRIMARY_ID.getTemplate(), dbTable, "'" + dbPid + "'");
         String redisKey = MessageFormat.format(MaxwellBinlogConstants.RedisCacheKeyTemplateEnum.REDIS_CACHE_KEY_TEMPLATE_ITEM_PK_ID.getTemplate(), profile, dbDatabase, dbTable, dbPid);
@@ -67,9 +68,9 @@ public class RedisCacheListDTOHelper {
      * @param dbTable
      * @return
      */
-    public String allTableRedisCacheLoadAndGet(RedisMappingDO redisMapping, String dbDatabase, String dbTable) {
+    public String allTableRedisCacheLoadAndGet(@NonNull RedisMappingDO redisMapping, @NonNull String dbDatabase, @NonNull String dbTable) {
         //全表缓存
-        String jdbcSql = MessageFormat.format(MaxwellBinlogConstants.RedisRunSqlTemplateEnum.SQL_ALL.getTemplate(), dbTable);
+        String jdbcSql = MessageFormat.format(MaxwellBinlogConstants.RedisRunSqlTemplateEnum.SQL_ALL.getTemplate(), dbTable, Strings.isNullOrEmpty(redisMapping.getTableOrderBy()) ? "" : redisMapping.getTableOrderBy());
         String redisKey = MessageFormat.format(MaxwellBinlogConstants.RedisCacheKeyTemplateEnum.REDIS_CACHE_KEY_TEMPLATE_PREFIX_LIST.getTemplate(), profile, dbDatabase, dbTable);
         log.info("sql= {} , key= {}", jdbcSql, redisKey);
         return executePrimaryAndAllTableToRedis(beanHelper.loopGetDynamicDsInfo(dbDatabase), jdbcSql, redisKey, redisMapping.getTableExpire());
@@ -87,12 +88,24 @@ public class RedisCacheListDTOHelper {
         if (!Strings.isNullOrEmpty(redisMapping.getTemplate())) {
             String[] templateArr = redisMapping.getTemplate().split(",");
             if (ArrayUtils.isNotEmpty(templateArr)) {
+                String[] templateOrderBy = new String[templateArr.length];
+                for (int i = 0; i < templateArr.length; i++) {
+                    templateOrderBy[i] = "";
+                }
+                if(!Strings.isNullOrEmpty(redisMapping.getTemplateOrderBy())){
+                    String[] templateOrderByArray = redisMapping.getTemplateOrderBy().split(",");
+                    if(null != templateOrderByArray && templateArr.length == templateOrderByArray.length){
+                        for (int i = 0; i < templateOrderByArray.length; i++) {
+                            templateOrderBy[i] = templateOrderByArray[i];
+                        }
+                    }
+                }
                 String redisKey = MessageFormat.format(MaxwellBinlogConstants.RedisCacheKeyTemplateEnum.REDIS_CACHE_KEY_TEMPLATE_PREFIX_CUSTOM.getTemplate(), profile, dbDatabase, dbTable);
-                for (String templateString : templateArr) {
-                    String keySuffix = TemplateUtils.templateConversionKeyAlone(templateString, dataJson);
-                    String conversionKey = redisKey + keySuffix ;
+                for (int i = 0; i < templateArr.length; i++) {
+                    String keySuffix = TemplateUtils.templateConversionKeyAlone(templateArr[i], dataJson);
+                    String conversionKey = redisKey + keySuffix;
                     log.info("处理自定义缓存redisKey={}", conversionKey);
-                    this.customRedisCacheLoadAndGet(conversionKey, templateString);
+                    this.customRedisCacheLoadAndGet(conversionKey, templateArr[i], templateOrderBy[i]);
                 }
             }
         }
@@ -140,10 +153,11 @@ public class RedisCacheListDTOHelper {
      *
      * @param key
      * @param template
+     * @param template
      * @return
      */
-    public String customRedisCacheLoadAndGet(String key, String template) throws UnsupportedEncodingException {
-        //fixme dev:test:sys_order:3:custom:code6:0
+    public String customRedisCacheLoadAndGet(String key, String template, @Nullable String orderBy) throws UnsupportedEncodingException {
+        // dev:test:sys_order:3:custom:code6:0
         //:goods_name:is_deleted(3600)
         String[] keyArray = key.split(":");
         String[] envPrefix = new String[5];
@@ -171,7 +185,7 @@ public class RedisCacheListDTOHelper {
         StringBuilder whereSql = new StringBuilder();
         for (int i = 0; i < templateArray.length; i++) {
             String column = templateArray[i];
-            if(Strings.isNullOrEmpty(column)){
+            if (Strings.isNullOrEmpty(column)) {
                 continue;
             }
             if (whereSql.toString().contains("=")) {
@@ -195,7 +209,7 @@ public class RedisCacheListDTOHelper {
         //获取自定义缓存过期时间
         Long expire = Long.valueOf(template.substring(template.indexOf("(") + 1, template.indexOf(")")));
         //自定义缓存
-        String jdbcSql = MessageFormat.format(MaxwellBinlogConstants.RedisRunSqlTemplateEnum.SQL_CUSTOM.getTemplate(), envPrefix[2], whereSql.toString(), "");
+        String jdbcSql = MessageFormat.format(MaxwellBinlogConstants.RedisRunSqlTemplateEnum.SQL_CUSTOM.getTemplate(), envPrefix[2], whereSql.toString(), Strings.isNullOrEmpty(orderBy) ? "" : orderBy);
         String redisKey = MessageFormat.format(MaxwellBinlogConstants.RedisCacheKeyTemplateEnum.REDIS_CACHE_KEY_TEMPLATE_PREFIX_CUSTOM.getTemplate(), envPrefix[0], envPrefix[1], envPrefix[2]);
         String finalKey = redisKey + keyAfterStr;
         log.info("sql= {} , key= {}", jdbcSql, finalKey);

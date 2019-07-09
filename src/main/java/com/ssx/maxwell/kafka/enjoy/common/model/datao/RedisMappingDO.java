@@ -29,6 +29,12 @@ public class RedisMappingDO extends MappingDO {
     @ApiModelProperty(value = "缓存过期时间, 默认-1永不过期, 单位：秒")
     private Long tableExpire;
     /**
+     * 全表缓存排序规则 ORDER BY GMT_MODIFY DESC
+     *                ORDER BY GMT_MODIFY DESC, XX ASC
+     */
+    @ApiModelProperty(value = "全表缓存排序规则")
+    private String tableOrderBy;
+    /**
      * 缓存生成规则,可以配置多个,多个使用,分割, 1,2 ... 1,3 ...  1,2,3
      * 默认0.无缓存
      * 1.单表主键引导缓存
@@ -52,7 +58,6 @@ public class RedisMappingDO extends MappingDO {
      */
     @ApiModelProperty(value = "当rule包含3时,template, template ,分割\n" +
             "自定义缓存模板\n" +
-            "默认0.无模板\n" +
             "字段1:字段2:字段3\n" +
             "字段1:字段2:字段3,字段1:字段2\n" +
             "字段必须是table里对应的数据库字段,否则无法映射成功")
@@ -64,5 +69,15 @@ public class RedisMappingDO extends MappingDO {
      */
     @ApiModelProperty(value = "自定义模板对应sql,分割")
     private String templateSql;
+    /**
+     * 自定义模板对应sql,分割
+     * 与template一一对应
+     * ORDER BY GMT_MODIFY DESC,ORDER BY GMT_MODIFY DESC,ORDER BY GMT_MODIFY DESC
+     * ORDER BY GMT_MODIFY DESC,,
+     * ,,,
+     * 可空，如果为空不排序
+     */
+    @ApiModelProperty(value = "自定义模板对应sql,分割")
+    private String templateOrderBy;
 
 }
