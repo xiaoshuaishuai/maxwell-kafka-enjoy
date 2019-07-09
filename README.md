@@ -2,7 +2,7 @@
 
 #### 依赖
 * jdk1.8
-* maxwell-1.22.1
+* [maxwell](https://github.com/zendesk/maxwell)(本项目基于1.22.1开发，现在最新版本1.22.3，理论上只要maxwell消息格式不变都是可以兼容的)
 * mysql5.7.26
 * kafka_2.11-2.0.0
 * redis4.0
