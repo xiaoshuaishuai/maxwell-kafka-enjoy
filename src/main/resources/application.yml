@@ -44,8 +44,7 @@ spring:
       cluster-nodes: 192.168.225.1:9300
 mybatis-plus:
   mapper-locations: classpath:com/ssx/maxwell/kafka/enjoy/mapper/impl/*.xml
-  typeAliasesPackage: com.ssx.maxwell.kafka.enjoy.common.model.entity
-
+  typeAliasesPackage: com.ssx.maxwell.kafka.enjoy.common.model.datao
 maxwell:
   enjoy:
     #    binlog消费队列
@@ -74,7 +73,6 @@ maxwell:
 logging:
   level:
     root: info
-
 management:
   endpoints:
     web:
