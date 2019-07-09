@@ -1,9 +1,9 @@
 package com.ssx.maxwell.kafka.enjoy.controller;
 
 import com.ssx.maxwell.kafka.enjoy.common.model.RespData;
-import com.ssx.maxwell.kafka.enjoy.common.model.bo.test.SysOrderBO;
-import com.ssx.maxwell.kafka.enjoy.common.model.db.test.SysOrderDO;
-import com.ssx.maxwell.kafka.enjoy.common.model.vo.test.SysOrderVO;
+import com.ssx.maxwell.kafka.enjoy.common.model.bo.SysOrderBO;
+import com.ssx.maxwell.kafka.enjoy.common.model.datao.SysOrderDO;
+import com.ssx.maxwell.kafka.enjoy.common.model.vo.SysOrderVO;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 

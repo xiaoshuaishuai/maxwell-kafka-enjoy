@@ -1,6 +1,6 @@
 package com.ssx.maxwell.kafka.enjoy.common.model.vo;
 
-import com.ssx.maxwell.kafka.enjoy.common.model.db.ElasticsearchMappingDO;
+import com.ssx.maxwell.kafka.enjoy.common.model.datao.ElasticsearchMappingDO;
 import lombok.Data;
 
 /**

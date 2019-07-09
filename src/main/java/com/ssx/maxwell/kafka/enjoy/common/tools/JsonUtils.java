@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Strings;
-import com.ssx.maxwell.kafka.enjoy.common.model.db.test.SysOrderDO;
+import com.ssx.maxwell.kafka.enjoy.common.model.datao.SysOrderDO;
 import com.ssx.maxwell.kafka.enjoy.common.model.dto.RedisCacheListDTO;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;

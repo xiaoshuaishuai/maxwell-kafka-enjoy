@@ -2,8 +2,10 @@ package com.ssx.maxwell.kafka.enjoy.configuration;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import com.ssx.maxwell.kafka.enjoy.common.model.db.RedisMappingDO;
+import com.ssx.maxwell.kafka.enjoy.common.model.datao.RedisMappingDO;
+import com.ssx.maxwell.kafka.enjoy.common.tools.ClassUtils;
 import com.ssx.maxwell.kafka.enjoy.mapper.RedisMappingMapper;
+import com.sun.org.apache.regexp.internal.RE;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,6 +34,7 @@ public class JvmCache {
     private String profile;
 
     public static final String BROKEN_WELL = "#";
+    public static final String DATAOBJECT_PKG = "com.ssx.maxwell.kafka.enjoy.common.model.datao";
 
 
     @Bean
@@ -46,12 +49,26 @@ public class JvmCache {
                 Map<String, RedisMappingDO> mappingMap = redisMappingList.stream()
                         .collect(Collectors.toMap(redisMapping -> redisJvmCacheKey(profile, redisMapping.getDbDatabase(), redisMapping.getDbTable()),
                                 r -> r, (k1, k2) -> k1));
-                log.info("redis缓存信息配置,key规则=env#database#table mappingMap={}", mappingMap.toString());
                 cache.putAll(mappingMap);
             }
         } catch (Exception e) {
             log.error("加载redis缓存信息配置出错,e={}", e);
             System.exit(-1);
+        }
+        return cache;
+    }
+
+    @Bean
+    public Cache<String, Class<?>> dataObjectCache() {
+        List<Class<?>> classList = ClassUtils.getClasses(DATAOBJECT_PKG);
+        Cache<String, Class<?>> cache = CacheBuilder.newBuilder().initialCapacity(10)
+                .maximumSize(1000)
+                .build();
+        if (!CollectionUtils.isEmpty(classList)) {
+            classList.forEach(cls -> {
+                log.info("DO cache simpleName={}", cls.getSimpleName());
+                cache.put(cls.getSimpleName(), cls);
+            });
         }
         return cache;
     }

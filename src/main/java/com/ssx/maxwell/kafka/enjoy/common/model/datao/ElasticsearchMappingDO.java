@@ -1,4 +1,4 @@
-package com.ssx.maxwell.kafka.enjoy.common.model.db;
+package com.ssx.maxwell.kafka.enjoy.common.model.datao;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;

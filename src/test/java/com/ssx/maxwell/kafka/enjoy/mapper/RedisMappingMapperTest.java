@@ -1,7 +1,6 @@
 package com.ssx.maxwell.kafka.enjoy.mapper;
 
 import com.ssx.maxwell.kafka.enjoy.common.model.bo.RedisMappingBO;
-import com.ssx.maxwell.kafka.enjoy.common.model.db.RedisMappingDO;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ssx.maxwell.kafka.enjoy.mapper.ElasticsearchMappingMapper">
-    <resultMap id="baseMap" type="com.ssx.maxwell.kafka.enjoy.common.model.db.ElasticsearchMappingDO">
+    <resultMap id="baseMap" type="com.ssx.maxwell.kafka.enjoy.common.model.datao.ElasticsearchMappingDO">
         <id column="id" property="id"/>
         <result column="db_database" property="dbDatabase"></result>
         <result column="db_table" property="dbTable"></result>

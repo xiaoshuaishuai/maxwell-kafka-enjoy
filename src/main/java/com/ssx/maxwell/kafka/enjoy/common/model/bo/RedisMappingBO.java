@@ -1,6 +1,6 @@
 package com.ssx.maxwell.kafka.enjoy.common.model.bo;
 
-import com.ssx.maxwell.kafka.enjoy.common.model.db.RedisMappingDO;
+import com.ssx.maxwell.kafka.enjoy.common.model.datao.RedisMappingDO;
 import lombok.Data;
 import lombok.experimental.Accessors;
 

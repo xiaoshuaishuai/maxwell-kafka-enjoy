@@ -1,6 +1,6 @@
-package com.ssx.maxwell.kafka.enjoy.common.model.vo.test;
+package com.ssx.maxwell.kafka.enjoy.common.model.vo;
 
-import com.ssx.maxwell.kafka.enjoy.common.model.db.test.SysOrderDO;
+import com.ssx.maxwell.kafka.enjoy.common.model.datao.SysOrderDO;
 import lombok.Data;
 
 /**

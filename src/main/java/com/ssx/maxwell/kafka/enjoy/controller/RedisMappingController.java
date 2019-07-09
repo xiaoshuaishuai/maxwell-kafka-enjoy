@@ -2,7 +2,7 @@ package com.ssx.maxwell.kafka.enjoy.controller;
 
 import com.ssx.maxwell.kafka.enjoy.common.model.RespData;
 import com.ssx.maxwell.kafka.enjoy.common.model.bo.RedisMappingBO;
-import com.ssx.maxwell.kafka.enjoy.common.model.db.RedisMappingDO;
+import com.ssx.maxwell.kafka.enjoy.common.model.datao.RedisMappingDO;
 import com.ssx.maxwell.kafka.enjoy.common.model.vo.RedisMappingVO;
 import com.ssx.maxwell.kafka.enjoy.service.RedisMappingService;
 import io.swagger.annotations.Api;

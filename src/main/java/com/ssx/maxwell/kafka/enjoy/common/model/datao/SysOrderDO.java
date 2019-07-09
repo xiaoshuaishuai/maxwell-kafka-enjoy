@@ -1,4 +1,4 @@
-package com.ssx.maxwell.kafka.enjoy.common.model.db.test;
+package com.ssx.maxwell.kafka.enjoy.common.model.datao;
 
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.enums.IdType;

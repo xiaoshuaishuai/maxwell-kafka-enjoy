@@ -3,7 +3,7 @@
 <mapper namespace="com.ssx.maxwell.kafka.enjoy.mapper.SysOrderMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.ssx.maxwell.kafka.enjoy.common.model.db.test.SysOrderDO">
+    <resultMap id="BaseResultMap" type="com.ssx.maxwell.kafka.enjoy.common.model.datao.SysOrderDO">
         <id column="id" property="id"/>
         <result column="order_code" property="orderCode"/>
         <result column="category" property="category"/>

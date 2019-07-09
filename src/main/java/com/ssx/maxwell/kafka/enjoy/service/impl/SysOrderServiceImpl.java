@@ -1,9 +1,9 @@
 package com.ssx.maxwell.kafka.enjoy.service.impl;
 
 import com.baomidou.dynamic.datasource.annotation.DS;
-import com.ssx.maxwell.kafka.enjoy.common.model.bo.test.SysOrderBO;
-import com.ssx.maxwell.kafka.enjoy.common.model.db.test.SysOrderDO;
-import com.ssx.maxwell.kafka.enjoy.common.model.vo.test.SysOrderVO;
+import com.ssx.maxwell.kafka.enjoy.common.model.bo.SysOrderBO;
+import com.ssx.maxwell.kafka.enjoy.common.model.datao.SysOrderDO;
+import com.ssx.maxwell.kafka.enjoy.common.model.vo.SysOrderVO;
 import com.ssx.maxwell.kafka.enjoy.mapper.SysOrderMapper;
 import com.ssx.maxwell.kafka.enjoy.service.SysOrderService;
 import org.springframework.beans.factory.annotation.Autowired;

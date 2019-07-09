@@ -1,6 +1,6 @@
 package com.ssx.maxwell.kafka.enjoy.common.model.bo;
 
-import com.ssx.maxwell.kafka.enjoy.common.model.db.DynamicDatasourceDO;
+import com.ssx.maxwell.kafka.enjoy.common.model.datao.DynamicDatasourceDO;
 import lombok.Data;
 
 @Data

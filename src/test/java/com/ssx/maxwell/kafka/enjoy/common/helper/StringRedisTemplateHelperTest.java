@@ -1,6 +1,5 @@
 package com.ssx.maxwell.kafka.enjoy.common.helper;
 
-import com.ssx.maxwell.kafka.enjoy.common.model.db.test.SysOrderDO;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

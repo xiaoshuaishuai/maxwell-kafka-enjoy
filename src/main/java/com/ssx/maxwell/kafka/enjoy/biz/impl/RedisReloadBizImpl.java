@@ -5,8 +5,7 @@ import com.ssx.maxwell.kafka.enjoy.biz.RedisReloadBiz;
 import com.ssx.maxwell.kafka.enjoy.common.helper.RedisCacheListDTOHelper;
 import com.ssx.maxwell.kafka.enjoy.common.helper.RedissonHelper;
 import com.ssx.maxwell.kafka.enjoy.common.model.bo.RedisMappingBO;
-import com.ssx.maxwell.kafka.enjoy.common.model.db.RedisMappingDO;
-import com.ssx.maxwell.kafka.enjoy.common.model.dto.RedisExpireAndLoadDTO;
+import com.ssx.maxwell.kafka.enjoy.common.model.datao.RedisMappingDO;
 import com.ssx.maxwell.kafka.enjoy.enumerate.MaxwellBinlogConstants;
 import com.ssx.maxwell.kafka.enjoy.service.RedisMappingService;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +16,6 @@ import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
 import java.io.UnsupportedEncodingException;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 

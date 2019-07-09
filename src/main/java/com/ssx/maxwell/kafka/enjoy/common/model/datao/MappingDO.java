@@ -1,4 +1,4 @@
-package com.ssx.maxwell.kafka.enjoy.common.model.db;
+package com.ssx.maxwell.kafka.enjoy.common.model.datao;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;

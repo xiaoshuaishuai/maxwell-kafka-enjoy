@@ -1,25 +1,26 @@
 package com.ssx.maxwell.kafka.enjoy.biz.impl;
 
-import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.google.common.base.Strings;
+import com.google.common.cache.Cache;
 import com.google.common.collect.Lists;
 import com.ssx.maxwell.kafka.enjoy.biz.RedisCacheListGetAndLoadBiz;
 import com.ssx.maxwell.kafka.enjoy.common.helper.RedisCacheListDTOHelper;
 import com.ssx.maxwell.kafka.enjoy.common.helper.StringRedisTemplateHelper;
 import com.ssx.maxwell.kafka.enjoy.common.model.RespData;
 import com.ssx.maxwell.kafka.enjoy.common.model.bo.RedisMappingBO;
-import com.ssx.maxwell.kafka.enjoy.common.model.db.RedisMappingDO;
-import com.ssx.maxwell.kafka.enjoy.common.model.db.test.SysOrderDO;
+import com.ssx.maxwell.kafka.enjoy.common.model.datao.RedisMappingDO;
 import com.ssx.maxwell.kafka.enjoy.common.model.dto.RedisCacheListDTO;
 import com.ssx.maxwell.kafka.enjoy.common.tools.JsonUtils;
 import com.ssx.maxwell.kafka.enjoy.common.tools.StringUtils;
 import com.ssx.maxwell.kafka.enjoy.enumerate.GlobalCallbackEnum;
 import com.ssx.maxwell.kafka.enjoy.enumerate.MaxwellBinlogConstants;
 import com.ssx.maxwell.kafka.enjoy.service.RedisMappingService;
-import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -40,6 +41,8 @@ public class RedisCacheListGetAndLoadBizImpl implements RedisCacheListGetAndLoad
     private RedisCacheListDTOHelper redisCacheListDTOHelper;
     @Autowired
     private RedisMappingService redisMappingService;
+    @Autowired
+    private Cache<String, Class<?>> dataObjectCache;
 
     @Override
     public RespData<String> get(@NonNull String key, String template) {
@@ -57,7 +60,7 @@ public class RedisCacheListGetAndLoadBizImpl implements RedisCacheListGetAndLoad
         RedisMappingBO redisMappingBO = new RedisMappingBO();
         redisMappingBO.setDbDatabase(dbDatabase).setDbTable(dbTable);
         RedisMappingDO redisMapping = redisMappingService.getByDatabaseAndTable(redisMappingBO);
-        if (MaxwellBinlogConstants.KEY_LIST.endsWith(key)) {
+        if (key.endsWith(MaxwellBinlogConstants.KEY_LIST)) {
             log.info("查询全表缓存==============key={}, template={}", key, template);
             if (!redisMapping.getRule().contains(MaxwellBinlogConstants.REDIS_RULE_2)) {
                 return new RespData<>(GlobalCallbackEnum.PARAMETER_RULE_ERROR.getValue(), GlobalCallbackEnum.PARAMETER_RULE_ERROR.getIntro());
@@ -107,27 +110,29 @@ public class RedisCacheListGetAndLoadBizImpl implements RedisCacheListGetAndLoad
         }
         String[] keyArray = key.split(":");
         String dbTable = keyArray[2];
-
         String snakeObj = StringUtils.lineToHump(dbTable);
         if (!Strings.isNullOrEmpty(snakeObj)) {
             char a = snakeObj.charAt(0);
-            //fixme 数据库对应对象DO结尾，不然找不到反序列化对象
             String finalSnakeObject = new String(String.valueOf(a)).toUpperCase() + snakeObj.substring(1) + "DO";
             RespData<String> respData = this.get(key, template);
+            //成功状态下转对象
             if (GlobalCallbackEnum.SUCCESS.getValue().equals(respData.getCode())) {
-                try {
-                    //todo 获取对象反射 2019-7-8 17:36:42
-
-                    RedisCacheListDTO<SysOrderDO> redisCacheListDTO =
-                            JsonUtils.getMapper().readValue("", new TypeReference<RedisCacheListDTO<SysOrderDO>>() {
-                        });
-                } catch (IOException e) {
-                    e.printStackTrace();
+                Class<?> clsType = dataObjectCache.getIfPresent(finalSnakeObject);
+                if(null != clsType){
+                    JavaType userType = TypeFactory.defaultInstance().constructParametricType(RedisCacheListDTO.class, clsType);
+                    try {
+                        RedisCacheListDTO redisCacheListDTO = JsonUtils.getMapper().readValue(respData.getData(), userType);
+                        return new RespData<RedisCacheListDTO>().setCode(respData.getCode()).setMessage(respData.getMessage()).setData(redisCacheListDTO);
+                    } catch (IOException e) {
+                        log.error("JSON反序列化对象异常respData={}, e={}",respData, e);
+                        return new RespData<>(GlobalCallbackEnum.JSON_PARSE_ERROR.getValue(), GlobalCallbackEnum.JSON_PARSE_ERROR.getIntro(),null);
+                    }
                 }
+            }else {
+                return new RespData<>(respData.getCode(), respData.getMessage());
             }
         }
-
-        return null;
+        return new RespData<>(GlobalCallbackEnum.KEY_NOT_RECOGNIZED.getValue(), GlobalCallbackEnum.KEY_NOT_RECOGNIZED.getIntro(),null);
     }
 
     /**

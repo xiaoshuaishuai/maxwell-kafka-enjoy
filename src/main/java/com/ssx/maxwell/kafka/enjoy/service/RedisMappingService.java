@@ -1,7 +1,7 @@
 package com.ssx.maxwell.kafka.enjoy.service;
 
 import com.ssx.maxwell.kafka.enjoy.common.model.bo.RedisMappingBO;
-import com.ssx.maxwell.kafka.enjoy.common.model.db.RedisMappingDO;
+import com.ssx.maxwell.kafka.enjoy.common.model.datao.RedisMappingDO;
 import com.ssx.maxwell.kafka.enjoy.common.model.vo.RedisMappingVO;
 
 /**

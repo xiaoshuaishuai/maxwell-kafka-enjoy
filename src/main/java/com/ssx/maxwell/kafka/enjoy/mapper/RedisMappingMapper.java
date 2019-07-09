@@ -1,7 +1,7 @@
 package com.ssx.maxwell.kafka.enjoy.mapper;
 
 import com.ssx.maxwell.kafka.enjoy.common.model.bo.RedisMappingBO;
-import com.ssx.maxwell.kafka.enjoy.common.model.db.RedisMappingDO;
+import com.ssx.maxwell.kafka.enjoy.common.model.datao.RedisMappingDO;
 import org.springframework.stereotype.Component;
 
 /**
