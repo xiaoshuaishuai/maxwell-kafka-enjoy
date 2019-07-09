@@ -26,7 +26,7 @@ public class RedisCacheListController {
 
     /**
      *
-     * @param key 如果:: key中间包含中文需要URL编码，否则中文key查询匹配不上
+     * @param key 如果:: key中间包含中文需要URL编码，否则中文key查询匹配不上 dev:test:sys_order:3:custom:%E6%A2%B3%E5%AD%90:0
      * @param template 自定义key如果缓存没有需要从数据加载需要给出redis_mapping表配置的key对应的模板
      *                 举例： key=dev:test:sys_order:3:custom:code6:0  template=:order_code:is_deleted(1800)
      *                 返回值为string格式的json字符串，需要转RedisCacheListDTO，由客户端决定具体的对象。
