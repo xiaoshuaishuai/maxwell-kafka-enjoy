@@ -1,4 +1,4 @@
-#### redis缓存策略
+##### redis缓存策略
 > 选择DB和redis缓存一致性方案<br/>
 >1.**缓存失效**: 数据发生insert/update/delete操作，先修改数据库，删除缓存<br/>
 2.**缓存加载**: 数据读取先查询缓存，如果缓存命中，直接返回，如果缓存未命中，查询DB，同时将DB返回数据更新到缓存(可以采取定时任务刷新DB数据到缓存来解决第一次查库问题或者也可以在触发缓存删除之后MQ通知重做缓存)
@@ -23,25 +23,22 @@
 2. 缓存创建时默认都给过期时间
 3. 综合业务考虑、是否需要定时刷新缓存、比如每天0点刷新某张表的缓存数据
 
-2.3都是1的候补，如果能确保缓存删除，就能解决大部分问题。
+2.3都是1的增强，如果能确保缓存删除，就能解决大部分问题。
 
-
----
-
-### 对redis缓存提供的功能
+##### 对redis缓存提供的功能
 * 单表主键引导缓存
 >举例：
-环境=dev, database=xx, table=table_test, id=1,对应的单条缓存为=**dev:xx:table_test:item:1**
-环境=test, database=xx, table=person, id=2,对应的单条缓存为=**test:xx:person:item:2**
+环境=dev, database=test, table=sys_order, id=1,对应的单条缓存为=**dev:test:sys_order:1:item:1**
+环境=test, database=test, table=sys_order, id=2,对应的单条缓存为=**test:test:sys_order:1:item:2**
 
 * 全表缓存
 >举例：
-环境=dev, database=xx, table=table_test, 对应的全表缓存为=**dev:xx:table_test:list**
-环境=test, database=xx, table=person, 对应的全表缓存为=**test:xx:person:list**
+环境=dev, database=test, table=sys_order, id=1,对应的单条缓存为=**dev:test:sys_order:2:list**
+环境=test, database=test, table=sys_order, id=2,对应的单条缓存为=**test:test:sys_order:2:list**
 
 * 自定义缓存
 >举例：
-环境=dev, database=xx, table=table_test, id=1, code=10, name=john, 要求按照code&name构建缓存, 
-对应的单条缓存为=**dev:xx:table_test:item:10:name**
-
+环境=dev, database=test, table=sys_order, id=1, goodsName=牙膏, deleted=0 要求按照goodsName和deleted字段构建缓存, 
+对应的单条缓存为=**dev:test:sys_order:3:custom:%E7%89%99%E8%86%8F:0**
+字段包含中文会进行URL编码，可以根据需要的字段进行多种组合构建key，缓存的数据支持动态的SQL排序
 ---
