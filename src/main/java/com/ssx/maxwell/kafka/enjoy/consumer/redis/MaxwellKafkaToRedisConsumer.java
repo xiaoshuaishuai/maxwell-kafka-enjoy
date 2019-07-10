@@ -3,6 +3,7 @@ package com.ssx.maxwell.kafka.enjoy.consumer.redis;
 import com.google.common.base.Strings;
 import com.google.common.cache.Cache;
 import com.ssx.maxwell.kafka.enjoy.common.helper.KafkaHelper;
+import com.ssx.maxwell.kafka.enjoy.common.helper.StringRedisTemplateHelper;
 import com.ssx.maxwell.kafka.enjoy.common.model.datao.RedisMappingDO;
 import com.ssx.maxwell.kafka.enjoy.common.model.dto.RedisExpireAndLoadDTO;
 import com.ssx.maxwell.kafka.enjoy.common.tools.JsonUtils;
@@ -36,20 +37,21 @@ import java.util.Map;
 public class MaxwellKafkaToRedisConsumer {
 
     private static final String logPrefix = "maxwell--<redis>--消费消息-->";
-
     @Value("${spring.profiles.active:dev}")
     private String profile;
     @Value("${maxwell.enjoy.redis.jvmCache}")
     private boolean redisMappingCacheSwitch;
     @Autowired
     private Cache<String, RedisMappingDO> redisMappingCache;
-
-    @Value("${maxwell.enjoy.redis.expire-topic}")
-    private String expireRedisTopic;
-
+    @Autowired
+    private StringRedisTemplateHelper stringRedisTemplateHelper;
+    @Value("${maxwell.enjoy.redis.reload-topic}")
+    private String loadRedisTopic;
     @Autowired
     private KafkaHelper kafkaHelper;
-
+    //todo 动态消费者功能支持 maxwell配置为namespace_%{database}_%{table} # kafka topic to write to #kafka_topic=maxwell
+    //# this can be static, e.g. 'maxwell', or dynamic, e.g. namespace_%{database}_%{table}
+    //# in the latter case 'database' and 'table' will be replaced with the values for the row being processed
     @KafkaListener(topics = "${maxwell.enjoy.kafka-binlog-topic}", groupId = "${maxwell.enjoy.redis.kafka-group}", containerFactory = "manualListenerContainerFactory")
     public void receive(List<ConsumerRecord<String, String>> integerStringConsumerRecords, Acknowledgment acknowledgment) {
         //maxwell--消费消息:{"database":"test","table":"title","type":"update","ts":1559542729,"xid":2470,"commit":true,"data":{"id":2,"name":"2","content":"88"},"old":{"content":"2"}}
@@ -146,11 +148,24 @@ public class MaxwellKafkaToRedisConsumer {
                             }
                             //推送过期key队列
                             if (null != redisExpireDTO && redisExpireDTO.getDeleteKeyList().size() > 0) {
-                                kafkaHelper.sendMQ(expireRedisTopic, redisExpireDTO
-                                        , result -> log.info(logPrefix + "redis清除缓存key发送MQ成功, result={}", result)
+                                try {
+                                    log.info("redisExpireDTO.getKeyList()={}", redisExpireDTO.getDeleteKeyList());
+                                    stringRedisTemplateHelper.delete(redisExpireDTO.getDeleteKeyList());
+                                } catch (Exception redisException) {
+                                    //todo 2019-6-14 13:47:47 如果出现删除失败、redis连接等情况、将数据落入DB、由定时任务扫表进行清除动作、当然扫表有可能也失败同时增加预警
+                                    //总之为了尽快清除redis中的脏数据，存在的越久数据不一致也就越久
+                                    log.error(logPrefix + "清除redis key异常redisExpireDTO={}, e={}", redisExpireDTO, redisExpireDTO);
+                                    throw redisException;
+                                }
+                                //首先清除缓存、避免db和redis数据不一致、当然清除也会出现不一致、mq消费的越晚延迟越高、
+                                //通知主动加载缓存
+                                //主动加载缓存不订阅清除缓存的队列的reason是因为
+                                //如果使用当前队列需要有前后依赖，当清除以后在能触发reload，如果reload在delete就会有问题
+                                kafkaHelper.sendMQ(loadRedisTopic, redisExpireDTO
+                                        , result -> log.info(logPrefix + "重载缓存发送MQ成功, result={}", result)
                                         , ex -> {
-                                            log.error(logPrefix + "redis清除缓存key发送MQ失败, 消息 info={}, ex={}", redisExpireDTO, ex);
-                                            //todo 2019-6-5 15:04:46 这里考虑降级比如存入DB表中、由定时任务扫表去触发清除动作
+                                            //在查询处去做兼容缓存没有去查库
+                                            log.error(logPrefix + "重载缓存发送MQ失败, 消息 redisExpireDTO={}, ex={}", redisExpireDTO, ex);
                                         }
                                 );
                             }

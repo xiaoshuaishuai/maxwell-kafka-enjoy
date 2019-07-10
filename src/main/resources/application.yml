@@ -56,14 +56,8 @@ maxwell:
       kafka-consumer: true
       #      默认消费组
       kafka-group: group_redis_default
-      #      开启redis过期key队列消费
-      expire-kafka-consumer: true
-      #     过期key队列
-      expire-topic: redis_expire_topic
       #     缓存重载队列
       reload-topic: redis_reload_topic
-      #     过期key队列消费组
-      expire-topic-kafka-group: redis_expire_topic_group
       #     缓存重载队列消费组
       reload-topic-kafka-group: redis_reload_topic_group
     elasticsearch:

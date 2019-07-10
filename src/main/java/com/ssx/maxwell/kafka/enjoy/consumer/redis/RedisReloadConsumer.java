@@ -21,7 +21,7 @@ import java.util.List;
  */
 @Component
 @Slf4j
-@ConditionalOnProperty(prefix = "maxwell.enjoy.redis", name = "expire-kafka-consumer", havingValue = "true")
+@ConditionalOnProperty(prefix = "maxwell.enjoy.redis", name = "kafka-consumer", havingValue = "true")
 public class RedisReloadConsumer {
 
     private static final String logPrefix = "maxwell--<redis重载缓存>--消费消息-->";

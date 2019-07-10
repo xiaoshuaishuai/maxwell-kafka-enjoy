@@ -1,3 +1,4 @@
+/*
 package com.ssx.maxwell.kafka.enjoy.consumer.redis;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -22,11 +23,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+*/
 /**
  * @author: shuaishuai.xiao
  * @date: 2019-6-5 15:17:00
  * @description: redis失效缓存
- */
+ *//*
+
 @Component
 @Slf4j
 @ConditionalOnProperty(prefix = "maxwell.enjoy.redis", name = "expire-kafka-consumer", havingValue = "true")
@@ -56,7 +59,8 @@ public class RedisExpireConsumer {
                         });
                 log.info(logPrefix + "redisExpireDTO={}", redisExpireDTO);
                 try {
-                    /*Map oldDataJson = redisExpireDTO.getOldDataJson();
+                    */
+/*Map oldDataJson = redisExpireDTO.getOldDataJson();
                     if (null != oldDataJson && !oldDataJson.isEmpty()) {
                         List<String> fuzzyKeyList = Lists.newArrayList();
                         RedisMappingBO redisMappingBO = new RedisMappingBO();
@@ -88,7 +92,8 @@ public class RedisExpireConsumer {
                             //模糊删除
                             stringRedisTemplateHelper.likeDelete(fuzzyKeyList);
                         }
-                    }*/
+                    }*//*
+
                     log.info("redisExpireDTO.getKeyList()={}", redisExpireDTO.getDeleteKeyList());
                     stringRedisTemplateHelper.delete(redisExpireDTO.getDeleteKeyList());
                 } catch (Exception redisException) {
@@ -115,13 +120,15 @@ public class RedisExpireConsumer {
         }
     }
 
-    /**
+    */
+/**
      * 过滤该模板有无存在修改的字段、如果存在修改的字段将该模板返回、如果不包含返回空，证明该模板相关的自定义缓存不需要清除
      *
      * @param template
      * @param oldDataJson
      * @return
-     */
+     *//*
+
     private String columnFilter(String template, Map oldDataJson) {
         Set<String> keySet = oldDataJson.keySet();
         for (String column : keySet) {
@@ -220,3 +227,4 @@ public class RedisExpireConsumer {
 //            }
 //            keyList.add(redisKey+ keyBuilder.toString());
 
+*/
